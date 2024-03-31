@@ -1,0 +1,12 @@
+.btn_drop{
+    width: 440px;
+}
+.image11 .p-link{
+    background-color: rgb(211, 211, 190);
+}
+.containerCulLog {
+    display: flex;
+    flex-direction: column;
+}
+
+

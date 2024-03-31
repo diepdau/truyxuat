@@ -1,0 +1,275 @@
+
+{
+    "cultivationLogs": [
+      {
+        "_id": "65786cb44b23c18fbb3add25",
+        "farm_product": {
+          "_id": "65786b8f4b23c18fbb3add01",
+          "name": "Dê A1" },
+            "name":"Chọn giống dê",
+            "description":"Dê Bách Thảo. Màu lông chủ yếu là đen hoặc đen loang sọc trắng, vá trắng, đốm trắng, đốm đen, tầm vóc cao, đầu thô dài, miệng rộng và thô, phần lớn không có rấu cằm và sừng, bầu vú hình bát úp, núm vú dài.",
+           
+            "images": [
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1710176779/agriculture_traceability/ad7hgvd3zmouq0wjm24l.jpg",
+                  "filename": "agriculture_traceability/lqvsstwjx49yxooyrbtg",
+                  "_id": "65944a79dd7270c05d253edb"
+                },
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1704217209/agriculture_traceability/zclnlkhdnz5nasrgv59z.jpg",
+                  "filename": "agriculture_traceability/zclnlkhdnz5nasrgv59z",
+                  "_id": "65944a79dd7270c05d253edc"
+                }
+              ],
+        "notes": "Là giống dê lai pha tạp nhiều đời của một số giống nhập nội, không loại trừ có lẫn máu của dê địa phương",
+        
+        "createdAt": "2023-12-12T14:22:44.540Z",
+        "updatedAt": "2024-01-26T16:45:13.851Z",
+        "__v": 8
+      },
+      {
+        "_id": "65786d3b4b23c18fbb3add34",
+        "farm_product": {
+          "_id": "65918c1dfbd6d68a5b01c17e",
+          "name": "Cừu A1"},
+            "name":"Chuồng trại",
+            "description":"- Mặt sàn cách mặt đất 0,8 - 1m tạo độ thoáng, khe hở mặt sàn 1,5cm.Máng ăn bố trí sát mặt ngoài sàn (ở phía trước chuồng)để cừu thò đầu ra ăn. Mỗi tháng tẩy uế chuồng 1 lần bằng vôi bột hoặc Dipterex.Diện tích cần bảo đảm cho mỗi đàn cừu là: Đực giống 1,5 - 2m2, cái sinh sản 1,3 - 1,5m2, cái tơ 0,6m2.",
+        
+            "images": [
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1710176779/agriculture_traceability/ad7hgvd3zmouq0wjm24l.jpg",
+                  "filename": "agriculture_traceability/lqvsstwjx49yxooyrbtg",
+                  "_id": "65944a79dd7270c05d253edb"
+                },
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1704217209/agriculture_traceability/zclnlkhdnz5nasrgv59z.jpg",
+                  "filename": "agriculture_traceability/zclnlkhdnz5nasrgv59z",
+                  "_id": "65944a79dd7270c05d253edc"
+                }
+    ]
+        ,
+        "notes": "note ne",
+        "createdAt": "2023-12-12T14:24:59.635Z",
+        "updatedAt": "2024-01-03T10:48:16.503Z",
+        "__v": 1
+      },
+      {
+        "_id": "657c94ead0f12a72a06c898d",
+        "farm_product": {
+          "_id": "657c93b1d0f12a72a06c8981",
+          "name": "Cừu A2"},
+            "name":"Chọn giống",
+            "description":"Con phát triển ...v.v",
+            "images": [
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1710176779/agriculture_traceability/ad7hgvd3zmouq0wjm24l.jpg",
+                  "filename": "agriculture_traceability/lqvsstwjx49yxooyrbtg",
+                  "_id": "65944a79dd7270c05d253edb"
+                },
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1704217209/agriculture_traceability/zclnlkhdnz5nasrgv59z.jpg",
+                  "filename": "agriculture_traceability/zclnlkhdnz5nasrgv59z",
+                  "_id": "65944a79dd7270c05d253edc"
+                },
+                {
+                    "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1702663623/agriculture_traceability/nj4ty65o37zg6ijlydp4.jpg",
+                    "filename": "agriculture_traceability/nj4ty65o37zg6ijlydp4",
+                    "_id": "657c95cad0f12a72a06c8994"
+                }
+              ]
+        ,
+        "notes": "Kiểm tra tránh các bệnh",
+        "createdAt": "2023-12-15T18:03:22.200Z",
+        "updatedAt": "2024-01-02T17:54:07.674Z",
+        "__v": 1
+      },{
+        "_id": "65786cb44b23c18fbb3rdd25",
+        "farm_product": {
+          "_id": "65786b8f4b23c18fbb3add01",
+          "name": "Dê A1"  },
+            "name":"Giai đoạn bú sữa đầu (từ sơ sinh đến 15 ngày tuổi)",
+            "description":"Dê con sau khi đẻ được lau khô mình, cắt rốn, cần đưa dê con vào nằm ở ổ lót rơm rạ cho ấm bên cạnh mẹ dê con sau khi đẻ 20-30 phút cho bú sữa đầu ngay, vì trong vòng 3-5 ngày đầu sữa dê mẹ có nhiều dinh dưỡng và kháng thể giúp dê con mau lớn tránh được các bệnh về tiêu hóa. Nếu dê con mới đẻ không bú được phải vắt sữa đầu cho dê con bú bằng bình 3-4 lần/ngày.",
+             
+            "images": [
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1710176779/agriculture_traceability/ad7hgvd3zmouq0wjm24l.jpg",
+                  "filename": "agriculture_traceability/lqvsstwjx49yxooyrbtg",
+                  "_id": "65944a79dd7270c05d253edb"
+                },
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1704217209/agriculture_traceability/zclnlkhdnz5nasrgv59z.jpg",
+                  "filename": "agriculture_traceability/zclnlkhdnz5nasrgv59z",
+                  "_id": "65944a79dd7270c05d253edc"
+                }
+              ],
+        "notes": "Trong 3-4 ngày đầu dê con còn yếu, phải hướng dẫn cho dê con bú đều cả hai vú của dê mẹ,",
+        
+        "createdAt": "2023-12-12T14:22:44.540Z",
+        "updatedAt": "2024-01-26T16:45:13.851Z",
+        "__v": 8
+      },
+      {
+        "_id": "65786cb44b23c18fbb3ydd25",
+        "farm_product": {
+          "_id": "65786b8f4b23c18fbb3add01",
+          "name": "Dê A1"  },
+            "name":"Giai đoạn sau 15 ngày - 45 ngày",
+            "description":"Tách dê con khỏi dê mẹ để vắt sữa dê mẹ, vắt 2 lần/ngày vào buổi sáng và buổi chiều với dê có sản lượng sữa trên 1 lít.Dê con được cho vào bú mẹ ngay sau khi vắt sữa để khai thác hết sữa của dê mẹ, dê con bú thêm 300-350 ml (2-3 lần/ngày), phải đảm bảo lượng sữa bú được trong ngày từ 400-600 ml/con.",
+           
+            "images": [
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1710176779/agriculture_traceability/ad7hgvd3zmouq0wjm24l.jpg",
+                  "filename": "agriculture_traceability/lqvsstwjx49yxooyrbtg",
+                  "_id": "65944a79dd7270c05d253edb"
+                },
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1704217209/agriculture_traceability/zclnlkhdnz5nasrgv59z.jpg",
+                  "filename": "agriculture_traceability/zclnlkhdnz5nasrgv59z",
+                  "_id": "65944a79dd7270c05d253edc"
+                }
+              ],
+        "notes": "Thường xuyên quét dọn chuồng trại khô sạch, cho dê vận động ngoài sân chơi hoặc bãi chăn thả gần chuồng",
+        
+        "createdAt": "2023-12-12T14:22:44.540Z",
+        "updatedAt": "2024-01-26T16:45:13.851Z",
+        "__v": 8
+      },
+      {
+        "_id": "65786cb44b23c1ifbb3ydd25",
+        "farm_product": {
+          "_id": "65786b8f4b23c18fbb3add01",
+          "name": "Dê A1"  },
+            "name":"Giai đoạn 45 ngày (tiêm thuốc phòng bệnh viêm ruột hoại tử)",
+            "description":" Tiêm giải độc tố phòng bệnh viêm ruột hoại tử cho dê.Liều tiêm: 2 ml/con, tiêm dưới da cổ, mỗi năm tiêm 2 lần vào tháng 3 và tháng 9.Sau 2 tuần có miễn dịch.",
+           
+            "images": [
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1710176779/agriculture_traceability/ad7hgvd3zmouq0wjm24l.jpg",
+                  "filename": "agriculture_traceability/lqvsstwjx49yxooyrbtg",
+                  "_id": "65944a79dd7270c05d253edb"
+                },
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1704217209/agriculture_traceability/zclnlkhdnz5nasrgv59z.jpg",
+                  "filename": "agriculture_traceability/zclnlkhdnz5nasrgv59z",
+                  "_id": "65944a79dd7270c05d253edc"
+                }
+              ],
+        "notes": "Quét dọn chuồng trại khô sạch, cho dê vận động ngoài sân chơi hoặc bãi chăn thả gần chuồng, tiến hành cai sữa",
+        
+        "createdAt": "2023-12-12T14:22:44.540Z",
+        "updatedAt": "2024-01-26T16:45:13.851Z",
+        "__v": 8
+      },
+      {
+        "_id": "65786d3b423c18fbb3aid34",
+        "farm_product": {
+          "_id": "65918c1dfbd6d68a5b01c17e",
+          "name": "Cừu A1"},
+            "name":"Chọn giống",
+            "description":"Con cái có đặc điểm đầu rộng hơi dài, mình nở, lưng thẳng, lông mượt. Con đực khỏe mạnh, đồng đều, không bị dị tật. Riêng cừu đực phải nhốt riêng, 8 - 9 tháng tuổi mới cho chúng phối giống",
+           
+            "images": [
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1710176779/agriculture_traceability/ad7hgvd3zmouq0wjm24l.jpg",
+                  "filename": "agriculture_traceability/lqvsstwjx49yxooyrbtg",
+                  "_id": "65944a79dd7270c05d253edb"
+                },
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1704217209/agriculture_traceability/zclnlkhdnz5nasrgv59z.jpg",
+                  "filename": "agriculture_traceability/zclnlkhdnz5nasrgv59z",
+                  "_id": "65944a79dd7270c05d253edc"
+                }
+    ]
+        ,
+        "notes": "note ne",
+        "createdAt": "2023-12-12T14:24:59.635Z",
+        "updatedAt": "2024-01-03T10:48:16.503Z",
+        "__v": 1
+      },
+      
+      {
+        "_id": "65786d3b423c18faid34",
+        "farm_product": {
+          "_id": "65918c1dfbd6d68a5b01c17e",
+          "name": "Cừu A1"},
+            "name":" 10 ngày đầu",
+            "description":"cho cừu con bú mẹ tự do; 11 - 20 ngày tuổi, cừu con bú mẹ 3 lần/ngày, đồng thời tập cho cừu con ăn thức ăn tinh, rau cỏ xanh; 80 - 90 ngày tuổi, cho cừu con cai sữa.",
+            "amount":7,
+            "images": [
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1710176779/agriculture_traceability/ad7hgvd3zmouq0wjm24l.jpg",
+                  "filename": "agriculture_traceability/lqvsstwjx49yxooyrbtg",
+                  "_id": "65944a79dd7270c05d253edb"
+                },
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1704217209/agriculture_traceability/zclnlkhdnz5nasrgv59z.jpg",
+                  "filename": "agriculture_traceability/zclnlkhdnz5nasrgv59z",
+                  "_id": "65944a79dd7270c05d253edc"
+                }
+    ]
+        ,
+        "notes": "Trước khi xuất chuồng 2 tháng cho ăn khẩu phần tăng cường để tăng trọng lượng lúc bán.",
+        "createdAt": "2023-12-12T14:24:59.635Z",
+        "updatedAt": "2024-01-03T10:48:16.503Z",
+        "__v": 1
+      },
+        
+      {
+        "_id": "65786d3b423c18faid34",
+        "farm_product": {
+          "_id": "65918c1dfbd6d68a5b01c17e",
+          "name": "Cừu A1"},
+            "name":"20 ngày-phòng bệnh",
+            "description":" Thực hiện tiêm phòng đầy đủ cho cừu như lở mồm long móng 2 lần/năm; Tụ huyết trùng 2 lần/năm và một số bệnh khác Chuồng nuôi bảo đảm vệ sinh, quét dọn phân hàng ngày. Sát trùng định kỳ 1 lần/tháng bằng vôi hoặc Dipterex.Tuyệt đố",
+            "amount":2,
+            "images": [
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1710176779/agriculture_traceability/ad7hgvd3zmouq0wjm24l.jpg",
+                  "filename": "agriculture_traceability/lqvsstwjx49yxooyrbtg",
+                  "_id": "65944a79dd7270c05d253edb"
+                },
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1704217209/agriculture_traceability/zclnlkhdnz5nasrgv59z.jpg",
+                  "filename": "agriculture_traceability/zclnlkhdnz5nasrgv59z",
+                  "_id": "65944a79dd7270c05d253edc"
+                }
+    ]
+        ,
+        "notes": "Định kỳ tẩy giun sán 1 năm 3 lần./.",
+        "createdAt": "2023-12-12T14:24:59.635Z",
+        "updatedAt": "2024-01-03T10:48:16.503Z",
+        "__v": 1
+      },
+      {
+        "_id": "657c94ead0f12a72a06c898",
+        "farm_product": {
+          "_id": "657c93b1d0f12a72a06c8981",
+          "name": "Cừu A2"},
+            "name":"Từ 20-24 ngày - phòng bệnh",
+            "description":"Từ 11-21 ngày tuổi, cừu con bú mẹ 3 lần trong ngày (sáng, trưa, chiều), nên tập cho cừu con ăn thêm thức ăn tinh và cỏ non, đến 80-90 ngày tuổi có thể cai sữa cừu con.",
+            "amount":6,
+            "images": [
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1710176779/agriculture_traceability/ad7hgvd3zmouq0wjm24l.jpg",
+                  "filename": "agriculture_traceability/lqvsstwjx49yxooyrbtg",
+                  "_id": "65944a79dd7270c05d253edb"
+                },
+                {
+                  "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1704217209/agriculture_traceability/zclnlkhdnz5nasrgv59z.jpg",
+                  "filename": "agriculture_traceability/zclnlkhdnz5nasrgv59z",
+                  "_id": "65944a79dd7270c05d253edc"
+                },
+                {
+                    "path": "https://res.cloudinary.com/dzo0r5bea/image/upload/v1702663623/agriculture_traceability/nj4ty65o37zg6ijlydp4.jpg",
+                    "filename": "agriculture_traceability/nj4ty65o37zg6ijlydp4",
+                    "_id": "657c95cad0f12a72a06c8994"
+                }
+              ]
+        ,
+        "notes": "Trong quá trình cấy giống cần lưu ý một điểm đó là chai cấy giống cần để ngang (tránh gió, tránh vi khuẩn), hoặc hơn hết thì hãy dùng tủ cấy chuyên dụng để hạn chế các mầm bệnh từ không khí, hơi thở của con người.",
+        "createdAt": "2023-12-15T18:03:22.200Z",
+        "updatedAt": "2024-01-02T17:54:07.674Z",
+        "__v": 1
+      }
+    ]
+}
