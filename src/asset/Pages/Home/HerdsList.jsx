@@ -10,6 +10,7 @@ import axios from "axios";
 import { Dropdown } from "primereact/dropdown";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
+import Search from "./Search.jsx";
 import "./HerdsList.css";
 const emptyProduct = {
   _id: null,
@@ -153,7 +154,8 @@ export default function SizeDemo() {
     <React.Fragment>
       <Button
         label="Thoát"
-        severity="secondary" outlined
+        severity="secondary"
+        outlined
         onClick={hideDeleteProductsDialog}
         className="button_Dia"
       />
@@ -170,7 +172,8 @@ export default function SizeDemo() {
       <Button
         className="button_Dia"
         label="Thoát"
-        severity="secondary" outlined
+        severity="secondary"
+        outlined
         onClick={hideDeleteProductDialog}
       />
       <Button
@@ -204,7 +207,7 @@ export default function SizeDemo() {
       console.log("Error:", error);
     }
   };
-  
+
   const [globalFilter, setGlobalFilter] = useState(null);
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
@@ -220,8 +223,11 @@ export default function SizeDemo() {
     </div>
   );
   return (
-    <div><Toast className="toast" ref={toast} />
+    <div>
+      <Toast className="toast" ref={toast} />
       <div className="card">
+        <p>nnnnnnnnnnnnnn</p>
+        <Search />
         <Toolbar
           className="mb-4"
           left={leftToolbarTemplate}
@@ -244,12 +250,14 @@ export default function SizeDemo() {
           <Column
             field="name"
             header="Tên đàn"
+            sortable
             value={product.name}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
             field="member_count"
             header="Số lượng"
+            sortable
             value={product.member_count}
             style={{ minWidth: "10rem" }}
           ></Column>
@@ -272,7 +280,6 @@ export default function SizeDemo() {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
-
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}
@@ -403,7 +410,8 @@ export default function SizeDemo() {
             <Button
               className="button_Dia"
               label="Hủy"
-              severity="secondary" outlined
+              severity="secondary"
+              outlined
               onClick={() => setProductDialog(false)}
             />
           </div>

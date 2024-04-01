@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext,useRef } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import "../Category/Category.css";
 import { Button } from "primereact/button";
@@ -6,10 +6,11 @@ import axios from "axios";
 import { Galleria } from "primereact/galleria";
 import { useForm } from "react-hook-form";
 import { Dialog } from "primereact/dialog";
-import { useNavigate } from "react-router-dom";
 import { HerdsContext } from "../../service/Herd_data.js";
 import { Dropdown } from "primereact/dropdown";
+import { InputTextarea } from "primereact/inputtextarea";
 import RecordsList from "./RecordsList.jsx";
+import { InputText } from "primereact/inputtext";
 const initFormValue = {
   _id: null,
   name: "",
@@ -30,7 +31,7 @@ const initFormValue = {
 export default function User() {
   const toast = useRef(null);
   const [user, setuser] = useState([]);
-  const [formValue, setFormValue] = useState(initFormValue);
+  const [formValue, setFormValue] = useState(user || initFormValue);
   const location = useLocation();
   const [categories, setcategories] = useState([]);
   const [farm, setfarm] = useState([]);
@@ -38,7 +39,7 @@ export default function User() {
   const [selectedfarm, setSelectedfarm] = useState(initFormValue.farm);
   const userId = location.pathname.split("/")[2];
   const { handleGetCategory, handleGetFarm } = useContext(HerdsContext);
-  const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
   useEffect(() => {
     const getCategory = async () => {
       try {
@@ -70,9 +71,12 @@ export default function User() {
       [name]: value,
     });
   };
-  const handleSubmitUpdate = async (event) => {
-    event.preventDefault();
-    try { await axios.patch(`/herds/${userId}`, {
+  const handleSubmitUpdate = async () => {
+    if (!validate()) {
+      return;
+    }
+    try {
+      await axios.patch(`/herds/${userId}`, {
         name: formValue.name,
         description: formValue.description,
         member_count: formValue.member_count,
@@ -82,13 +86,61 @@ export default function User() {
         categoryId: selectedRole._id._id,
         farmId: selectedfarm._id._id,
       });
-      toast.current.show({severity: "success", summary: "Sửa hoàn thành",life: 3000, });
+      toast.current.show({
+        severity: "success",
+        summary: "Sửa hoàn thành",
+        life: 3000,
+      });
+      console.log("pppppppppppppp");
+      setuser({
+        ...user,
+        name: formValue.name,
+        description: formValue.description,
+        member_count: formValue.member_count,
+      });
     } catch (error) {
-      console.log(error);
+      console.log("Error update:", error);
     }
   };
+  const validate = () => {
+    let isValid = true;
+    const newErrors = {};
+
+    // Kiểm tra lỗi cho trường description
+    if (!user.description.trim()) {
+      newErrors.description = "Description is required.";
+      isValid = false;
+    } else if (user.description.trim().length < 20) {
+      newErrors.description =
+        "Description must be at least 20 characters long.";
+      isValid = false;
+    }
+
+    // Kiểm tra lỗi cho trường name
+    if (!user.name.trim()) {
+      newErrors.name = "Name is required.";
+      isValid = false;
+    } else if (user.name.trim().length < 20) {
+      newErrors.name = "Name must be at least 20 characters long.";
+      isValid = false;
+    }
+
+    // Kiểm tra lỗi cho trường location
+    if (!user.location.trim()) {
+      newErrors.location = "Location is required.";
+      isValid = false;
+    } else if (user.location.trim().length < 20) {
+      newErrors.location = "Location must be at least 20 characters long.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const { register, handleSubmit } = useForm();
   const upLoadImage = async (data) => {
+    console.log("Chỉnh sửa thành công!");
     const formData = new FormData();
     for (const file of data.file) {
       formData.append("images", file);
@@ -120,7 +172,7 @@ export default function User() {
       style={{ width: "100%", overflow: "hidden", maxHeight: "400px" }}
     />
   );
-  const [qrCodeDialogVisible, setQrCodeDialogVisible] = useState(false);
+  // const [qrCodeDialogVisible, setQrCodeDialogVisible] = useState(false);
 
   return (
     <div className="user">
@@ -132,59 +184,62 @@ export default function User() {
               <div className="userUpdateLeft">
                 <div className="userUpdateItem">
                   <label>Tên</label>
-                  <input
+                  <InputText
                     type="text"
                     name="name"
-                    placeholder={user.name}
-                    className="userUpdateInput"
-                    value={formValue.name}
+                    autoResize
+                    value={user.name}
                     onChange={handleChange}
                   />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Số lượng</label>
-                  <input
-                    type="text"
-                    name="member_count"
-                    placeholder={user.member_count}
-                    className="userUpdateInput"
-                    value={formValue.member_count}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Mô tả</label>
-                  <input
-                    type="text"
-                    name="description"
-                    placeholder={user.description}
-                    className="userUpdateInput"
-                    value={formValue.description}
-                    onChange={handleChange}
-                  />
+                  {errors.name && (
+                    <small className="p-error">{errors.name}</small>
+                  )}
                 </div>
 
                 <div className="userUpdateItem">
-                  <label>Quantity</label>
-                  <input
+                  <label>Mô tả</label>
+                  <InputTextarea
                     type="text"
+                    name="description"
+                    value={user.description}
+                    autoResize
+                    onChange={handleChange}
+                  />
+                  {errors.description && (
+                    <small className="p-error">{errors.description}</small>
+                  )}
+                </div>
+                <div className="userUpdateItem">
+                  <label>Số lượng</label>
+                  <InputText
+                    type="number"
+                    name="member_count"
+                    value={user.member_count}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="userUpdateItem">
+                  <label>Quantity</label>
+                  <InputText
+                    type="number"
                     name="quantity"
-                    placeholder={user.quantity}
-                    className="userUpdateInput"
-                    value={formValue.quantity}
+                    value={user.quantity}
+                    autoResize
                     onChange={handleChange}
                   />
                 </div>
                 <div className="userUpdateItem">
                   <label>Vị trí</label>
-                  <input
+                  <InputTextarea
                     type="text"
                     name="location"
-                    placeholder={user.location}
-                    className="userUpdateInput"
-                    value={formValue.location}
+                    value={user.location}
+                    autoResize
                     onChange={handleChange}
                   />
+                  {errors.location && (
+                    <small className="p-error">{errors.location}</small>
+                  )}
                 </div>
                 <div className="userUpdateItem">
                   <label>Nhóm</label>
@@ -218,36 +273,34 @@ export default function User() {
                 </div>
                 <div className="userUpdateItem">
                   <label>Start day</label>
-                  <input
+                  <InputText
                     type="text"
                     name="start_date"
-                    placeholder={user.start_date}
-                    className="userUpdateInput"
-                    value={formValue.start_date}
+                    defaultValue={user.start_date}
                     onChange={handleChange}
                   />
                 </div>
 
                 <div className="userUpdateItem">
                   <label>Hình ảnh</label>
-                  
-                    <Galleria
-                      className="image1"
-                      value={user.images}
-                      numVisible={5}
-                      style={{ maxWidth: "600px" }}
-                      item={thumbnail}
-                      thumbnail={thumbnailTemplate}
-                    />
-                    <div className="card updateimage">
-                      <form
-                        encType="multipart/formdata"
-                        onSubmit={handleSubmit(upLoadImage)}
-                      >
-                        <input type="file" multiple {...register("file")} />
-                        <input type="submit" />
-                      </form>
-                    </div>
+
+                  <Galleria
+                    className="image1"
+                    value={user.images}
+                    numVisible={5}
+                    style={{ maxWidth: "600px" }}
+                    item={thumbnail}
+                    thumbnail={thumbnailTemplate}
+                  />
+                  <div className="card updateimage">
+                    <form
+                      encType="multipart/formdata"
+                      onSubmit={handleSubmit(upLoadImage)}
+                    >
+                      <input type="file" multiple {...register("file")} />
+                      <input type="submit" />
+                    </form>
+                  </div>
                 </div>
 
                 <Button
@@ -257,17 +310,17 @@ export default function User() {
                   severity="success"
                   raised
                 />
-                <Button
+                {/* <Button
                   severity="success"
                   label="QR Code"
                   onClick={() => setQrCodeDialogVisible(true)}
-                />
+                /> */}
               </div>
             </form>
           </div>
         </>
       )}
-      <Dialog
+      {/* <Dialog
         visible={qrCodeDialogVisible}
         onHide={() => setQrCodeDialogVisible(false)}
       >
@@ -279,8 +332,8 @@ export default function User() {
             alt="Product QR Code"
           />
         </div>
-      </Dialog>
-      <RecordsList/>
+      </Dialog> */}
+      <RecordsList />
     </div>
   );
 }

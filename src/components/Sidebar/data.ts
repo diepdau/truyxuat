@@ -1,7 +1,7 @@
 export const menu = [
       {
         id: 1,
-        label: '...',
+        label: 'Danh sách đàn',
         icon: 'fa fa-info-circle',
         url: '/danh-sach-dan', 
       },
@@ -11,17 +11,11 @@ export const menu = [
         icon: 'fa fa-globe',
         url: '/trang-trai',
       },
-      {
-        id: 3,
-        label: 'Nhật kí chăm sóc',
-        icon: 'fa fa-map-marker',
-        url: '/nhat-ki-cham-soc',
-      },
       // {
-      //   id: 1,
-      //   label: 'Giám sát',
-      //   icon: 'fa fa-eye',
-      //   url: '/giam-sat',
+      //   id: 3,
+      //   label: 'Nhật kí chăm sóc',
+      //   icon: 'fa fa-map-marker',
+      //   url: '/nhat-ki-cham-soc',
       // },
       {
         id: 4,
@@ -34,19 +28,6 @@ export const menu = [
         label: 'Thuốc thú y',
         icon: 'fa fa-medkit',
         url: '/thuoc-thu-y',
-      },
-      {
-        id: 6,
-        label: 'test',
-        icon: '',
-        url: '/test',
-      },
-      {
-        id: 7,
-        label: 'categories',
-        icon: '',
-        url: '/categories',
-      },
-    
+      }, 
     
 ]

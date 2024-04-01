@@ -14,17 +14,15 @@ import FarmingAreas from "./asset/Pages/FarmingAreas/FarmingAreas.jsx";
 import Medicine from "./asset/Pages/Medicine/Medicine.jsx";
 import "./index.css";
 import Navbar from "./components/Navbar/Navbar.jsx";
-import CultivationLogs from "./asset/Pages/CultivationLogs/CultivationLogs.jsx";
+import CultivationLogs from "./asset/Pages/CultivationLogs/CultivationLogs_Herd.jsx";
 import User from "./asset/Pages/User/User.jsx";
 import UserList from "./asset/Pages/UserList/UserList.jsx";
-import Activities from "./asset/Pages/Activites/Activities.jsx";
 import Test from "./asset/Pages/CultivationLogs/test.jsx";
 import Categories from "./asset/Pages/Categories/Categories.jsx";
 import Category from "./asset/Pages/Category/Category.jsx";
 import { AuthContext } from "./asset/service/user_service.js";
 import Herd from "./asset/Pages/Home/Herd.jsx";
 import Main from "./components/Sidebar/Main.jsx";
-import Animals from "./asset/Pages/Animals/Animals.jsx";
 const Layout = () => {
   const { currentUser } = useContext(AuthContext);
   return (
@@ -78,10 +76,6 @@ const router = createBrowserRouter([
         element: <UserList />,
       },
       {
-        path: "/activities",
-        element: <Activities />,
-      },
-      {
         path: "/test",
         element: <Test />,
       },
@@ -96,10 +90,6 @@ const router = createBrowserRouter([
       {
         path: "/herds/:id",
         element: <Herd />,
-      },
-      {
-        path: "/animals",
-        element: <Animals />,
       },
     ],
   },

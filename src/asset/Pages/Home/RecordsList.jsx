@@ -8,19 +8,21 @@ import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import { Dropdown } from "primereact/dropdown";
-import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import { useLocation } from "react-router-dom";
 import { Galleria } from "primereact/galleria";
+import CultivationLogs_Herd from "../CultivationLogs/CultivationLogs_Herd.jsx";
 import "./HerdsList.css";
+import { Calendar } from "primereact/calendar";
+
 const emptyProduct = {
   _id: null,
   name: "",
   birth_weight: "",
-  birth_date: "",
+  birth_date: new Date().toISOString().slice(0, 10),
   is_harvested: "",
   quantity: 0,
-  herdId: "",
+  herd: "",
 };
 export default function SizeDemo() {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -33,6 +35,8 @@ export default function SizeDemo() {
   const toast = useRef(null);
   const location = useLocation();
   const herdId = location.pathname.split("/")[2];
+
+  //Lấy danh sách con trong 1 đàn
   useEffect(() => {
     getHerd();
   }, []);
@@ -54,20 +58,25 @@ export default function SizeDemo() {
   };
   const handleChange = (event) => {
     const { value, name } = event.target;
+    if (name === "birth_weight" && parseFloat(value) < 0) {
+      return;
+    }
     setProduct({
       ...product,
       [name]: value,
     });
   };
+  //Hàm tạo đàn bằng tay
   const handleCreateUser = async (event) => {
     event.preventDefault();
     try {
-      const a = await axios.post("/animals", {
+      const dateString = product.birth_date;
+      await axios.post("/animals", {
         name: product.name,
-        birth_date: product.birth_date,
+        birth_date: dateString,
         birth_weight: product.birth_weight,
         is_harvested: selectedIsHarvested.name,
-        herdId: herdId,
+        herd: herdId,
       });
       setProductDialog(false);
       toast.current.show({
@@ -75,12 +84,12 @@ export default function SizeDemo() {
         summary: "Tạo đàn",
         life: 3000,
       });
-      console.log(a);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
     }
   };
+  //Hàm tạo con trong đàn tự động
   const handleCreateNewAuto = async () => {
     try {
       await axios.post(`/herds/${herdId}/generate-animals`, {
@@ -101,6 +110,7 @@ export default function SizeDemo() {
     // eslint-disable-next-line no-undef
     getHerd();
   };
+  //Button xóa, thêm tự động
   const leftToolbarTemplate = () => {
     return (
       <div className="flex flex-wrap gap-2">
@@ -111,11 +121,6 @@ export default function SizeDemo() {
           severity="danger"
           onClick={confirmDeleteSelected}
           disabled={!selectedProducts || !selectedProducts.length}
-        />
-        <Button
-          label="Xem chi tiết"
-          severity="success"
-          onClick={onRowDoubleClick}
         />
       </div>
     );
@@ -131,16 +136,17 @@ export default function SizeDemo() {
     setDeleteProductDialog(false);
     setDeleteProductsDialog(false);
   };
+  // Xử lý và thông báo xóa
   const deleteSelectedProducts = () => {
     for (const selectedProduct of selectedProducts) {
       handleDeleteUser(selectedProduct);
-      setDeleteProductsDialog(false);
-      toast.current.show({
-        severity: "success",
-        summary: "Đã xóa",
-        life: 3000,
-      });
     }
+    toast.current.show({
+      severity: "success",
+      summary: "Đã xóa 1 số đàn",
+      life: 3000,
+    });
+    setDeleteProductsDialog(false);
   };
   const deleteProduct = () => {
     let _products = products.filter((val) => val._id === product._id);
@@ -152,12 +158,6 @@ export default function SizeDemo() {
       summary: "Đã xóa",
       life: 3000,
     });
-  };
-  const navigate = useNavigate();
-  const onRowDoubleClick = () => {
-    for (const selectedProduct of selectedProducts) {
-      navigate(`/herds/${selectedProduct._id}`);
-    }
   };
 
   const deleteProductDialogFooter = (
@@ -198,6 +198,7 @@ export default function SizeDemo() {
     setProduct(product);
     setDeleteProductDialog(true);
   };
+  //Xử lý xóa hàng trong bảng
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
@@ -218,30 +219,9 @@ export default function SizeDemo() {
       console.log("Error:", error);
     }
   };
-  //Xóa hết record
-  // const handleDeleteAllRecord = async () => {
-  //   try {
-  //     await axios.delete(`/animals/herd/${herdId}`);
-  //     reloadData();
-  //   } catch (error) {
-  //     console.log("Error:", error);
-  //   }
-  // };
-  const onInputChange = (e, name) => {
-    const val = (e.target && e.target.value) || "";
-    let _product = { ...product };
 
-    if (name === "name") {
-      _product.name = val;
-    } else if (name === "birth_date") {
-      _product.birth_date = val;
-    } else if (name === "brith_weight") {
-      _product.brith_weight = val;
-    }
+  //Xử lý thu hoạch chưa
 
-    setProduct(_product);
-  };
-  
   const Is_harvested = [{ name: "true" }, { name: "false" }];
   const [selectedIsHarvested, setSelectedIsHarvested] = useState(emptyProduct);
   const IsHarvested = () => {
@@ -256,23 +236,56 @@ export default function SizeDemo() {
       />
     );
   };
-  const onRowEditComplete = async () => {
-    console.log(product);
+  const Birth_weight = (options) => {
+    return (
+      <InputText
+        type="number"
+        value={options.value}
+        onChange={(e) => options.editorCallback(e.target.value)}
+      />
+    );
+  };
+  const Name = (options) => {
+    return (
+      <InputText
+        type="text"
+        value={options.value}
+        onChange={(e) => options.editorCallback(e.target.value)}
+      />
+    );
+  };
+  const Birth_date = (options) => {
+    return (
+      <Calendar
+        type="text"
+        value={options.value}
+        onChange={(e) => options.editorCallback(e.target.value)}
+      />
+    );
+  };
+  const onRowEditComplete = async (e) => {
+    let _products = [...products];
+    let { newData, index } = e;
+    _products[index] = newData;
     for (const selectedProduct of selectedProducts) {
-      var Id = selectedProduct._id;var herd=selectedProduct.herd
+      var Id = selectedProduct._id;
     }
     try {
-      const response = await axios.patch(`/animals/${Id}`, {
-        name: product.name,
-        birth_date: product.birth_date,
-        birth_weight: product.birth_weight,
-        herdId: herd,
+      await axios.patch(`/animals/${Id}`, {
+        name: newData.name,
+        birth_date: newData.birth_date,
+        birth_weight: newData.birth_weight,
+        herd: herdId,
         is_harvested: selectedIsHarvested.name,
       });
-      alert("sửa thành công");
-      console.log(response);
+      reloadData();
+      toast.current.show({
+        severity: "success",
+        summary: "Đã chỉnh sửa",
+        life: 3000,
+      });
     } catch (error) {
-      console.log("Error update role:", error);
+      console.log("Error update:", error);
     }
   };
   //Upload hình
@@ -348,6 +361,7 @@ export default function SizeDemo() {
   const allowExpansion = (rowData) => {
     return rowData;
   };
+
   const [globalFilter, setGlobalFilter] = useState(null);
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
@@ -373,6 +387,7 @@ export default function SizeDemo() {
         ></Toolbar>
         <DataTable
           value={products}
+          editMode="row"
           selectionMode={"row"}
           onRowEditComplete={onRowEditComplete}
           expandedRows={expandedRows}
@@ -380,7 +395,6 @@ export default function SizeDemo() {
           rowExpansionTemplate={rowExpansionTemplate}
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
-          editMode="row"
           dataKey="_id"
           paginator
           rows={8}
@@ -395,7 +409,7 @@ export default function SizeDemo() {
             field="name"
             header="Tên"
             value={product.name}
-            // editor={(options) => textEditor(options)}
+            editor={(options) => Name(options)}
             style={{ minWidth: "10rem" }}
           ></Column>
 
@@ -403,20 +417,20 @@ export default function SizeDemo() {
             field="birth_date"
             header="Ngày sinh"
             value={product.birth_date}
-            handleChange={(e) =>  onInputChange(e, "birth_date")}
+            editor={(options) => Birth_date(options)}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
             field="birth_weight"
             header="Cân nặng"
             value={product.birth_weight}
-            // editor={(options) => textEditor(options)}
+            editor={(options) => Birth_weight(options)}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
             field="is_harvested"
             header="Thu hoạch"
-            // editor={(options) => IsHarvested(options)}
+            editor={(options) => IsHarvested(options)}
             value={product.is_harvested}
             style={{ minWidth: "10rem" }}
           ></Column>
@@ -431,7 +445,7 @@ export default function SizeDemo() {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
-
+        <CultivationLogs_Herd idherd={herdId} />
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}
@@ -471,6 +485,8 @@ export default function SizeDemo() {
           </div>
         </Dialog>
 
+        {/* Them va them tu dong */}
+
         <Dialog
           style={{ width: "50%" }}
           visible={productDialog}
@@ -482,7 +498,7 @@ export default function SizeDemo() {
               <div className="userUpdateLeft">
                 <div className="userUpdateItem">
                   <label>Tên</label>
-                  <input
+                  <InputText
                     type="text"
                     name="name"
                     value={product.name}
@@ -492,18 +508,25 @@ export default function SizeDemo() {
                 </div>
                 <div className="userUpdateItem">
                   <label>Ngày sinh</label>
-                  <input
+                  <Calendar
+                    inputId="cal_date"
+                    name="date"
+                    style={{ width: "100%" }}
+                    value={product.birth_date}
+                    onChange={handleChange}
+                  />
+                  {/* <input
                     type="text"
                     name="birth_date"
                     value={product.birth_date}
                     onChange={handleChange}
                     className="userUpdateInput"
-                  />
+                  /> */}
                 </div>
                 <div className="userUpdateItem">
                   <label>Cân nặng</label>
-                  <input
-                    type="birth_weight"
+                  <InputText
+                    type="number"
                     name="birth_weight"
                     value={product.birth_weight}
                     onChange={handleChange}
