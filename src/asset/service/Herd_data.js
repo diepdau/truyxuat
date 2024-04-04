@@ -5,9 +5,9 @@ export const HerdsContext = createContext();
 
 export const HerdsContextProvider = ({ children }) => {
 
-const handleGet = async () => {
+const handleGet = async (name, limit, page,search) => {
     try {
-      const response = await axios.get("/herds");
+      const response = await axios.get(`/herds?sort=${name},-start_date&limit=${limit}&page=${page}&searchQuery=${search}`);
       return response.data.herds;
     } catch (error) {
       console.log("Error: ", error);

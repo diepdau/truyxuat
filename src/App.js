@@ -90,7 +90,7 @@ const router = createBrowserRouter([
       {
         path: "/herds/:id",
         element: <Herd />,
-      },
+      }, 
     ],
   },
   

@@ -41,24 +41,25 @@ export default function SizeDemo() {
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
+  const [search, setSearch] = useState("");
   useEffect(() => {
-    const fetchData = async () => {
-      const userList = await handleGet();
-      setProducts(userList);
-    };
-    const fetchDataCategory = async () => {
-      const categoryList = await handleGetCategory();
-      setcategories(categoryList);
-    };
-    const fetchDataFarm = async () => {
-      const farmList = await handleGetFarm();
-      setfarm(farmList);
-    };
     fetchDataFarm();
     fetchDataCategory();
     fetchData();
-  }, [handleGet, handleGetCategory, handleGetFarm, products]);
-
+  }, [search]);
+  const fetchData = async () => {
+    const userList = await handleGet(product.name,"","","");
+    console.log(userList);
+    setProducts(userList);
+  };
+  const fetchDataCategory = async () => {
+    const categoryList = await handleGetCategory();
+    setcategories(categoryList);
+  };
+  const fetchDataFarm = async () => {
+    const farmList = await handleGetFarm();
+    setfarm(farmList);
+  };
   const openNew = () => {
     setProductDialog(true);
   };
@@ -72,7 +73,7 @@ export default function SizeDemo() {
   const handleCreateUser = async (event) => {
     event.preventDefault();
     try {
-      await axios.post("/herds", {
+      const a = await axios.post("/herds", {
         name: product.name,
         start_date: product.start_date,
         categoryId: selectedRole._id._id,
@@ -87,6 +88,7 @@ export default function SizeDemo() {
         detail: "Tạo đàn",
         life: 3000,
       });
+      console.log(a);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -216,7 +218,15 @@ export default function SizeDemo() {
         <i className="pi pi-search" />
         <InputText
           type="search"
-          onInput={(e) => setGlobalFilter(e.target.value)}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search..."
+        />
+
+<InputText
+          type="name"
+          value={product.name}
+          onChange={(e) => handleChange(e.target.value)}
           placeholder="Search..."
         />
       </span>
@@ -226,8 +236,7 @@ export default function SizeDemo() {
     <div>
       <Toast className="toast" ref={toast} />
       <div className="card">
-        <p>nnnnnnnnnnnnnn</p>
-        <Search />
+        {/* <Search /> */}
         <Toolbar
           className="mb-4"
           left={leftToolbarTemplate}
