@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
@@ -6,11 +6,8 @@ import axios from "axios";
 import { Toast } from "primereact/toast";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
-
 const emptyProduct = {
-  name: "",
-  description: "",
-  quantity: "",
+
   unit: "",
   date: null,
 };
@@ -19,7 +16,6 @@ function YourComponent({ data }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
-
   const handleChange = (event) => {
     const { value, name } = event.target;
     setProduct({
@@ -85,7 +81,7 @@ function YourComponent({ data }) {
   };
 
   return (
-    <div>
+    <div className="card">
       <Toast className="toast" ref={toast} />
       <h4>Tên</h4>
       <InputText name="name" value={product.name} onChange={handleChange} />
@@ -101,7 +97,6 @@ function YourComponent({ data }) {
       {errors.description && (
         <small className="p-error">{errors.description}</small>
       )}
-
       <h4>Số lượng</h4>
       <InputText
         type="number"

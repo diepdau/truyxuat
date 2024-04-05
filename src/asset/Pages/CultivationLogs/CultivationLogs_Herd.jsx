@@ -163,6 +163,7 @@ export default function CulivationLogs_Herd({ idherd }) {
     for (const file of data.file) {
       formData.append("images", file);
     }
+    console.log(formData);
     try {
       await axios.patch(`/cultivation-logs/upload/${product._id}`, formData);
       reloadData();

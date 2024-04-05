@@ -10,15 +10,14 @@ import axios from "axios";
 import { Dropdown } from "primereact/dropdown";
 import { Toast } from "primereact/toast";
 import { Galleria } from "primereact/galleria";
-import { useNavigate } from "react-router-dom";
 import "./HerdsList.css";
 import { Calendar } from "primereact/calendar";
-import Harvest_Update from "../Harvest/Harvest_Update.jsx";
 const emptyProduct = {
   _id: null,
   name: "",
   birth_weight: "",
-  birth_date: new Date().toISOString().slice(0, 10),
+  // birth_date: new Date().toISOString().slice(0, 10),
+  birth_date: new Date(),
   is_harvested: "",
   quantity: 0,
   herd: "",
@@ -117,22 +116,11 @@ export default function SizeDemo({ herdId }) {
           onClick={confirmDeleteSelected}
           disabled={!selectedProducts || !selectedProducts.length}
         />
-        <Button
-          label="Thu hoạch"
-          severity="success"
-          onClick={Harvest_Details}
-        />
+       
       </div>
     );
   };
-  const navigate = useNavigate();
-  const Harvest_Details = () => {
-    for (const selectedProduct of selectedProducts) {
-      // navigate(`/harvests/${selectedProduct._id}/${selectedProduct.name}`);
-      setProducts(selectedProduct);
-      console.log(selectedProduct);
-    }
-  };
+
   const confirmDeleteSelected = () => {
     setDeleteProductsDialog(true);
   };
@@ -606,7 +594,7 @@ export default function SizeDemo({ herdId }) {
           />
         </Dialog>
       </div>
-      <Harvest_Update/>
+      
     </div>
   );
 }

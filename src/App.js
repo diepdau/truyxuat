@@ -21,14 +21,14 @@ import Test from "./asset/Pages/CultivationLogs/test.jsx";
 import Categories from "./asset/Pages/Categories/Categories.jsx";
 import Category from "./asset/Pages/Category/Category.jsx";
 import Harvest from "./asset/Pages/Harvest/Harvest.jsx"
-import Harvest_Create from "./asset/Pages/Harvest/Harvest_Create.jsx"
+import Harvest_Update from "./asset/Pages/Harvest/Harvest_Update.jsx"
 import { AuthContext } from "./asset/service/user_service.js";
 import Herds_Details_List from "./asset/Pages/Home/Herds_Details_List.jsx";
+import Image from "./components/Images/Image.jsx";
 import Main from "./components/Sidebar/Main.jsx";
 const Layout = () => {
   const { currentUser } = useContext(AuthContext);
   return (
-   
     <>
      {currentUser && (
       <>
@@ -98,9 +98,12 @@ const router = createBrowserRouter([
         element: <Harvest />,
       }, 
       {
-        path: "/harvests/:d/name",
-        element: <Harvest_Create />,
-      }, 
+        path: "/harvests/:id",
+        element: <Harvest_Update />,
+      }, {
+        path: "/image",
+        element: <Image />,
+      },
     ],
   },
   

@@ -89,7 +89,6 @@ export default function User({idherd}) {
         summary: "Sửa hoàn thành",
         life: 3000,
       });
-      console.log("pppppppppppppp");
       setuser({
         ...user,
         name: formValue.name,
