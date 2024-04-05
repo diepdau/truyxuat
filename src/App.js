@@ -20,8 +20,10 @@ import UserList from "./asset/Pages/UserList/UserList.jsx";
 import Test from "./asset/Pages/CultivationLogs/test.jsx";
 import Categories from "./asset/Pages/Categories/Categories.jsx";
 import Category from "./asset/Pages/Category/Category.jsx";
+import Harvest from "./asset/Pages/Harvest/Harvest.jsx"
+import Harvest_Create from "./asset/Pages/Harvest/Harvest_Create.jsx"
 import { AuthContext } from "./asset/service/user_service.js";
-import Herd from "./asset/Pages/Home/Herd.jsx";
+import Herds_Details_List from "./asset/Pages/Home/Herds_Details_List.jsx";
 import Main from "./components/Sidebar/Main.jsx";
 const Layout = () => {
   const { currentUser } = useContext(AuthContext);
@@ -89,7 +91,15 @@ const router = createBrowserRouter([
       },
       {
         path: "/herds/:id",
-        element: <Herd />,
+        element: <Herds_Details_List />,
+      }, 
+      {
+        path: "/thu-hoach",
+        element: <Harvest />,
+      }, 
+      {
+        path: "/harvests/:d/name",
+        element: <Harvest_Create />,
       }, 
     ],
   },

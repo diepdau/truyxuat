@@ -9,12 +9,11 @@ import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import { Dropdown } from "primereact/dropdown";
 import { Toast } from "primereact/toast";
-import { useLocation } from "react-router-dom";
 import { Galleria } from "primereact/galleria";
-import CultivationLogs_Herd from "../CultivationLogs/CultivationLogs_Herd.jsx";
+import { useNavigate } from "react-router-dom";
 import "./HerdsList.css";
 import { Calendar } from "primereact/calendar";
-
+import Harvest_Update from "../Harvest/Harvest_Update.jsx";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -24,7 +23,7 @@ const emptyProduct = {
   quantity: 0,
   herd: "",
 };
-export default function SizeDemo() {
+export default function SizeDemo({ herdId }) {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
@@ -33,8 +32,6 @@ export default function SizeDemo() {
   const [productDialogNewAuto, setProductDialogNewAuto] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
-  const location = useLocation();
-  const herdId = location.pathname.split("/")[2];
 
   //Lấy danh sách con trong 1 đàn
   useEffect(() => {
@@ -42,10 +39,8 @@ export default function SizeDemo() {
   }, []);
   const getHerd = async () => {
     try {
-      if (herdId) {
-        const res = await axios.get(`/herds/${herdId}`);
-        setProducts(res.data.herd.records);
-      }
+      const res = await axios.get(`/herds/${herdId}`);
+      setProducts(res.data.herd.records);
     } catch (error) {
       console.log(error);
     }
@@ -122,10 +117,22 @@ export default function SizeDemo() {
           onClick={confirmDeleteSelected}
           disabled={!selectedProducts || !selectedProducts.length}
         />
+        <Button
+          label="Thu hoạch"
+          severity="success"
+          onClick={Harvest_Details}
+        />
       </div>
     );
   };
-
+  const navigate = useNavigate();
+  const Harvest_Details = () => {
+    for (const selectedProduct of selectedProducts) {
+      // navigate(`/harvests/${selectedProduct._id}/${selectedProduct.name}`);
+      setProducts(selectedProduct);
+      console.log(selectedProduct);
+    }
+  };
   const confirmDeleteSelected = () => {
     setDeleteProductsDialog(true);
   };
@@ -445,7 +452,7 @@ export default function SizeDemo() {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
-        <CultivationLogs_Herd idherd={herdId} />
+
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}
@@ -599,6 +606,7 @@ export default function SizeDemo() {
           />
         </Dialog>
       </div>
+      <Harvest_Update/>
     </div>
   );
 }

@@ -1,68 +1,49 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { HerdsContext } from "../../service/Herd_data.js";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
-import { Dropdown } from "primereact/dropdown";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
-import Search from "./Search.jsx";
-import "./HerdsList.css";
-import { MultiSelect } from "primereact/multiselect";
+import "../Home/HerdsList.css";
+import { useForm } from "react-hook-form";
+import { TabView, TabPanel } from "primereact/tabview";
+import { Galleria } from "primereact/galleria";
+import { InputTextarea } from "primereact/inputtextarea";
+import Harvest_Update from "./Harvest_Update.jsx";
+import Harvest_Create from "./Harvest_Create.jsx";
+import "./Harvest.css";
 const emptyProduct = {
   _id: null,
   name: "",
-  start_date: "",
-  category: {
-    _id: "",
-    name: "",
-  },
   description: "",
-  location: "",
-  farm: {
-    _id: "",
-    name: "",
-  },
+  symptoms: "",
+  preventive_measures: "",
 };
 export default function SizeDemo() {
-  const { handleGet, handleGetCategory, handleGetFarm } =
-    useContext(HerdsContext);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
-  const [categories, setcategories] = useState([]);
-  const [farm, setfarm] = useState([]);
   const [product, setProduct] = useState(emptyProduct);
-  const [selectedRole, setSelectedRole] = useState(emptyProduct.category);
-  const [selectedfarm, setSelectedfarm] = useState(emptyProduct.farm);
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
-  const [search, setSearch] = useState("");
-  const [limit, setlimit] = useState("");
-  const [page, setpage] = useState("");
-  const [name, setname] = useState("");
+
   useEffect(() => {
-    fetchDataFarm();
-    fetchDataCategory();
-    fetchData();
-  }, [search]);
-  const fetchData = async () => {
-    const userList = await handleGet(name, "32", "", search);
-    setProducts(userList);
-  };
-  const fetchDataCategory = async () => {
-    const categoryList = await handleGetCategory();
-    setcategories(categoryList);
-  };
-  const fetchDataFarm = async () => {
-    const farmList = await handleGetFarm();
-    setfarm(farmList);
-  };
+    const getHerd = async () => {
+      try {
+        const res = await axios.get(`/diseases`);
+        setProducts(res.data.diseases);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getHerd();
+  });
+
   const openNew = () => {
     setProductDialog(true);
   };
@@ -73,35 +54,30 @@ export default function SizeDemo() {
       [name]: value,
     });
   };
-  const reloadData = () => {
-    // eslint-disable-next-line no-undef
-    fetchData();
-  };
-  const handleCreateUser = async (event) => {
+  const handleCreate = async (event) => {
     event.preventDefault();
     try {
-      const a = await axios.post("/herds", {
+      await axios.post("/diseases", {
         name: product.name,
-        start_date: product.start_date,
-        categoryId: selectedRole._id._id,
         description: product.description,
-        location: product.location,
-        farmId: selectedfarm._id._id,
+        symptoms: product.symptoms,
+        preventive_measures: product.preventive_measures,
       });
       setProductDialog(false);
-      reloadData();
       toast.current.show({
         severity: "success",
-        summary: "Successful",
-        detail: "Tạo đàn",
+        summary: "Đã tạo",
         life: 3000,
       });
-      console.log(a);
+      reloadData();
     } catch (error) {
       console.log("Error:", error);
     }
   };
-
+  const reloadData = () => {
+    // eslint-disable-next-line no-undef
+    getHerd();
+  };
   const leftToolbarTemplate = () => {
     return (
       <div className="flex flex-wrap gap-2">
@@ -111,11 +87,6 @@ export default function SizeDemo() {
           severity="danger"
           onClick={confirmDeleteSelected}
           disabled={!selectedProducts || !selectedProducts.length}
-        />
-        <Button
-          label="Xem chi tiết"
-          severity="success"
-          onClick={onRowDoubleClick}
         />
       </div>
     );
@@ -134,7 +105,6 @@ export default function SizeDemo() {
   const deleteSelectedProducts = () => {
     for (const selectedProduct of selectedProducts) {
       handleDeleteUser(selectedProduct);
-      reloadData();
       setDeleteProductsDialog(false);
       toast.current.show({
         severity: "success",
@@ -147,7 +117,6 @@ export default function SizeDemo() {
     let _products = products.filter((val) => val._id === product._id);
     const firstObject = _products[0];
     handleDeleteUser(firstObject);
-    reloadData();
     setDeleteProductDialog(false);
     toast.current.show({
       severity: "success",
@@ -158,7 +127,7 @@ export default function SizeDemo() {
   const navigate = useNavigate();
   const onRowDoubleClick = () => {
     for (const selectedProduct of selectedProducts) {
-      navigate(`/herds/${selectedProduct._id}`);
+      navigate(`/diseases/${selectedProduct._id}`);
     }
   };
 
@@ -214,42 +183,128 @@ export default function SizeDemo() {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/herds/${product._id}`, product);
+      await axios.delete(`/diseases/${product._id}`, product);
+      reloadData();
     } catch (error) {
       console.log("Error:", error);
     }
   };
-  const representativeFilterTemplate = (options) => {
-    return <MultiSelect value={options.value} options={categories} itemTemplate={representativesItemTemplate} onChange={(e) => options.filterCallback(e.value)} optionLabel="name" placeholder="Any" className="p-column-filter" />;
-};
-const representativeBodyTemplate = (rowData) => {
-  const representative = rowData.category;
-
-  return (
-      <div className="flex align-items-center gap-2">
-          <span>{representative.name}</span>
-      </div>
-  );
-};
-const representativesItemTemplate = (option) => {
+  const textEditor = (options) => {
     return (
-        <div className="flex align-items-center gap-2">
-            <span>{option.name}</span>
-        </div>
+      <InputText
+        type="text"
+        value={options.value}
+        onChange={(e) => options.editorCallback(e.target.value)}
+      />
     );
-};
+  };
+  const { register, handleSubmit } = useForm();
 
+  const upLoadImage = async (data) => {
+    const formData = new FormData();
+    for (const file of data.file) {
+      formData.append("images", file);
+    }
+    try {
+      await axios.patch(`/diseases/upload/${product._id}`, formData);
+      reloadData();
+      toast.current.show({
+        severity: "success",
+        summary: "Đã thêm hình",
+        life: 3000,
+      });
+    } catch (error) {
+      console.log("Error img:", error);
+    }
+  };
 
+  const onRowEditComplete = async () => {
+    // for (const selectedProduct of selectedProducts) {
+    //   var Id = selectedProduct._id;
+    // }
+    try {
+      const a = await axios.patch(`/diseases/${product._id}`, {
+        name: product.name,
+        description: product.description,
+        symptoms: product.symptoms,
+        preventive_measures: product.preventive_measures,
+      });
+      setProductDialog(false);
+      toast.current.show({
+        severity: "success",
+        summary: "Sửa hoàn thành",
+        life: 3000,
+      });
+      console.log(a);
+      reloadData();
+    } catch (error) {
+      console.log("Error update role:", error);
+    }
+  };
+  const [expandedRows, setExpandedRows] = useState(null);
+  const rowExpansionTemplate = (data) => {
+    product._id = data._id;
+    return (
+      <>
+        <TabView>
+          <TabPanel header="Thông tin">
+            <Harvest_Update data={data} />
+          </TabPanel>
+          <TabPanel header="Hình ảnh">
+            <Galleria
+              className="Image_animals"
+              value={data.images}
+              numVisible={5}
+              circular
+              showItemNavigators
+              showItemNavigatorsOnHover
+              showIndicators
+              showThumbnails={false}
+              style={{ maxWidth: "640px" }}
+              item={thumbnail}
+              thumbnail={thumbnailTemplate}
+            />
+            <div className=" updateimage">
+              <form
+                encType="multipart/formdata"
+                onSubmit={handleSubmit(upLoadImage)}
+              >
+                <input type="file" multiple {...register("file")} />
+                <input type="submit" />
+              </form>
+            </div>
+          </TabPanel>
+        </TabView>
+      </>
+    );
+  };
+  const thumbnailTemplate = (item) => (
+    <img
+      src={item.path}
+      alt={item.name}
+      style={{ width: "50%", overflow: "hidden", maxHeight: "200px" }}
+    />
+  );
+
+  const thumbnail = (item) => (
+    <img
+      src={item.path}
+      alt={item.name}
+      style={{ width: "100%", overflow: "hidden", maxHeight: "400px" }}
+    />
+  );
+  const allowExpansion = (rowData) => {
+    return rowData;
+  };
   const [globalFilter, setGlobalFilter] = useState(null);
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Manage Herds</h4>
+      <h4 className="m-0">Manage Records</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
           type="search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onInput={(e) => setGlobalFilter(e.target.value)}
           placeholder="Search..."
         />
       </span>
@@ -259,7 +314,6 @@ const representativesItemTemplate = (option) => {
     <div>
       <Toast className="toast" ref={toast} />
       <div className="card">
-        {/* <Search /> */}
         <Toolbar
           className="mb-4"
           left={leftToolbarTemplate}
@@ -268,53 +322,41 @@ const representativesItemTemplate = (option) => {
         <DataTable
           value={products}
           selectionMode={"row"}
+          onRowEditComplete={onRowEditComplete}
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           editMode="row"
-          rowsPerPageOptions={[5, 10, 25]}
+          expandedRows={expandedRows}
+          onRowToggle={(e) => setExpandedRows(e.data)}
+          rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
           paginator
-          rows={10}
+          rows={8}
           tableStyle={{ minWidth: "50rem" }}
           globalFilter={globalFilter}
           header={header}
         >
+          <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
             field="name"
-            header="Tên đàn"
-            sortable
+            header="Tên thuốc"
             value={product.name}
+            editor={(options) => textEditor(options)}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
-            field="member_count"
-            header="Số lượng"
-            sortable
-            value={product.member_count}
-            style={{ minWidth: "10rem" }}
+            rowEditor
+            headerStyle={{ width: "10%", minWidth: "4rem" }}
+            bodyStyle={{ textAlign: "center" }}
           ></Column>
-          <Column
-            field="start_date"
-            header="Ngày tạo"
-            value={product.start_date}
-            style={{ width: "20%" }}
-          ></Column>
-          <Column
-            field="category.name"
-            header="Nhóm"
-            value={product.category._id}
-            style={{ width: "20%" }}
-            sortable
-          ></Column>
-           <Column header="Nhóm"sortable sortField="category.name" filterField="category" showFilterMatchModes={false} 
-        style={{ minWidth: '14rem' }} body={representativeBodyTemplate} filter filterElement={representativeFilterTemplate} />
           <Column
             body={actionBodyTemplate}
             headerStyle={{ width: "10%", minWidth: "4rem" }}
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
+
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}
@@ -355,101 +397,20 @@ const representativesItemTemplate = (option) => {
         </Dialog>
 
         <Dialog
+          header="Thêm mới"
           style={{ width: "50%" }}
           visible={productDialog}
           onHide={() => setProductDialog(false)}
         >
-          <h3>Thêm mới</h3>
-          <div>
-            <form className="userUpdateForm">
-              <div className="userUpdateLeft">
-                <div className="userUpdateItem">
-                  <label>Tên</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={product.name}
-                    onChange={handleChange}
-                    className="userUpdateInput"
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Ngày bắt đầu</label>
-                  <input
-                    type="text"
-                    name="start_date"
-                    value={product.start_date}
-                    onChange={handleChange}
-                    className="userUpdateInput"
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Mô tả</label>
-                  <input
-                    type="description"
-                    name="description"
-                    value={product.description}
-                    onChange={handleChange}
-                    className="userUpdateInput"
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Nhóm</label>
-                  <Dropdown
-                    type="text"
-                    options={categories}
-                    optionLabel="name"
-                    onChange={(e) => {
-                      setSelectedRole({ name: e.label, _id: e.value });
-                      selectedRole.name = e.value.name;
-                      selectedRole._id = e.value._id;
-                    }}
-                    value={selectedRole._id}
-                    className="userUpdateInput"
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Farm</label>
-                  <Dropdown
-                    type="text"
-                    options={farm}
-                    optionLabel="name"
-                    onChange={(e) => {
-                      setSelectedfarm({ name: e.label, _id: e.value });
-                      selectedfarm.name = e.value.name;
-                      selectedfarm._id = e.value._id;
-                    }}
-                    value={selectedfarm._id}
-                    className="userUpdateInput"
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Vị trí</label>
-                  <input
-                    type="location"
-                    name="location"
-                    value={product.location}
-                    onChange={handleChange}
-                    className="userUpdateInput"
-                  />
-                </div>
-              </div>
-            </form>
-
-            <Button
-              className="button_Dia"
-              label="Lưu"
-              severity="danger"
-              onClick={handleCreateUser}
-            />
-            <Button
-              className="button_Dia"
-              label="Hủy"
-              severity="secondary"
-              outlined
-              onClick={() => setProductDialog(false)}
-            />
-          </div>
+          <Harvest_Create />
+          <Button
+            className="button_Dia"
+            id="Create"
+            label="Hủy"
+            severity="secondary"
+            outlined
+            onClick={() => setProductDialog(false)}
+          />
         </Dialog>
       </div>
     </div>

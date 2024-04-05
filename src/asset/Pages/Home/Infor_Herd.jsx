@@ -5,11 +5,9 @@ import { Button } from "primereact/button";
 import axios from "axios";
 import { Galleria } from "primereact/galleria";
 import { useForm } from "react-hook-form";
-import { Dialog } from "primereact/dialog";
 import { HerdsContext } from "../../service/Herd_data.js";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
-import RecordsList from "./RecordsList.jsx";
 import { InputText } from "primereact/inputtext";
 const initFormValue = {
   _id: null,
@@ -28,7 +26,7 @@ const initFormValue = {
   start_date: "",
   location: "",
 };
-export default function User() {
+export default function User({idherd}) {
   const toast = useRef(null);
   const [user, setuser] = useState([]);
   const [formValue, setFormValue] = useState(user || initFormValue);
@@ -44,7 +42,7 @@ export default function User() {
     const getCategory = async () => {
       try {
         if (userId) {
-          const res = await axios.get(`/herds/${userId}`);
+          const res = await axios.get(`/herds/${idherd}`);
           setuser(res.data.herd);
         }
       } catch (error) {
@@ -178,7 +176,7 @@ export default function User() {
     <div className="user">
       {user && Object.keys(user).length > 0 && (
         <>
-          <div className="userUpdate card">
+          <div className="userUpdate card ">
             <span className="userUpdateTitle">Thông tin {user.name}</span>
             <form className="userUpdateForm" onSubmit={handleSubmitUpdate}>
               <div className="userUpdateLeft">
@@ -333,7 +331,7 @@ export default function User() {
           />
         </div>
       </Dialog> */}
-      <RecordsList />
+      
     </div>
   );
 }

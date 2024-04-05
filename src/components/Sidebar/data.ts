@@ -29,5 +29,11 @@ export const menu = [
         icon: 'fa fa-medkit',
         url: '/thuoc-thu-y',
       }, 
+      {
+        id: 6,
+        label: 'Thu hoạch',
+        icon: '',
+        url: '/thu-hoach',
+      }, 
     
 ]
