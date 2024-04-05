@@ -24,7 +24,9 @@ import Harvest from "./asset/Pages/Harvest/Harvest.jsx"
 import Harvest_Update from "./asset/Pages/Harvest/Harvest_Update.jsx"
 import { AuthContext } from "./asset/service/user_service.js";
 import Herds_Details_List from "./asset/Pages/Home/Herds_Details_List.jsx";
-import Image from "./components/Images/Image.jsx";
+import Processors from "./asset/Pages/Processors/Processors.jsx";
+import ProductPatch from "./asset/Pages/ProductPatchs/ProductPatchs.jsx";
+import Distributor  from "./asset/Pages/Distributor/Distributor.jsx";
 import Main from "./components/Sidebar/Main.jsx";
 const Layout = () => {
   const { currentUser } = useContext(AuthContext);
@@ -91,6 +93,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/herds/:id",
+        // eslint-disable-next-line react/jsx-pascal-case
         element: <Herds_Details_List />,
       }, 
       {
@@ -99,10 +102,19 @@ const router = createBrowserRouter([
       }, 
       {
         path: "/harvests/:id",
+        // eslint-disable-next-line react/jsx-pascal-case
         element: <Harvest_Update />,
-      }, {
-        path: "/image",
-        element: <Image />,
+      }, 
+      {
+        path: "/dong-goi",
+        element: <Processors />,
+      },
+      {
+        path: "/lo-san-pham",
+        element: <ProductPatch />,
+      },{
+        path: "/phan-phoi",
+        element: <Distributor  />,
       },
     ],
   },

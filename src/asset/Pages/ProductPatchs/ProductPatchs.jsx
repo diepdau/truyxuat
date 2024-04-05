@@ -9,12 +9,10 @@ import axios from "axios";
 import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
-import Harvest_Update from "./Harvest_Update.jsx";
-import Harvest_Create from "./Harvest_Create.jsx";
+import ProductPatchs_Update from "./ProductPatchs_Update.jsx";
+import ProductPatchs_Create from "./ProductPatchs_Create.jsx";
 import Image from "../../../components/Images/Image.jsx";
-import Chart_Herds from "./Chart_Herds.jsx";
-import Chart_Products from "./Chart_Products.jsx";
-import "./Harvest.css";
+import "./ProductPatchs.css";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -35,8 +33,8 @@ export default function SizeDemo() {
   useEffect(() => {
     const getHerd = async () => {
       try {
-        const res = await axios.get(`/harvests?limit=32`);
-        setProducts(res.data.harvests);
+        const res = await axios.get(`/product-patchs?limit=32`);
+        setProducts(res.data.productPatchs);
       } catch (error) {
         console.log(error);
       }
@@ -151,7 +149,7 @@ export default function SizeDemo() {
 
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/harvests/${product._id}`, product);
+      await axios.delete(`/product-patchs/${product._id}`, product);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -160,13 +158,13 @@ export default function SizeDemo() {
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
-    var url = `/harvests/upload/${product._id}`;
+    var url = `/product-patchs/upload/${product._id}`;
     return (
       <>
         <TabView>
           <TabPanel header="Thông tin">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Harvest_Update data={data} reloadData={reloadData} />
+            <ProductPatchs_Update data={data} reloadData={reloadData} />
           </TabPanel>
           <TabPanel header="Hình ảnh">
             <Image uploadUrl={url} images={data.images} />
@@ -195,10 +193,6 @@ export default function SizeDemo() {
   return (
     <div>
       <Toast className="toast" ref={toast} />
-       {/* eslint-disable-next-line react/jsx-pascal-case */}
-      <Chart_Herds />
-      {/* eslint-disable-next-line react/jsx-pascal-case */}
-      <Chart_Products/>
       <div className="card">
         <Toolbar
           className="mb-4"
@@ -224,21 +218,27 @@ export default function SizeDemo() {
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
-            field="name"
+            field="processor"
             header="Tên sản phẩm"
-            value={product.name}
+            value={product.processor}
+            style={{ minWidth: "10rem" }}
+          ></Column>
+          <Column
+            field="product"
+            header="Số lượng"
+            value={product.product}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
             field="quantity"
-            header="Số lượng"
+            header="Tên đàn (nguồn gốc) "
             value={product.quantity}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
-            field="herd.name"
+            field="description"
             header="Tên đàn (nguồn gốc) "
-            value={product.herd.name}
+            value={product.description}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
@@ -294,7 +294,7 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <Harvest_Create />
+          <ProductPatchs_Create />
           <Button
             className="button_Dia"
             id="Create"

@@ -7,21 +7,16 @@ import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import { Toast } from "primereact/toast";
-import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
-import Harvest_Update from "./Harvest_Update.jsx";
-import Harvest_Create from "./Harvest_Create.jsx";
-import Image from "../../../components/Images/Image.jsx";
-import Chart_Herds from "./Chart_Herds.jsx";
-import Chart_Products from "./Chart_Products.jsx";
-import "./Harvest.css";
+import Processors_Update from "./Processors_Update.jsx";
+import Processors_Create from "./Processors_Create.jsx";
+import Image_Upload from "../../../components/Images/Image.jsx";
+import { Image } from "primereact/image";
+import "./Processors.css";
 const emptyProduct = {
   _id: null,
   name: "",
-  herd: "",
-  quantity: "",
-  unit: "",
-  date: "",
+  harvest: {},
 };
 export default function SizeDemo() {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -35,8 +30,8 @@ export default function SizeDemo() {
   useEffect(() => {
     const getHerd = async () => {
       try {
-        const res = await axios.get(`/harvests?limit=32`);
-        setProducts(res.data.harvests);
+        const res = await axios.get(`/processors?limit=32`);
+        setProducts(res.data.processor);
       } catch (error) {
         console.log(error);
       }
@@ -151,25 +146,45 @@ export default function SizeDemo() {
 
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/harvests/${product._id}`, product);
+      await axios.delete(`/processors/${product._id}`, product);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
+    }
+  };const onRowEditComplete = async (e) => {
+    let _products = [...products];
+    let { newData, index } = e;
+    _products[index] = newData;
+    for (const selectedProduct of selectedProducts) {
+      var Id = selectedProduct._id;
+    }
+    try {
+      await axios.patch(`/processors/${Id}`, {
+        name: newData.name,
+      });
+      reloadData();
+      toast.current.show({
+        severity: "success",
+        summary: "Đã chỉnh sửa",
+        life: 3000,
+      });
+    } catch (error) {
+      console.log("Error update:", error);
     }
   };
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
-    var url = `/harvests/upload/${product._id}`;
+    var url = `/processors/upload/${product._id}`;
     return (
       <>
         <TabView>
           <TabPanel header="Thông tin">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Harvest_Update data={data} reloadData={reloadData} />
+            <Processors_Update data={data} reloadData={reloadData} />
           </TabPanel>
           <TabPanel header="Hình ảnh">
-            <Image uploadUrl={url} images={data.images} />
+            <Image_Upload uploadUrl={url} images={data.images} />
           </TabPanel>
         </TabView>
       </>
@@ -192,13 +207,51 @@ export default function SizeDemo() {
       </span>
     </div>
   );
+  const Name = (options) => {
+    return (
+      <InputText
+        type="text"
+        value={options.value}
+        onChange={(e) => options.editorCallback(e.target.value)}
+      />
+    );
+  };
+  const headerTemplate = (data) => {
+    return (
+      <React.Fragment>
+        <span className="vertical-align-middle ml-2 font-bold line-height-3">
+          {data.name}
+        </span>
+      </React.Fragment>
+    );
+  };
+  const calculateCustomerTotal = (name) => {
+    let total = 0;
+
+    if (products) {
+      for (let customer of products) {
+        if (customer.name === name) {
+          total++;
+        }
+      }
+    }
+
+    return total;
+  };
+  const footerTemplate = (data) => {
+    return (
+      <React.Fragment>
+        <td colSpan={5}>
+          <div className="flex justify-content-end font-bold w-full">
+            Tổng sản phẩm: {calculateCustomerTotal(data.name)}
+          </div>
+        </td>
+      </React.Fragment>
+    );
+  };
   return (
     <div>
       <Toast className="toast" ref={toast} />
-       {/* eslint-disable-next-line react/jsx-pascal-case */}
-      <Chart_Herds />
-      {/* eslint-disable-next-line react/jsx-pascal-case */}
-      <Chart_Products/>
       <div className="card">
         <Toolbar
           className="mb-4"
@@ -206,40 +259,61 @@ export default function SizeDemo() {
           // right={rightToolbarTemplate}
         ></Toolbar>
         <DataTable
-          value={products}
           selectionMode={"row"}
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           editMode="row"
-          expandedRows={expandedRows}
-          onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
           paginator
           rows={8}
-          tableStyle={{ minWidth: "50rem" }}
+          onRowEditComplete={onRowEditComplete}
           globalFilter={globalFilter}
           header={header}
+          value={products}
+          rowGroupMode="subheader"
+          groupRowsBy="name"
+          sortMode="single"
+          sortField="name"
+          sortOrder={1}
+          expandableRowGroups
+          expandedRows={expandedRows}
+          onRowToggle={(e) => setExpandedRows(e.data)}
+          rowGroupHeaderTemplate={headerTemplate}
+          rowGroupFooterTemplate={footerTemplate}
+          tableStyle={{ minWidth: "50rem" }}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
-            field="name"
+            field="harvest.name"
             header="Tên sản phẩm"
-            value={product.name}
+            editor={(options) => Name(options)}
+            value={product.harvest.name}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
-            field="quantity"
+            field="harvest.quantity"
             header="Số lượng"
-            value={product.quantity}
+            value={product.harvest.quantity}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
-            field="herd.name"
-            header="Tên đàn (nguồn gốc) "
-            value={product.herd.name}
+            field="harvest.unit"
+            header="Đơn vị"
+            value={product.harvest.unit}
             style={{ minWidth: "10rem" }}
+          ></Column>
+          <Column
+            field="date"
+            header="Ngày xuất"
+            value={product.date}
+            style={{ minWidth: "10rem" }}
+          ></Column>
+          <Column
+            rowEditor
+            headerStyle={{ width: "10%", minWidth: "4rem" }}
+            bodyStyle={{ textAlign: "center" }}
           ></Column>
           <Column
             body={actionBodyTemplate}
@@ -294,7 +368,7 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <Harvest_Create />
+          <Processors_Create />
           <Button
             className="button_Dia"
             id="Create"

@@ -32,8 +32,26 @@ export const menu = [
       {
         id: 6,
         label: 'Thu hoạch',
-        icon: '',
+        icon: 'pi pi-cart-minus',
         url: '/thu-hoach',
       }, 
+      {
+        id: 7,
+        label: 'Xử lý đóng gói',
+        icon: 'pi pi-spin pi-cog',
+        url: '/dong-goi',
+      }, 
+      {
+        id: 8,
+        label: 'Lô sản phẩm',
+        icon: 'fa fa-shopping-cart',
+        url: '/lo-san-pham',
+      },
+      {
+        id: 9,
+        label: 'Phân phối',
+        icon: "pi pi-warehouse",
+        url: '/phan-phoi',
+      },
     
 ]

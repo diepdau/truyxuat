@@ -1,15 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
-import { InputTextarea } from "primereact/inputtextarea";
+import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import axios from "axios";
 import { Toast } from "primereact/toast";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
-import "./Harvest.css";
-import { InputText } from "primereact/inputtext";
 
 const emptyProduct = {
-  herd: "",
+  herd: {
+    _id: "",
+    name: "",
+  },
   name: "",
   quantity: "",
   unit: null,
@@ -20,9 +21,8 @@ const unitOptions = [
   { label: "Kg", value: "Kg" },
   { label: "Túi", value: "Túi" },
 ];
-
-function YourComponent() {
-  const [product, setProduct] = useState(emptyProduct);
+function YourComponent({ data, reloadData }) {
+  const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState({});
   const [selectedHerd, setSelectedHerd] = useState(null);
@@ -30,6 +30,7 @@ function YourComponent() {
   useEffect(() => {
     getHerd();
   }, []);
+  console.log(data);
   const getHerd = async () => {
     try {
       const res = await axios.get(`/herds`);
@@ -41,9 +42,10 @@ function YourComponent() {
 
   const handleChange = (event) => {
     const { value, name } = event.target;
+    const newValue = name === "date" ? value.toISOString() : value;
     setProduct({
       ...product,
-      [name]: value,
+      [name]: newValue,
     });
   };
   const handleUnitChange = (event) => {
@@ -59,13 +61,21 @@ function YourComponent() {
     }
 
     try {
-      await axios.post(`/harvests`, product);
+      const response = await axios.patch(`/harvests/${data._id}`, product);
       toast.current.show({
         severity: "success",
-        summary: "Thêm hoàn thành",
+        summary: "Sửa hoàn thành",
         life: 3000,
       });
-      setProduct(emptyProduct);
+      reloadData();
+      setProduct({
+        ...product,
+        herd: response.data.herd,
+        name: response.data.name,
+        quantity: response.data.quantity,
+        unit: response.data.unit,
+        date: response.data.date,
+      });
     } catch (error) {
       console.log("Error update:", error);
     }
@@ -75,34 +85,24 @@ function YourComponent() {
     let isValid = true;
     const newErrors = {};
 
-    if (!product.herd.trim()) {
-      newErrors.herd = "Herd is required.";
-      isValid = false;
-    }
+    // Kiểm tra lỗi cho trường herd
+    // if (!product.herd.trim()) {
+    //   newErrors.herd = "Herd is required.";
+    //   isValid = false;
+    // }
 
+    // Kiểm tra lỗi cho trường name
     if (!product.name.trim()) {
       newErrors.name = "Name is required.";
       isValid = false;
     }
 
-    if (!product.quantity.trim()) {
+    // Kiểm tra lỗi cho trường quantity
+    if (!product.quantity) {
       newErrors.quantity = "Quantity is required.";
       isValid = false;
     } else if (isNaN(product.quantity)) {
       newErrors.quantity = "Quantity must be a number.";
-      isValid = false;
-    } else if (parseFloat(product.quantity) < 0) {
-      newErrors.quantity = "Quantity must be a non-negative number.";
-      isValid = false;
-    }
-
-    if (!product.unit) {
-      newErrors.unit = "Unit is required.";
-      isValid = false;
-    }
-
-    if (!product.date) {
-      newErrors.date = "Date is required.";
       isValid = false;
     }
 
@@ -110,11 +110,15 @@ function YourComponent() {
     return isValid;
   };
 
+  const parsedDate = product.date ? new Date(product.date) : null;
+
   return (
     <div>
       <Toast className="toast" ref={toast} />
-      <h4>Herds</h4>
+
+      <h4>Đàn</h4>
       <Dropdown
+        placeholder={data.herd.name}
         type="text"
         value={selectedHerd}
         options={herds}
@@ -126,44 +130,45 @@ function YourComponent() {
         style={{ width: "100%" }}
       />
       {errors.herd && <small className="p-error">{errors.herd}</small>}
-
-      <h4>Name</h4>
-      <InputTextarea
+      <h4>Tên</h4>
+      <InputText
         name="name"
         value={product.name}
+        autoResize
         style={{ width: "100%" }}
         onChange={handleChange}
       />
       {errors.name && <small className="p-error">{errors.name}</small>}
 
-      <h4>Quantity</h4>
+      <h4>Số lượng</h4>
       <InputText
-        type="number"
         name="quantity"
+        type="number"
         value={product.quantity}
+        autoResize
         style={{ width: "100%" }}
         onChange={handleChange}
       />
       {errors.quantity && <small className="p-error">{errors.quantity}</small>}
 
-      <h4>Unit</h4>
+      <h4>Đơn vị</h4>
       <Dropdown
         name="unit"
         value={product.unit}
         options={unitOptions}
+        optionLabel="label"
         onChange={handleUnitChange}
         placeholder="Select a unit"
         style={{ width: "100%" }}
       />
-      {errors.unit && <small className="p-error">{errors.unit}</small>}
 
-      <h4>Date</h4>
+      <h4>Ngày</h4>
       <Calendar
         inputId="cal_date"
         name="date"
         style={{ width: "100%" }}
-        value={product.date}
-        onChange={(e) => setProduct({ ...product, date: e.value })}
+        value={parsedDate}
+        onChange={handleChange}
       />
       {errors.date && <small className="p-error">{errors.date}</small>}
 

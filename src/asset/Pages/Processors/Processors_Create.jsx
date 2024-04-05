@@ -5,7 +5,6 @@ import axios from "axios";
 import { Toast } from "primereact/toast";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
-import "./Harvest.css";
 import { InputText } from "primereact/inputtext";
 
 const emptyProduct = {
