@@ -126,10 +126,11 @@ function YourComponent({ data }) {
       {errors.preventive_measures && (
         <small className="p-error">{errors.preventive_measures}</small>
       )}
-
       <Button
-        label="Chỉnh sửa"
-        security="success"
+        className="button_Dia"
+        id="Save"
+        label="Lưu"
+        severity="success"
         onClick={onRowEditComplete}
       />
     </div>

@@ -1,54 +1,34 @@
-import React, { useState, useRef, useEffect } from "react";
-import { InputTextarea } from "primereact/inputtextarea";
+import React, { useState, useRef } from "react";
+import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import axios from "axios";
 import { Toast } from "primereact/toast";
 import { Calendar } from "primereact/calendar";
-import { Dropdown } from "primereact/dropdown";
-import { InputText } from "primereact/inputtext";
+import { InputTextarea } from "primereact/inputtextarea";
 
 const emptyProduct = {
-  herd: "",
-  name: "",
-  quantity: "",
-  unit: null,
-  date: null,
+  warehouse_name: "",
+  warehouse_address: "",
+  delivery_date: null,
+  stores: "",
+  product_patch: "",
+  received_date: null,
 };
-const unitOptions = [
-  { label: "Cân", value: "Cân" },
-  { label: "Kg", value: "Kg" },
-  { label: "Túi", value: "Túi" },
-];
 
-function YourComponent() {
-  const [product, setProduct] = useState(emptyProduct);
+function YourComponent({ data, reloadData, isUpdate }) {
+  const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
-  const [herds, setHerds] = useState({});
-  const [selectedHerd, setSelectedHerd] = useState(null);
   const toast = useRef(null);
-  useEffect(() => {
-    getHerd();
-  }, []);
-  const getHerd = async () => {
-    try {
-      const res = await axios.get(`/herds`);
-      setHerds(res.data.herds);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleChange = (event) => {
     const { value, name } = event.target;
+    const newValue =
+      name === "delivery_date" || name === "received_date"
+        ? value.toISOString()
+        : value;
     setProduct({
       ...product,
-      [name]: value,
-    });
-  };
-  const handleUnitChange = (event) => {
-    setProduct({
-      ...product,
-      unit: event.value,
+      [name]: newValue,
     });
   };
 
@@ -58,13 +38,23 @@ function YourComponent() {
     }
 
     try {
-      await axios.post(`/harvests`, product);
-      toast.current.show({
-        severity: "success",
-        summary: "Thêm hoàn thành",
-        life: 3000,
-      });
-      setProduct(emptyProduct);
+      if (isUpdate) {
+        await axios.patch(`/distributors/${data._id}`, product);
+        toast.current.show({
+          severity: "success",
+          summary: "Sửa hoàn thành",
+          life: 3000,
+        });
+      } else {
+        await axios.post(`/distributors`, product);
+        toast.current.show({
+          severity: "success",
+          summary: "Thêm hoàn thành",
+          life: 3000,
+        });
+        setProduct(emptyProduct);
+      }
+      reloadData();
     } catch (error) {
       console.log("Error update:", error);
     }
@@ -74,34 +64,18 @@ function YourComponent() {
     let isValid = true;
     const newErrors = {};
 
-    if (!product.herd.trim()) {
-      newErrors.herd = "Herd is required.";
+    if (!product.warehouse_name.trim()) {
+      newErrors.warehouse_name = "Name is required.";
       isValid = false;
     }
 
-    if (!product.name.trim()) {
-      newErrors.name = "Name is required.";
+    if (!product.warehouse_address.trim()) {
+      newErrors.warehouse_address = "warehouse_address is required.";
       isValid = false;
     }
 
-    if (!product.quantity.trim()) {
-      newErrors.quantity = "Quantity is required.";
-      isValid = false;
-    } else if (isNaN(product.quantity)) {
-      newErrors.quantity = "Quantity must be a number.";
-      isValid = false;
-    } else if (parseFloat(product.quantity) < 0) {
-      newErrors.quantity = "Quantity must be a non-negative number.";
-      isValid = false;
-    }
-
-    if (!product.unit) {
-      newErrors.unit = "Unit is required.";
-      isValid = false;
-    }
-
-    if (!product.date) {
-      newErrors.date = "Date is required.";
+    if (!product.stores) {
+      newErrors.stores = "stores is required.";
       isValid = false;
     }
 
@@ -109,67 +83,97 @@ function YourComponent() {
     return isValid;
   };
 
+  const parsedDeliveryDate = product.delivery_date
+    ? new Date(product.delivery_date)
+    : null;
+  const parsedReceivedDate = product.received_date
+    ? new Date(product.received_date)
+    : null;
+
   return (
     <div>
-      <Toast className="toast" ref={toast} />
-      <h4>Herds</h4>
-      <Dropdown
-        type="text"
-        value={selectedHerd}
-        options={herds}
-        optionLabel="name"
-        onChange={(e) => {
-          setSelectedHerd(e.value);
-          product.herd = e.value._id;
-        }}
-        style={{ width: "100%" }}
-      />
-      {errors.herd && <small className="p-error">{errors.herd}</small>}
+      <div className="container_update">
+        <div style={{ flex: 1, paddingRight: "1rem" }}>
+          <Toast className="toast" ref={toast} />
 
-      <h4>Name</h4>
-      <InputTextarea
-        name="name"
-        value={product.name}
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.name && <small className="p-error">{errors.name}</small>}
+          <h4>Tên nhà</h4>
+          <InputTextarea
+            name="warehouse_name"
+            value={product.warehouse_name}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.warehouse_name && (
+            <small className="p-error">{errors.warehouse_name}</small>
+          )}
 
-      <h4>Quantity</h4>
-      <InputText
-        type="number"
-        name="quantity"
-        value={product.quantity}
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.quantity && <small className="p-error">{errors.quantity}</small>}
+          <h4>Địa chỉ nhà kho</h4>
+          <InputTextarea
+            name="warehouse_address"
+            value={product.warehouse_address}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.warehouse_address && (
+            <small className="p-error">{errors.warehouse_address}</small>
+          )}
+          <h4>Lô hàng</h4>
+          <InputText
+            name="product_patch"
+            value={product.product_patch}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.product_patch && (
+            <small className="p-error">{errors.product_patch}</small>
+          )}
+        </div>
 
-      <h4>Unit</h4>
-      <Dropdown
-        name="unit"
-        value={product.unit}
-        options={unitOptions}
-        onChange={handleUnitChange}
-        placeholder="Select a unit"
-        style={{ width: "100%" }}
-      />
-      {errors.unit && <small className="p-error">{errors.unit}</small>}
+        {/* Cột phải */}
+        <div style={{ flex: 1 }}>
+          <h4>Cửa hàng</h4>
+          <InputText
+            name="stores"
+            type="text"
+            value={product.stores}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.stores && <small className="p-error">{errors.stores}</small>}
 
-      <h4>Date</h4>
-      <Calendar
-        inputId="cal_date"
-        name="date"
-        style={{ width: "100%" }}
-        value={product.date}
-        onChange={(e) => setProduct({ ...product, date: e.value })}
-      />
-      {errors.date && <small className="p-error">{errors.date}</small>}
+          <h4>Ngày Giao Hàng</h4>
+          <Calendar
+            inputId="cal_delivery_date"
+            name="delivery_date"
+            style={{ width: "100%" }}
+            value={parsedDeliveryDate}
+            onChange={handleChange}
+          />
+          {errors.delivery_date && (
+            <small className="p-error">{errors.delivery_date}</small>
+          )}
 
+          <h4>Ngày Nhận</h4>
+          <Calendar
+            inputId="cal_received_date"
+            name="received_date"
+            style={{ width: "100%" }}
+            value={parsedReceivedDate}
+            onChange={handleChange}
+          />
+          {errors.received_date && (
+            <small className="p-error">{errors.received_date}</small>
+          )}
+        </div>
+      </div>
       <Button
         className="button_Dia"
-        id="Luu"
-        label="Lưu"
+        id="Save"
+        label={isUpdate ? "Cập nhật" : "Lưu"}
         severity="success"
         onClick={handleCreate}
       />

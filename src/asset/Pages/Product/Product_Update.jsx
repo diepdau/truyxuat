@@ -1,11 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import axios from "axios";
 import { Toast } from "primereact/toast";
 import "./Product.css";
 import { Calendar } from "primereact/calendar";
-import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 
 const emptyProduct = {
@@ -20,45 +19,17 @@ const emptyProduct = {
   info: "",
 };
 
-const unitOptions = [
-  { label: "Cân", value: "Cân" },
-  { label: "Kg", value: "Kg" },
-  { label: "Túi", value: "Túi" },
-  { label: "Đồng", value: "Đồng" },
-];
-
 function YourComponent({ data, reloadData }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
-  const [herds, setHerds] = useState([]);
-  const [selectedHerd, setSelectedHerd] = useState(null);
   const toast = useRef(null);
 
-  useEffect(() => {
-    getHerds();
-  }, []);
-
-  const getHerds = async () => {
-    try {
-      const res = await axios.get(`/herds`);
-      setHerds(res.data.herds);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setProduct({
       ...product,
       [name]: value,
-    });
-  };
-
-  const handleUnitChange = (event) => {
-    setProduct({
-      ...product,
-      unit: event.value,
     });
   };
 

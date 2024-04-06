@@ -30,8 +30,6 @@ function YourComponent({ data, reloadData }) {
   const [herds, setHerds] = useState([]);
   const [selectedHerd, setSelectedHerd] = useState(null);
   const toast = useRef(null);
-console.log("pppppp");
-console.log(data);
   useEffect(() => {
     getHerds();
   }, []);
@@ -92,33 +90,33 @@ console.log(data);
     let isValid = true;
     const newErrors = {};
 
-    if (!product.name.trim()) {
-      newErrors.name = "Name is required.";
-      isValid = false;
-    }
+    // if (!product.name.trim()) {
+    //   newErrors.name = "Name is required.";
+    //   isValid = false;
+    // }
 
-    if (!product.location.trim()) {
-      newErrors.location = "Location is required.";
-      isValid = false;
-    }
+    // if (!product.location.trim()) {
+    //   newErrors.location = "Location is required.";
+    //   isValid = false;
+    // }
 
-    if (!product.date) {
-      newErrors.date = "Date is required.";
-      isValid = false;
-    }
+    // if (!product.date) {
+    //   newErrors.date = "Date is required.";
+    //   isValid = false;
+    // }
 
-    if (!product.harvest.name.trim()) {
-      newErrors.harvestName = "Harvest name is required.";
-      isValid = false;
-    }
+    // if (!product.harvest.name.trim()) {
+    //   newErrors.harvestName = "Harvest name is required.";
+    //   isValid = false;
+    // }
 
-    if (!product.harvest.quantity) {
-      newErrors.harvestQuantity = "Harvest quantity is required.";
-      isValid = false;
-    } else if (isNaN(product.harvest.quantity)) {
-      newErrors.harvestQuantity = "Harvest quantity must be a number.";
-      isValid = false;
-    }
+    // if (!product.harvest.quantity) {
+    //   newErrors.harvestQuantity = "Harvest quantity is required.";
+    //   isValid = false;
+    // } else if (isNaN(product.harvest.quantity)) {
+    //   newErrors.harvestQuantity = "Harvest quantity must be a number.";
+    //   isValid = false;
+    // }
 
     setErrors(newErrors);
     return isValid;
@@ -179,7 +177,7 @@ console.log(data);
           />
           {errors.harvestHerd && <small className="p-error">{errors.harvestHerd}</small>}
 
-          <h4>Tên sản phẩm</h4>
+          {/* <h4>Tên sản phẩm</h4>
           <InputText
             name="name"
             value={product.harvest.name}
@@ -198,7 +196,7 @@ console.log(data);
             style={{ width: "100%" }}
             onChange={handleHarvestChange}
           />
-          {errors.harvestQuantity && <small className="p-error">{errors.harvestQuantity}</small>}
+          {errors.harvestQuantity && <small className="p-error">{errors.harvestQuantity}</small>} */}
 
           <h4>Đơn vị</h4>
           <Dropdown

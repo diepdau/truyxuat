@@ -6,15 +6,12 @@ import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
-import { useForm } from "react-hook-form";
 import { TabView, TabPanel } from "primereact/tabview";
-import { Galleria } from "primereact/galleria";
-import { InputTextarea } from "primereact/inputtextarea";
 import Diseases_Update from "./Diseases_Update.jsx";
 import Diseases_Create from "./Diseases_Create.jsx";
+import Image from "../../../components/Images/Image.jsx";
 import "./Diseases.css";
 const emptyProduct = {
   _id: null,
@@ -47,33 +44,7 @@ export default function SizeDemo() {
   const openNew = () => {
     setProductDialog(true);
   };
-  const handleChange = (event) => {
-    const { value, name } = event.target;
-    setProduct({
-      ...product,
-      [name]: value,
-    });
-  };
-  const handleCreate = async (event) => {
-    event.preventDefault();
-    try {
-      await axios.post("/diseases", {
-        name: product.name,
-        description: product.description,
-        symptoms: product.symptoms,
-        preventive_measures: product.preventive_measures,
-      });
-      setProductDialog(false);
-      toast.current.show({
-        severity: "success",
-        summary: "Đã tạo",
-        life: 3000,
-      });
-      reloadData();
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  };
+
   const reloadData = () => {
     // eslint-disable-next-line no-undef
     getHerd();
@@ -123,12 +94,6 @@ export default function SizeDemo() {
       summary: "Đã xóa",
       life: 3000,
     });
-  };
-  const navigate = useNavigate();
-  const onRowDoubleClick = () => {
-    for (const selectedProduct of selectedProducts) {
-      navigate(`/diseases/${selectedProduct._id}`);
-    }
   };
 
   const deleteProductDialogFooter = (
@@ -198,52 +163,11 @@ export default function SizeDemo() {
       />
     );
   };
-  const { register, handleSubmit } = useForm();
 
-  const upLoadImage = async (data) => {
-    const formData = new FormData();
-    for (const file of data.file) {
-      formData.append("images", file);
-    }
-    try {
-      await axios.patch(`/diseases/upload/${product._id}`, formData);
-      reloadData();
-      toast.current.show({
-        severity: "success",
-        summary: "Đã thêm hình",
-        life: 3000,
-      });
-    } catch (error) {
-      console.log("Error img:", error);
-    }
-  };
-
-  const onRowEditComplete = async () => {
-    // for (const selectedProduct of selectedProducts) {
-    //   var Id = selectedProduct._id;
-    // }
-    try {
-      const a = await axios.patch(`/diseases/${product._id}`, {
-        name: product.name,
-        description: product.description,
-        symptoms: product.symptoms,
-        preventive_measures: product.preventive_measures,
-      });
-      setProductDialog(false);
-      toast.current.show({
-        severity: "success",
-        summary: "Sửa hoàn thành",
-        life: 3000,
-      });
-      console.log(a);
-      reloadData();
-    } catch (error) {
-      console.log("Error update role:", error);
-    }
-  };
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
+    var url = `/diseases/upload/${product._id}`;
     return (
       <>
         <TabView>
@@ -251,48 +175,12 @@ export default function SizeDemo() {
             <Diseases_Update data={data} />
           </TabPanel>
           <TabPanel header="Hình ảnh">
-            <Galleria
-              className="Image_animals"
-              value={data.images}
-              numVisible={5}
-              circular
-              showItemNavigators
-              showItemNavigatorsOnHover
-              showIndicators
-              showThumbnails={false}
-              style={{ maxWidth: "640px" }}
-              item={thumbnail}
-              thumbnail={thumbnailTemplate}
-            />
-            <div className=" updateimage">
-              <form
-                encType="multipart/formdata"
-                onSubmit={handleSubmit(upLoadImage)}
-              >
-                <input type="file" multiple {...register("file")} />
-                <input type="submit" />
-              </form>
-            </div>
+            <Image uploadUrl={url} images={data.images} />
           </TabPanel>
         </TabView>
       </>
     );
   };
-  const thumbnailTemplate = (item) => (
-    <img
-      src={item.path}
-      alt={item.name}
-      style={{ width: "50%", overflow: "hidden", maxHeight: "200px" }}
-    />
-  );
-
-  const thumbnail = (item) => (
-    <img
-      src={item.path}
-      alt={item.name}
-      style={{ width: "100%", overflow: "hidden", maxHeight: "400px" }}
-    />
-  );
   const allowExpansion = (rowData) => {
     return rowData;
   };
@@ -322,7 +210,6 @@ export default function SizeDemo() {
         <DataTable
           value={products}
           selectionMode={"row"}
-          onRowEditComplete={onRowEditComplete}
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           editMode="row"
@@ -340,15 +227,10 @@ export default function SizeDemo() {
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
             field="name"
-            header="Tên thuốc"
+            header="Bệnh"
             value={product.name}
             editor={(options) => textEditor(options)}
             style={{ minWidth: "10rem" }}
-          ></Column>
-          <Column
-            rowEditor
-            headerStyle={{ width: "10%", minWidth: "4rem" }}
-            bodyStyle={{ textAlign: "center" }}
           ></Column>
           <Column
             body={actionBodyTemplate}

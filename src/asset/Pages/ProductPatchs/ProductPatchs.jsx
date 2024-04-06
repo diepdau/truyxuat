@@ -11,7 +11,10 @@ import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
 import ProductPatchs_Update from "./ProductPatchs_Update.jsx";
 import ProductPatchs_Create from "./ProductPatchs_Create.jsx";
+import Processors_Update from "../Processors/Processors_Update.jsx";
+
 import Image from "../../../components/Images/Image.jsx";
+import Product_Update from '../Product/Product_Update.jsx';
 import "./ProductPatchs.css";
 const emptyProduct = {
   _id: null,
@@ -173,6 +176,14 @@ export default function SizeDemo() {
             {/* eslint-disable-next-line react/jsx-pascal-case */}
             <ProductPatchs_Update data={data} reloadData={reloadData} />
           </TabPanel>
+          <TabPanel header="Xử lý/đóng gói">
+          {/* eslint-disable-next-line react/jsx-pascal-case */}
+          <Processors_Update data={data.processor} />
+          </TabPanel>
+          <TabPanel header="Sản phẩm">
+          {/* eslint-disable-next-line react/jsx-pascal-case */}
+          <Product_Update data={data.product} />
+          </TabPanel>
           <TabPanel header="Hình ảnh">
             <Image uploadUrl={url} images={data.images} />
           </TabPanel>
@@ -299,14 +310,6 @@ export default function SizeDemo() {
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
           <ProductPatchs_Create />
-          <Button
-            className="button_Dia"
-            id="Create"
-            label="Hủy"
-            severity="secondary"
-            outlined
-            onClick={() => setProductDialog(false)}
-          />
         </Dialog>
       </div>
     </div>

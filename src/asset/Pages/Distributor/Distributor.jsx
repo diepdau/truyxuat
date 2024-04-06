@@ -9,18 +9,10 @@ import axios from "axios";
 import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
-import Distributor_Update from "./Distributor_Update.jsx";
 import Distributor_Create from "./Distributor_Create.jsx";
 import Image from "../../../components/Images/Image.jsx";
 import "./Distributor.css";
-const emptyProduct = {
-  _id: null,
-  name: "",
-  herd: "",
-  quantity: "",
-  unit: "",
-  date: "",
-};
+const emptyProduct = {};
 export default function SizeDemo() {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
@@ -164,7 +156,8 @@ export default function SizeDemo() {
         <TabView>
           <TabPanel header="Thông tin">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Distributor_Update data={data} reloadData={reloadData} />
+            <Distributor_Create data={data} reloadData={reloadData} isUpdate={true}
+            />
           </TabPanel>
           <TabPanel header="Hình ảnh">
             <Image uploadUrl={url} images={data.images} />
@@ -219,33 +212,24 @@ export default function SizeDemo() {
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
             field="warehouse_name"
-            header="Tên sản phẩm"
-            value={product.warehouse_name}
+            header="Tên nhà kho"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
             field="warehouse_address"
-            header="Số lượng"
-            value={product.warehouse_address}
-            style={{ minWidth: "10rem" }}
-          ></Column>
-          <Column
-            field="delivery_date"
-            header="Tên đàn (nguồn gốc) "
-            value={product.delivery_date}
+            header="Địa chỉ kho"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
             field="stores"
-            header="Tên đàn (nguồn gốc) "
-            value={product.stores}
+            header="Cửa hàng"
             style={{ minWidth: "10rem" }}
-          ></Column> <Column
-          field="product_patch"
-          header="Tên đàn (nguồn gốc) "
-          value={product.product_patch}
-          style={{ minWidth: "10rem" }}
-        ></Column>
+          ></Column>
+          <Column
+            field="product_patch"
+            header="Lô hàng"
+            style={{ minWidth: "10rem" }}
+          ></Column>
           <Column
             body={actionBodyTemplate}
             headerStyle={{ width: "10%", minWidth: "4rem" }}
@@ -299,15 +283,7 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <Distributor_Create />
-          <Button
-            className="button_Dia"
-            id="Create"
-            label="Hủy"
-            severity="secondary"
-            outlined
-            onClick={() => setProductDialog(false)}
-          />
+          <Distributor_Create isUpdate={false} />
         </Dialog>
       </div>
     </div>
