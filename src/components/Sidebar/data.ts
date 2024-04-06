@@ -30,6 +30,12 @@ export const menu = [
         url: '/thuoc-thu-y',
       }, 
       {
+        id: 10,
+        label: 'Sản phẩm',
+        icon: 'pi pi-fw pi-home',
+        url: '/san-pham',
+      },
+      {
         id: 6,
         label: 'Thu hoạch',
         icon: "pi pi-shopping-cart",

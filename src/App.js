@@ -27,6 +27,7 @@ import Herds_Details_List from "./asset/Pages/Home/Herds_Details_List.jsx";
 import Processors from "./asset/Pages/Processors/Processors.jsx";
 import ProductPatch from "./asset/Pages/ProductPatchs/ProductPatchs.jsx";
 import Distributor  from "./asset/Pages/Distributor/Distributor.jsx";
+import Products  from "./asset/Pages/Product/Product.jsx";
 import Main from "./components/Sidebar/Main.jsx";
 const Layout = () => {
   const { currentUser } = useContext(AuthContext);
@@ -115,6 +116,10 @@ const router = createBrowserRouter([
       },{
         path: "/phan-phoi",
         element: <Distributor  />,
+      },
+      {
+        path: "/san-pham",
+        element: <Products  />,
       },
     ],
   },
