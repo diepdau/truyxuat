@@ -42,14 +42,7 @@
     padding: 5px;
     border-radius: 5px;
   }
-  /* @media (min-width: 800px) {
-    .product-names ul {
-      width: 200px;
-    }
-  } */
-  .p-dropdown{
-    margin-bottom: 20px;
-  }
+ 
   .btn_top{
     margin-top: 4px;
     margin-left: 4px;

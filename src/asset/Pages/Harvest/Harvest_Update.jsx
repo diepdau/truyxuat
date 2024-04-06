@@ -6,16 +6,17 @@ import { Toast } from "primereact/toast";
 import "./Harvest.css";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
+import { InputTextarea } from "primereact/inputtextarea";
 
 const emptyProduct = {
   herd: {
     _id: "",
     name: "",
   },
-  name: "",
-  quantity: "",
+  // name: "",
+  // quantity: "",
   unit: null,
-  date: null,
+  date: "",
 };
 const unitOptions = [
   { label: "Cân", value: "Cân" },
@@ -31,7 +32,6 @@ function YourComponent({ data, reloadData }) {
   useEffect(() => {
     getHerd();
   }, []);
-  console.log(data);
   const getHerd = async () => {
     try {
       const res = await axios.get(`/herds`);
@@ -97,7 +97,10 @@ function YourComponent({ data, reloadData }) {
       newErrors.name = "Name is required.";
       isValid = false;
     }
-
+    if (!product.description.trim()) {
+      newErrors.description = "Description is required.";
+      isValid = false;
+    }
     // Kiểm tra lỗi cho trường quantity
     if (!product.quantity) {
       newErrors.quantity = "Quantity is required.";
@@ -106,76 +109,94 @@ function YourComponent({ data, reloadData }) {
       newErrors.quantity = "Quantity must be a number.";
       isValid = false;
     }
-
     setErrors(newErrors);
     return isValid;
   };
-
   const parsedDate = product.date ? new Date(product.date) : null;
-
   return (
     <div>
-      <Toast className="toast" ref={toast} />
+      <div className="container_update">
+        <div style={{ flex: 1, paddingRight: "1rem" }}>
+          <Toast className="toast" ref={toast} />
 
-      <h4>Đàn</h4>
-      <Dropdown
-        placeholder={data.herd.name}
-        type="text"
-        value={selectedHerd}
-        options={herds}
-        optionLabel="name"
-        onChange={(e) => {
-          setSelectedHerd(e.value);
-          product.herd = e.value._id;
-        }}
-        style={{ width: "100%" }}
-      />
-      {errors.herd && <small className="p-error">{errors.herd}</small>}
-      <h4>Tên</h4>
-      <InputText
-        name="name"
-        value={product.name}
-        autoResize
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.name && <small className="p-error">{errors.name}</small>}
+          <h4>Đàn</h4>
+          <Dropdown
+            placeholder={data.herd.name}
+            type="text"
+            value={selectedHerd}
+            options={herds}
+            optionLabel="name"
+            onChange={(e) => {
+              setSelectedHerd(e.value);
+              product.herd = e.value._id;
+            }}
+            style={{ width: "100%" }}
+          />
+          {errors.herd && <small className="p-error">{errors.herd}</small>}
 
-      <h4>Số lượng</h4>
-      <InputText
-        name="quantity"
-        type="number"
-        value={product.quantity}
-        autoResize
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.quantity && <small className="p-error">{errors.quantity}</small>}
+          <h4>Tên sản phẩm</h4>
+          <InputText
+            name="name"
+            value={product.name}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.name && <small className="p-error">{errors.name}</small>}
 
-      <h4>Đơn vị</h4>
-      <Dropdown
-        name="unit"
-        value={product.unit}
-        options={unitOptions}
-        optionLabel="label"
-        onChange={handleUnitChange}
-        placeholder="Select a unit"
-        style={{ width: "100%" }}
-      />
+          <h4>Mô tả</h4>
+          <InputTextarea
+            name="description"
+            value={product.description}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.description && (
+            <small className="p-error">{errors.description}</small>
+          )}
+        </div>
 
-      <h4>Ngày</h4>
-      <Calendar
-        inputId="cal_date"
-        name="date"
-        style={{ width: "100%" }}
-        value={parsedDate}
-        onChange={handleChange}
-      />
-      {errors.date && <small className="p-error">{errors.date}</small>}
+        {/* Cột phải */}
+        <div style={{ flex: 1 }}>
+          <h4>Số lượng</h4>
+          <InputText
+            name="quantity"
+            type="number"
+            value={product.quantity}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.quantity && (
+            <small className="p-error">{errors.quantity}</small>
+          )}
 
+          <h4>Đơn vị</h4>
+          <Dropdown
+            name="unit"
+            value={product.unit}
+            options={unitOptions}
+            optionLabel="label"
+            onChange={handleUnitChange}
+            placeholder="Select a unit"
+            style={{ width: "100%" }}
+          />
+
+          <h4>Ngày</h4>
+          <Calendar
+            inputId="cal_date"
+            name="date"
+            style={{ width: "100%" }}
+            value={parsedDate}
+            onChange={handleChange}
+          />
+          {errors.date && <small className="p-error">{errors.date}</small>}
+        </div>
+      </div>
       <Button
         className="button_Dia"
-        id="Luu"
+        id="Save"
         label="Lưu"
         severity="success"
         onClick={handleCreate}

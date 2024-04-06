@@ -33,9 +33,7 @@
     padding: 6px;
     color: rgb(77, 75, 75);
 }
-#Create{
-}
-#Luu{
+#Save{
     margin-top: 10px;
 }
 h4 {
@@ -52,3 +50,18 @@ h4 {
   .p-tabview .p-tabview-nav li .p-tabview-nav-link {
     border: solid #ffffff;
 }
+.p-inputtextarea 
+{
+    height: 49px;
+}
+.container_update{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+@media screen and (max-width: 450px) {
+    .container_update {
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+  }

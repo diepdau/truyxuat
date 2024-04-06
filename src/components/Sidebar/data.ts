@@ -2,13 +2,13 @@ export const menu = [
       {
         id: 1,
         label: 'Danh sách đàn',
-        icon: 'fa fa-info-circle',
+        icon: 'pi pi-exclamation-circle',
         url: '/danh-sach-dan', 
       },
       {
         id: 2,
         label: 'Trang trại',
-        icon: 'fa fa-globe',
+        icon: 'pi pi-map-marker',
         url: '/trang-trai',
       },
       // {
@@ -20,37 +20,37 @@ export const menu = [
       {
         id: 4,
         label: 'Bệnh',
-        icon: 'fa fa-bug',
+        icon: 'pi pi-book',
         url: '/benh',
       },
       {
         id: 5,
         label: 'Thuốc thú y',
-        icon: 'fa fa-medkit',
+        icon: 'pi pi-table',
         url: '/thuoc-thu-y',
       }, 
       {
         id: 6,
         label: 'Thu hoạch',
-        icon: 'pi pi-cart-minus',
+        icon: "pi pi-shopping-cart",
         url: '/thu-hoach',
       }, 
       {
         id: 7,
         label: 'Xử lý đóng gói',
-        icon: 'pi pi-spin pi-cog',
+        icon: 'pi pi-cog',
         url: '/dong-goi',
       }, 
       {
         id: 8,
         label: 'Lô sản phẩm',
-        icon: 'fa fa-shopping-cart',
+        icon: 'pi pi-inbox',
         url: '/lo-san-pham',
       },
       {
         id: 9,
         label: 'Phân phối',
-        icon: "pi pi-warehouse",
+        icon: 'pi pi-truck',
         url: '/phan-phoi',
       },
     

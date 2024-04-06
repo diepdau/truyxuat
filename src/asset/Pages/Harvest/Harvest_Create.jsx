@@ -112,61 +112,71 @@ function YourComponent() {
 
   return (
     <div>
-      <Toast className="toast" ref={toast} />
-      <h4>Herds</h4>
-      <Dropdown
-        type="text"
-        value={selectedHerd}
-        options={herds}
-        optionLabel="name"
-        onChange={(e) => {
-          setSelectedHerd(e.value);
-          product.herd = e.value._id;
-        }}
-        style={{ width: "100%" }}
-      />
-      {errors.herd && <small className="p-error">{errors.herd}</small>}
+      <div style={{ display: "flex", gap: "2rem" }}>
+        {/* Cột trái */}
+        <div style={{ flex: 1 }}>
+          <Toast className="toast" ref={toast} />
 
-      <h4>Name</h4>
-      <InputTextarea
-        name="name"
-        value={product.name}
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.name && <small className="p-error">{errors.name}</small>}
+          <h4>Herds</h4>
+          <Dropdown
+            type="text"
+            value={selectedHerd}
+            options={herds}
+            optionLabel="name"
+            onChange={(e) => {
+              setSelectedHerd(e.value);
+              product.herd = e.value._id;
+            }}
+            style={{ width: "100%" }}
+          />
+          {errors.herd && <small className="p-error">{errors.herd}</small>}
 
-      <h4>Quantity</h4>
-      <InputText
-        type="number"
-        name="quantity"
-        value={product.quantity}
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.quantity && <small className="p-error">{errors.quantity}</small>}
+          <h4>Name</h4>
+          <InputTextarea
+            name="name"
+            value={product.name}
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.name && <small className="p-error">{errors.name}</small>}
+        </div>
 
-      <h4>Unit</h4>
-      <Dropdown
-        name="unit"
-        value={product.unit}
-        options={unitOptions}
-        onChange={handleUnitChange}
-        placeholder="Select a unit"
-        style={{ width: "100%" }}
-      />
-      {errors.unit && <small className="p-error">{errors.unit}</small>}
+        {/* Cột phải */}
+        <div style={{ flex: 1 }}>
+          <h4>Quantity</h4>
+          <InputText
+            type="number"
+            name="quantity"
+            value={product.quantity}
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.quantity && (
+            <small className="p-error">{errors.quantity}</small>
+          )}
 
-      <h4>Date</h4>
-      <Calendar
-        inputId="cal_date"
-        name="date"
-        style={{ width: "100%" }}
-        value={product.date}
-        onChange={(e) => setProduct({ ...product, date: e.value })}
-      />
-      {errors.date && <small className="p-error">{errors.date}</small>}
+          <h4>Unit</h4>
+          <Dropdown
+            name="unit"
+            value={product.unit}
+            options={unitOptions}
+            onChange={handleUnitChange}
+            placeholder="Select a unit"
+            style={{ width: "100%" }}
+          />
+          {errors.unit && <small className="p-error">{errors.unit}</small>}
 
+          <h4>Date</h4>
+          <Calendar
+            inputId="cal_date"
+            name="date"
+            style={{ width: "100%" }}
+            value={product.date}
+            onChange={(e) => setProduct({ ...product, date: e.value })}
+          />
+          {errors.date && <small className="p-error">{errors.date}</small>}
+        </div>
+      </div>
       <Button
         className="button_Dia"
         id="Luu"

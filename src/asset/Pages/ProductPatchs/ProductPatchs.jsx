@@ -15,11 +15,18 @@ import Image from "../../../components/Images/Image.jsx";
 import "./ProductPatchs.css";
 const emptyProduct = {
   _id: null,
-  name: "",
-  herd: "",
+  processor: {
+    _id: "",
+    name: "",
+  },
+  product: {
+    _id: "",
+    name: "",
+  },
   quantity: "",
-  unit: "",
-  date: "",
+  description: "",
+  production_date: null,
+  release_date: null,
 };
 export default function SizeDemo() {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -139,7 +146,7 @@ export default function SizeDemo() {
       <React.Fragment>
         <div className="iconpage">
           <i
-            className="fa fa-trash"
+            className="pi pi-trash"
             onClick={() => confirmDeleteProduct(rowData)}
           ></i>
         </div>
@@ -217,28 +224,25 @@ export default function SizeDemo() {
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
+
           <Column
-            field="processor"
-            header="Tên sản phẩm"
-            value={product.processor}
+            field="processor.name"
+            header="Lô hàng"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
-            field="product"
-            header="Số lượng"
-            value={product.product}
+            field="product.name"
+            header="Sản phẩm"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
             field="quantity"
-            header="Tên đàn (nguồn gốc) "
-            value={product.quantity}
+            header="Số lượng"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
-            field="description"
-            header="Tên đàn (nguồn gốc) "
-            value={product.description}
+            field="release_date"
+            header="Ngày phát hành"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column

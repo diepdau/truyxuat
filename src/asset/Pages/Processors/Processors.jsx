@@ -11,7 +11,6 @@ import { TabView, TabPanel } from "primereact/tabview";
 import Processors_Update from "./Processors_Update.jsx";
 import Processors_Create from "./Processors_Create.jsx";
 import Image_Upload from "../../../components/Images/Image.jsx";
-import { Image } from "primereact/image";
 import "./Processors.css";
 const emptyProduct = {
   _id: null,
@@ -134,12 +133,10 @@ export default function SizeDemo() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <div className="iconpage">
-          <i
-            className="fa fa-trash"
-            onClick={() => confirmDeleteProduct(rowData)}
-          ></i>
-        </div>
+        <i
+          className="pi pi-trash"
+          onClick={() => confirmDeleteProduct(rowData)}
+        ></i>
       </React.Fragment>
     );
   };
@@ -151,7 +148,8 @@ export default function SizeDemo() {
     } catch (error) {
       console.log("Error:", error);
     }
-  };const onRowEditComplete = async (e) => {
+  };
+  const onRowEditComplete = async (e) => {
     let _products = [...products];
     let { newData, index } = e;
     _products[index] = newData;
@@ -184,6 +182,7 @@ export default function SizeDemo() {
             <Processors_Update data={data} reloadData={reloadData} />
           </TabPanel>
           <TabPanel header="Hình ảnh">
+            {/* eslint-disable-next-line react/jsx-pascal-case */}
             <Image_Upload uploadUrl={url} images={data.images} />
           </TabPanel>
         </TabView>
@@ -219,36 +218,16 @@ export default function SizeDemo() {
   const headerTemplate = (data) => {
     return (
       <React.Fragment>
-        <span className="vertical-align-middle ml-2 font-bold line-height-3">
+        <span
+          className=" card font-bold"
+          style={{ zIndex: 200 }}
+        >
           {data.name}
         </span>
       </React.Fragment>
     );
   };
-  const calculateCustomerTotal = (name) => {
-    let total = 0;
 
-    if (products) {
-      for (let customer of products) {
-        if (customer.name === name) {
-          total++;
-        }
-      }
-    }
-
-    return total;
-  };
-  const footerTemplate = (data) => {
-    return (
-      <React.Fragment>
-        <td colSpan={5}>
-          <div className="flex justify-content-end font-bold w-full">
-            Tổng sản phẩm: {calculateCustomerTotal(data.name)}
-          </div>
-        </td>
-      </React.Fragment>
-    );
-  };
   return (
     <div>
       <Toast className="toast" ref={toast} />
@@ -266,29 +245,33 @@ export default function SizeDemo() {
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
           paginator
-          rows={8}
+          rows={10}
           onRowEditComplete={onRowEditComplete}
           globalFilter={globalFilter}
           header={header}
           value={products}
-          rowGroupMode="subheader"
+          expandedRows={expandedRows}
+          onRowToggle={(e) => setExpandedRows(e.data)}
+          rowGroupMode="rowspan"
           groupRowsBy="name"
           sortMode="single"
           sortField="name"
           sortOrder={1}
-          expandableRowGroups
-          expandedRows={expandedRows}
-          onRowToggle={(e) => setExpandedRows(e.data)}
-          rowGroupHeaderTemplate={headerTemplate}
-          rowGroupFooterTemplate={footerTemplate}
           tableStyle={{ minWidth: "50rem" }}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
-          <Column selectionMode="multiple" exportable={true}></Column>
+
+          <Column
+            field="name"
+            editor={(options) => Name(options)}
+            header="Tên gói sản phẩm"
+            body={headerTemplate}
+            style={{ minWidth: "200px" }}
+          ></Column>
+
           <Column
             field="harvest.name"
             header="Tên sản phẩm"
-            editor={(options) => Name(options)}
             value={product.harvest.name}
             style={{ minWidth: "10rem" }}
           ></Column>
@@ -310,11 +293,7 @@ export default function SizeDemo() {
             value={product.date}
             style={{ minWidth: "10rem" }}
           ></Column>
-          <Column
-            rowEditor
-            headerStyle={{ width: "10%", minWidth: "4rem" }}
-            bodyStyle={{ textAlign: "center" }}
-          ></Column>
+          <Column selectionMode="multiple" exportable={true}></Column>
           <Column
             body={actionBodyTemplate}
             headerStyle={{ width: "10%", minWidth: "4rem" }}
@@ -369,14 +348,6 @@ export default function SizeDemo() {
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
           <Processors_Create />
-          <Button
-            className="button_Dia"
-            id="Create"
-            label="Hủy"
-            severity="secondary"
-            outlined
-            onClick={() => setProductDialog(false)}
-          />
         </Dialog>
       </div>
     </div>

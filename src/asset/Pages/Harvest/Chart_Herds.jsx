@@ -9,7 +9,7 @@ export default function BasicDemo() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("/harvests");
+                const response = await axios.get("/harvests?limit=29");
                 const harvests = response.data.harvests;
 
                 // Tạo mảng chứa các nhãn (labels) và dữ liệu (data) cho biểu đồ
@@ -18,7 +18,7 @@ export default function BasicDemo() {
 
                 // Lặp qua mỗi mục trong mảng harvests và thêm nhãn và dữ liệu tương ứng
                 harvests.forEach((harvest) => {
-                    labels.push(harvest.herd); // Nhãn là tên của đàn (herd)
+                    labels.push(harvest.herd.name); // Nhãn là tên của đàn (herd)
                     data.push(harvest.quantity); // Dữ liệu là số lượng (quantity)
                 });
 

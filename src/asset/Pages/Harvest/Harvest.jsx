@@ -139,12 +139,10 @@ export default function SizeDemo() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <div className="iconpage">
-          <i
-            className="fa fa-trash"
-            onClick={() => confirmDeleteProduct(rowData)}
-          ></i>
-        </div>
+        <i
+          className="pi pi-trash"
+          onClick={() => confirmDeleteProduct(rowData)}
+        ></i>
       </React.Fragment>
     );
   };
@@ -195,10 +193,10 @@ export default function SizeDemo() {
   return (
     <div>
       <Toast className="toast" ref={toast} />
-       {/* eslint-disable-next-line react/jsx-pascal-case */}
+      {/* eslint-disable-next-line react/jsx-pascal-case */}
       <Chart_Herds />
       {/* eslint-disable-next-line react/jsx-pascal-case */}
-      <Chart_Products/>
+      <Chart_Products />
       <div className="card">
         <Toolbar
           className="mb-4"
@@ -233,12 +231,24 @@ export default function SizeDemo() {
             field="quantity"
             header="Số lượng"
             value={product.quantity}
-            style={{ minWidth: "10rem" }}
+            style={{ minWidth: "5rem" }}
+          ></Column>
+          <Column
+            field="unit"
+            header="Đơn vị tính"
+            value={product.unit}
+            style={{ minWidth: "5rem" }}
           ></Column>
           <Column
             field="herd.name"
             header="Tên đàn (nguồn gốc) "
             value={product.herd.name}
+            style={{ minWidth: "10rem" }}
+          ></Column>
+          <Column
+            field="date"
+            header="Ngày thu hoạch"
+            value={product.date}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column

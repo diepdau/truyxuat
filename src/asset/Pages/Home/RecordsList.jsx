@@ -197,12 +197,10 @@ export default function SizeDemo({ herdId }) {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <div className="iconpage">
           <i
-            className="fa fa-trash"
+            className="pi pi-trash"
             onClick={() => confirmDeleteProduct(rowData)}
           ></i>
-        </div>
       </React.Fragment>
     );
   };

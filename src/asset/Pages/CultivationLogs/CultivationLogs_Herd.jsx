@@ -140,7 +140,7 @@ export default function CulivationLogs_Herd({ idherd }) {
       <React.Fragment>
         <div className="iconpage">
           <i
-            className="fa fa-trash"
+            className="pi pi-trash"
             onClick={() => confirmDeleteProduct(rowData)}
           ></i>
         </div>

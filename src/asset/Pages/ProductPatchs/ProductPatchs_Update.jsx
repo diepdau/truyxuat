@@ -3,55 +3,59 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import axios from "axios";
 import { Toast } from "primereact/toast";
+import "./ProductPatchs.css";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
+import Processors_Update from "../Processors/Processors_Update.jsx"
 
 const emptyProduct = {
-  herd: {
-    _id: "",
-    name: "",
-  },
   name: "",
+  location: "",
+  date: "",
+  product: {
+    name: "",
+    description: "",
+    price: "",
+    production_date: "",
+    expiration_date: "",
+    storage_method: "",
+    qrcode: ""
+  },
   quantity: "",
-  unit: null,
-  date: null,
+  description: "",
+  production_date: "",
+  release_date: ""
 };
+
 const unitOptions = [
   { label: "Cân", value: "Cân" },
   { label: "Kg", value: "Kg" },
-  { label: "Túi", value: "Túi" },
+  { label: "Túi", value: "Túi" }
 ];
+
 function YourComponent({ data, reloadData }) {
+  const d=data.processor;
+  console.log(data.processor);
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
-  const [herds, setHerds] = useState({});
-  const [selectedHerd, setSelectedHerd] = useState(null);
   const toast = useRef(null);
+  const [herds, setHerds] = useState([]);
   useEffect(() => {
-    getHerd();
+    getHerds();
   }, []);
-  console.log(data);
-  const getHerd = async () => {
+  const getHerds = async () => {
     try {
-      const res = await axios.get(`/herds`);
-      setHerds(res.data.herds);
+      const res = await axios.get(`/processors`);
+      setHerds(res.data.processors);
     } catch (error) {
       console.log(error);
     }
   };
-
   const handleChange = (event) => {
-    const { value, name } = event.target;
-    const newValue = name === "date" ? value.toISOString() : value;
+    const { name, value } = event.target;
     setProduct({
       ...product,
-      [name]: newValue,
-    });
-  };
-  const handleUnitChange = (event) => {
-    setProduct({
-      ...product,
-      unit: event.value,
+      [name]: value
     });
   };
 
@@ -61,21 +65,14 @@ function YourComponent({ data, reloadData }) {
     }
 
     try {
-      const response = await axios.patch(`/harvests/${data._id}`, product);
+      const response = await axios.patch(`/product-patchs/${data._id}`, product);
       toast.current.show({
         severity: "success",
         summary: "Sửa hoàn thành",
-        life: 3000,
+        life: 3000
       });
       reloadData();
-      setProduct({
-        ...product,
-        herd: response.data.herd,
-        name: response.data.name,
-        quantity: response.data.quantity,
-        unit: response.data.unit,
-        date: response.data.date,
-      });
+      setProduct(response.data);
     } catch (error) {
       console.log("Error update:", error);
     }
@@ -85,100 +82,136 @@ function YourComponent({ data, reloadData }) {
     let isValid = true;
     const newErrors = {};
 
-    // Kiểm tra lỗi cho trường herd
-    // if (!product.herd.trim()) {
-    //   newErrors.herd = "Herd is required.";
-    //   isValid = false;
-    // }
-
-    // Kiểm tra lỗi cho trường name
-    if (!product.name.trim()) {
-      newErrors.name = "Name is required.";
-      isValid = false;
-    }
-
-    // Kiểm tra lỗi cho trường quantity
-    if (!product.quantity) {
-      newErrors.quantity = "Quantity is required.";
-      isValid = false;
-    } else if (isNaN(product.quantity)) {
-      newErrors.quantity = "Quantity must be a number.";
-      isValid = false;
-    }
+    // Add validation logic here
 
     setErrors(newErrors);
     return isValid;
   };
 
-  const parsedDate = product.date ? new Date(product.date) : null;
-
+  const parsedDate = product.production_date ? new Date(product.production_date) : null;
+  const parsedProductionDate = product.product.production_date ? new Date(product.product.production_date) : null;
+  const parsedExpirationDate = product.product.expiration_date ? new Date(product.product.expiration_date) : null;
+  const parsedDate1 = product.release_date ? new Date(product.release_date) : null;
   return (
     <div>
-      <Toast className="toast" ref={toast} />
+      <div className="container_update">
+        <div style={{ flex: 1, paddingRight: "1rem" }}>
+          <Toast className="toast" ref={toast} />
 
-      <h4>Đàn</h4>
-      <Dropdown
-        placeholder={data.herd.name}
-        type="text"
-        value={selectedHerd}
-        options={herds}
-        optionLabel="name"
-        onChange={(e) => {
-          setSelectedHerd(e.value);
-          product.herd = e.value._id;
-        }}
-        style={{ width: "100%" }}
-      />
-      {errors.herd && <small className="p-error">{errors.herd}</small>}
-      <h4>Tên</h4>
-      <InputText
-        name="name"
-        value={product.name}
-        autoResize
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.name && <small className="p-error">{errors.name}</small>}
+          <h4>Tên</h4>
+          <InputText
+            name="_id"
+            value={product._id}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
 
-      <h4>Số lượng</h4>
-      <InputText
-        name="quantity"
-        type="number"
-        value={product.quantity}
-        autoResize
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.quantity && <small className="p-error">{errors.quantity}</small>}
+          <h4>Số lượng</h4>
+          <InputText
+            name="quantity"
+            value={product.quantity}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+        <h4>Mô tả</h4>
+          <InputText
+            name="description"
+            value={product.description}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          <h4>Ngày sản xuất</h4>
+          <Calendar
+            inputId="cal_date"
+            name="date"
+            style={{ width: "100%" }}
+            value={parsedDate}
+            onChange={handleChange}
+          />
+          <h4>Ngày phát hành</h4>
+          <Calendar
+            inputId="cal_date"
+            name="date"
+            style={{ width: "100%" }}
+            value={parsedDate1}
+            onChange={handleChange}
+          />
+        </div>
 
-      <h4>Đơn vị</h4>
-      <Dropdown
-        name="unit"
-        value={product.unit}
-        options={unitOptions}
-        optionLabel="label"
-        onChange={handleUnitChange}
-        placeholder="Select a unit"
-        style={{ width: "100%" }}
-      />
+        <div style={{ flex: 1 }}>
+          <h4>Tên sản phẩm</h4>
+          <InputText
+            name="productName"
+            value={product.product.name}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
 
-      <h4>Ngày</h4>
-      <Calendar
-        inputId="cal_date"
-        name="date"
-        style={{ width: "100%" }}
-        value={parsedDate}
-        onChange={handleChange}
-      />
-      {errors.date && <small className="p-error">{errors.date}</small>}
+          <h4>Mô tả</h4>
+          <InputText
+            name="description"
+            value={product.product.description}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
 
+          <h4>Giá</h4>
+          <InputText
+            name="price"
+            value={product.product.price}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+
+          <h4>Ngày sản xuất</h4>
+          <Calendar
+            inputId="cal_production_date"
+            name="production_date"
+            style={{ width: "100%" }}
+            value={parsedProductionDate}
+            onChange={handleChange}
+          />
+
+          <h4>Ngày hết hạn</h4>
+          <Calendar
+            inputId="cal_expiration_date"
+            name="expiration_date"
+            style={{ width: "100%" }}
+            value={parsedExpirationDate}
+            onChange={handleChange}
+          />
+
+          <h4>Phương pháp bảo quản</h4>
+          <InputText
+            name="storage_method"
+            value={product.product.storage_method}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+
+          <h4>Mã QR</h4>
+          <img
+          alt=""
+            src={product.product.qrcode}
+          />
+        </div>
+      </div>
       <Button
         className="button_Dia"
-        id="Luu"
+        id="Save"
         label="Lưu"
         severity="success"
         onClick={handleCreate}
       />
+      {/* eslint-disable-next-line react/jsx-pascal-case */}
+      <Processors_Update data={d} reloadData={reloadData}/>
     </div>
   );
 }
