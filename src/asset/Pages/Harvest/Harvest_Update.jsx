@@ -18,12 +18,15 @@ const emptyProduct = {
   unit: null,
   date: "",
 };
+
+
 const unitOptions = [
   { label: "Cân", value: "Cân" },
   { label: "Kg", value: "Kg" },
   { label: "Túi", value: "Túi" },
 ];
 function YourComponent({ data, reloadData }) {
+ 
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState({});
@@ -123,7 +126,7 @@ function YourComponent({ data, reloadData }) {
           <Dropdown
             placeholder={data.herd.name}
             type="text"
-            value={selectedHerd.name}
+            value={selectedHerd}//
             options={herds}
             optionLabel="herds.name"
             onChange={(e) => {

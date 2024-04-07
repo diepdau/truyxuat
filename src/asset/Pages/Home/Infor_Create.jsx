@@ -19,7 +19,7 @@ const initFormValue = {
   start_date: "",
   location: "",
 };
-function Infor_Herd({idherd, data, isUpdate, reloadData }) {
+function Infor_Herd({ isUpdate, reloadData }) {
   const [formData, setFormData] = useState(initFormValue);
   const [categories, setcategories] = useState([]);
   const [farm, setfarm] = useState([]);
@@ -53,25 +53,14 @@ function Infor_Herd({idherd, data, isUpdate, reloadData }) {
       return;
     }
     try {
-      if (data && isUpdate) {
-        const res = await axios.patch(`/herds/${data._id}`, formData);
-        toast.current.show({
-          severity: "success",
-          summary: "Sửa hoàn thành",
-          life: 3000,
-        });
-        reloadData();
-        setFormData(res.data);
-      } else {
-        await axios.post(`/herds/`, formData);
-        toast.current.show({
-          severity: "success",
-          summary: "Thêm hoàn thành",
-          life: 3000,
-        });
-        reloadData();
-        setFormData(initFormValue); 
-      }
+      await axios.post(`/herds/`, formData);
+      toast.current.show({
+        severity: "success",
+        summary: "Thêm hoàn thành",
+        life: 3000,
+      });
+      setFormData(initFormValue);
+      reloadData();
     } catch (error) {
       console.log("Error:", error);
     }
@@ -127,6 +116,7 @@ function Infor_Herd({idherd, data, isUpdate, reloadData }) {
           <div className="userUpdateItem">
             <label>Số lượng</label>
             <InputText
+              disabled
               type="number"
               name="member_count"
               value={formData.member_count}
@@ -134,13 +124,13 @@ function Infor_Herd({idherd, data, isUpdate, reloadData }) {
             />
           </div>
           <div className="userUpdateItem">
-            <label>Quantity</label>
-            <InputText
-              disabled
-              type="number"
-              name="quantity"
-              value={formData.quantity}
-              autoResize
+            <label>Ngày</label>
+            <Calendar
+              inputId="cal_date"
+              name="start_date"
+              style={{ width: "100%" }}
+              value={parsedDate}
+              // value={formData.start_date}
               onChange={handleChange}
             />
           </div>
@@ -174,7 +164,7 @@ function Infor_Herd({idherd, data, isUpdate, reloadData }) {
             />
           </div>
           <div className="userUpdateItem">
-            <label>farm</label>
+            <label>Trang trại</label>
             <Dropdown
               type="text"
               options={farm}
@@ -186,17 +176,7 @@ function Infor_Herd({idherd, data, isUpdate, reloadData }) {
               value={selectedfarm}
             />
           </div>
-          <div className="userUpdateItem">
-            <label>Start day</label>
-            <Calendar
-              inputId="cal_date"
-              name="start_date"
-              style={{ width: "100%" }}
-              value={parsedDate}
-              // value={formData.start_date}
-              onChange={handleChange}
-            />
-          </div>
+          
         </div>
 
         <div style={{ flex: 1 }}>
@@ -222,7 +202,6 @@ function Infor_Herd({idherd, data, isUpdate, reloadData }) {
         severity="success"
         onClick={handleSubmit}
       />
-    
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { DataTable } from "primereact/datatable";
-import { useForm } from "react-hook-form";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
@@ -9,9 +8,9 @@ import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import { Dropdown } from "primereact/dropdown";
 import { Toast } from "primereact/toast";
-import { Galleria } from "primereact/galleria";
 import "./HerdsList.css";
 import { Calendar } from "primereact/calendar";
+import ImageUploader from "../../../components/Images/Image";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -33,9 +32,6 @@ export default function SizeDemo({ herdId }) {
   const toast = useRef(null);
 
   //Lấy danh sách con trong 1 đàn
-  useEffect(() => {
-    getHerd();
-  }, []);
   const getHerd = async () => {
     try {
       const res = await axios.get(`/herds/${herdId}`);
@@ -44,6 +40,10 @@ export default function SizeDemo({ herdId }) {
       console.log(error);
     }
   };
+  useEffect(() => {
+    getHerd();
+  }, [products]);
+
   const openNew = () => {
     setProductDialog(true);
   };
@@ -116,7 +116,6 @@ export default function SizeDemo({ herdId }) {
           onClick={confirmDeleteSelected}
           disabled={!selectedProducts || !selectedProducts.length}
         />
-       
       </div>
     );
   };
@@ -135,6 +134,9 @@ export default function SizeDemo({ herdId }) {
   const deleteSelectedProducts = () => {
     for (const selectedProduct of selectedProducts) {
       handleDeleteUser(selectedProduct);
+      try {
+        reloadData();
+      } catch {}
     }
     toast.current.show({
       severity: "success",
@@ -147,6 +149,9 @@ export default function SizeDemo({ herdId }) {
     let _products = products.filter((val) => val._id === product._id);
     const firstObject = _products[0];
     handleDeleteUser(firstObject);
+    try {
+      reloadData();
+    } catch {}
     setDeleteProductDialog(false);
     toast.current.show({
       severity: "success",
@@ -197,17 +202,16 @@ export default function SizeDemo({ herdId }) {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-          <i
-            className="pi pi-trash"
-            onClick={() => confirmDeleteProduct(rowData)}
-          ></i>
+        <i
+          className="pi pi-trash"
+          onClick={() => confirmDeleteProduct(rowData)}
+        ></i>
       </React.Fragment>
     );
   };
   const handleDeleteUser = async (product) => {
     try {
       await axios.delete(`/animals/${product._id}`, product);
-      reloadData();
     } catch (error) {
       console.log("Error:", error);
     }
@@ -281,73 +285,18 @@ export default function SizeDemo({ herdId }) {
       console.log("Error update:", error);
     }
   };
-  //Upload hình
-  const { register, handleSubmit } = useForm();
-
-  const upLoadImage = async (data) => {
-    const formData = new FormData();
-    for (const file of data.file) {
-      formData.append("images", file);
-    }
-    try {
-      const responseImg = await axios.patch(
-        `/animals/upload/${product._id}`,
-        formData
-      );
-      console.log("Product updated img successfully:", responseImg.data);
-      reloadData();
-      toast.current.show({
-        severity: "success",
-        summary: "Đã thêm hình",
-        life: 3000,
-      });
-    } catch (error) {
-      console.log("Error img:", error);
-    }
-  };
   const [expandedRows, setExpandedRows] = useState(null);
-  const thumbnailTemplate = (item) => (
-    <img
-      src={item.path}
-      alt={item.name}
-      style={{ width: "50%", overflow: "hidden", maxHeight: "200px" }}
-    />
-  );
-
-  const thumbnail = (item) => (
-    <img
-      src={item.path}
-      alt={item.name}
-      style={{ width: "100%", overflow: "hidden", maxHeight: "400px" }}
-    />
-  );
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
+    var url = `/animals/upload/${product._id}`;
     return (
       <>
         <h3 style={{ color: "black" }}>Hình</h3>
-        <Galleria
-          className="Image_animals"
-          value={data.images}
-          numVisible={5}
-          circular
-          showItemNavigators
-          showItemNavigatorsOnHover
-          showIndicators
-          showThumbnails={false}
-          style={{ maxWidth: "640px" }}
-          item={thumbnail}
-          thumbnail={thumbnailTemplate}
+        <ImageUploader
+          uploadUrl={url}
+          images={data.images}
+          reloadData={reloadData}
         />
-        <div className=" updateimage">
-          <form
-            encType="multipart/formdata"
-            onSubmit={handleSubmit(upLoadImage)}
-          >
-            <input type="file" multiple {...register("file")} />
-            <input type="submit" />
-          </form>
-        </div>
       </>
     );
   };
@@ -481,11 +430,11 @@ export default function SizeDemo({ herdId }) {
         {/* Them va them tu dong */}
 
         <Dialog
+          header="Thêm mới"
           style={{ width: "50%" }}
           visible={productDialog}
           onHide={() => setProductDialog(false)}
         >
-          <h3>Thêm mới</h3>
           <div>
             <form className="userUpdateForm">
               <div className="userUpdateLeft">
@@ -558,25 +507,18 @@ export default function SizeDemo({ herdId }) {
         </Dialog>
 
         <Dialog
-          style={{ width: "50%" }}
+          header="Thêm mới tự động"
+          style={{ width: "30%" }}
           visible={productDialogNewAuto}
           onHide={() => setProductDialogNewAuto(false)}
         >
-          <h3>Thêm mới tự động</h3>
-          <form className="userUpdateForm">
-            <div className="userUpdateLeft">
-              <div className="userUpdateItem">
-                <label>Số lượng</label>
-                <input
-                  type="number"
-                  name="quantity"
-                  value={product.quantity}
-                  onChange={handleChange}
-                  className="userUpdateInput"
-                />
-              </div>
-            </div>
-          </form>
+          <label>Số lượng</label>
+          <InputText
+            type="number"
+            name="quantity"
+            value={product.quantity}
+            onChange={handleChange}
+          />
           <Button
             className="button_Dia"
             label="Lưu"
@@ -592,7 +534,6 @@ export default function SizeDemo({ herdId }) {
           />
         </Dialog>
       </div>
-      
     </div>
   );
 }

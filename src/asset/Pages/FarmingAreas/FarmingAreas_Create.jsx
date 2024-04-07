@@ -40,14 +40,14 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
     );
     try {
       if (data) {
-        const res= await axios.patch(`/farm/${data._id}`, formData);
+        const res = await axios.patch(`/farm/${data._id}`, formData);
         toast.current.show({
           severity: "success",
           summary: "Sửa hoàn thành",
           life: 3000,
         });
         reloadData();
-      setFormData(res.data);
+        setFormData(res.data);
       } else {
         await axios.post(`/farm`, formData);
         toast.current.show({
@@ -96,11 +96,11 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
   };
 
   return (
-    <div  className="container_update">
-      <div style={{ display: "flex", gap: "2rem" }}>
-        {/* Cột trái */}
-        <div style={{ flex: 1 }}>
-          <Toast className="toast" ref={toast} />
+    <div>
+      <Toast className="toast" ref={toast} />
+      <div className="container_update_areas">
+        <div style={{ flex: 1, paddingRight: "1rem" }}>
+          {/* Cột trái */}
 
           <h4>Trang trại</h4>
           <InputTextarea
@@ -131,7 +131,6 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
             <small className="p-error">{errors.description}</small>
           )}
         </div>
-
         {/* Cột phải */}
         <div style={{ flex: 1 }}>
           <h4>Địa chỉ</h4>
@@ -159,7 +158,6 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
           {isUpdate ? <Map123 coordinates={coo} nameAres={data.address} /> : ""}
         </div>
       </div>
-
       <Button
         className="button_Dia"
         id="Save"

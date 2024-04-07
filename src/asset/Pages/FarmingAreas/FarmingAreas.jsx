@@ -74,6 +74,9 @@ export default function SizeDemo() {
   const deleteSelectedProducts = () => {
     for (const selectedProduct of selectedProducts) {
       handleDeleteUser(selectedProduct);
+      try {
+        reloadData();
+      } catch {}
       setDeleteProductsDialog(false);
       toast.current.show({
         severity: "success",
@@ -86,6 +89,9 @@ export default function SizeDemo() {
     let _products = products.filter((val) => val._id === product._id);
     const firstObject = _products[0];
     handleDeleteUser(firstObject);
+    try {
+      reloadData();
+    } catch {}
     setDeleteProductDialog(false);
     toast.current.show({
       severity: "success",
@@ -145,7 +151,7 @@ export default function SizeDemo() {
   const handleDeleteUser = async (product) => {
     try {
       await axios.delete(`/farm/${product._id}`, product);
-      reloadData();
+      // reloadData();
     } catch (error) {
       console.log("Error:", error);
     }
@@ -159,8 +165,12 @@ export default function SizeDemo() {
       <>
         <TabView>
           <TabPanel header="Thông tin">
-             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <FarmingAreas_Create data={data} isUpdate={true} reloadData={reloadData()}/> 
+            {/* eslint-disable-next-line react/jsx-pascal-case */}
+            <FarmingAreas_Create
+              data={data}
+              isUpdate={true}
+              reloadData={reloadData()}
+            />
           </TabPanel>
           <TabPanel header="Hình ảnh">
             <ImageUploader uploadUrl={url} images={data.images} />
@@ -207,7 +217,7 @@ export default function SizeDemo() {
           dataKey="_id"
           paginator
           rows={8}
-          tableStyle={{ minWidth: "50rem" }}
+          tableStyle={{ minWidth: "68rem" }}
           globalFilter={globalFilter}
           header={header}
         >
@@ -279,11 +289,11 @@ export default function SizeDemo() {
         </Dialog>
 
         <Dialog
+          header="Thêm mới"
           style={{ width: "50%" }}
           visible={productDialog}
           onHide={() => setProductDialog(false)}
         >
-          <h3>Thêm mới</h3>
           {/* eslint-disable-next-line react/jsx-pascal-case */}
           <FarmingAreas_Create reloadData={reloadData()} />
         </Dialog>

@@ -76,20 +76,13 @@ function YourComponent() {
     if (!product.symptoms.trim()) {
       newErrors.symptoms = "Symptoms is required.";
       isValid = false;
-    } else if (product.symptoms.trim().length < 20) {
-      newErrors.symptoms = "Symptoms must be at least 20 characters long.";
-      isValid = false;
-    }
+    } 
 
     // Kiểm tra lỗi cho trường preventive_measures
     if (!product.preventive_measures.trim()) {
       newErrors.preventive_measures = "Preventive measures is required.";
       isValid = false;
-    } else if (product.preventive_measures.trim().length < 20) {
-      newErrors.preventive_measures =
-        "Preventive measures must be at least 20 characters long.";
-      isValid = false;
-    }
+    } 
 
     setErrors(newErrors);
     return isValid;

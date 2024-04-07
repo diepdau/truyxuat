@@ -10,7 +10,6 @@ import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
 import Treatments_Create from "./Treatments_Create.jsx";
-import Image from "../../../components/Images/Image.jsx";
 import "./Treatments.css";
 const emptyProduct = {
   _id: null,
@@ -37,7 +36,6 @@ export default function SizeDemo({ idherd }) {
       try {
         const res = await axios.get(`/treatments/herd/${idherd}`);
         setProducts(res.data.treatments);
-        console.log(products);
       } catch (error) {
         console.log(error);
       }
@@ -45,7 +43,6 @@ export default function SizeDemo({ idherd }) {
       try {
         const res = await axios.get(`/treatments?limit=32`);
         setProducts(res.data.treatments);
-        console.log(products);
       } catch (error) {
         console.log(error);
       }
@@ -165,7 +162,6 @@ export default function SizeDemo({ idherd }) {
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
-    var url = `/treatments/upload/${product._id}`;
     return (
       <>
         <TabView>
@@ -176,10 +172,6 @@ export default function SizeDemo({ idherd }) {
               reloadData={reloadData}
               isUpdate={true}
             />
-          </TabPanel>
-          <TabPanel header="Hình ảnh">
-            <Image uploadUrl={url} images={data.images} />
-           
           </TabPanel>
         </TabView>
       </>
@@ -243,7 +235,7 @@ export default function SizeDemo({ idherd }) {
           ></Column>
           <Column
             field="product"
-            header="Sản phẩm"
+            header="Thuốc sử dụng"
             value={product.product}
             style={{ minWidth: "10rem" }}
           ></Column>
@@ -255,7 +247,7 @@ export default function SizeDemo({ idherd }) {
           ></Column>
           <Column
             field="mode"
-            header="Mode"
+            header="Hình thức điều trị"
             value={product.mode}
             style={{ minWidth: "5rem" }}
           ></Column>

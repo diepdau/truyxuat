@@ -77,6 +77,7 @@ export default function SizeDemo() {
     for (const selectedProduct of selectedProducts) {
       handleDeleteUser(selectedProduct);
       setDeleteProductsDialog(false);
+      try{ reloadData();}catch{};
       toast.current.show({
         severity: "success",
         summary: "Đã xóa",
@@ -88,6 +89,7 @@ export default function SizeDemo() {
     let _products = products.filter((val) => val._id === product._id);
     const firstObject = _products[0];
     handleDeleteUser(firstObject);
+    try{ reloadData();}catch{};
     setDeleteProductDialog(false);
     toast.current.show({
       severity: "success",
@@ -149,7 +151,7 @@ export default function SizeDemo() {
   const handleDeleteUser = async (product) => {
     try {
       await axios.delete(`/diseases/${product._id}`, product);
-      reloadData();
+      // reloadData();
     } catch (error) {
       console.log("Error:", error);
     }
@@ -187,7 +189,7 @@ export default function SizeDemo() {
   const [globalFilter, setGlobalFilter] = useState(null);
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Manage Records</h4>
+      <h4 className="m-0">Quản lý bệnh</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -253,7 +255,7 @@ export default function SizeDemo() {
               className="pi pi-exclamation-triangle mr-3"
               style={{ fontSize: "2rem" }}
             />
-            {product && <span>Bạn có chắc chắn xóa những đàn này?</span>}
+            {product && <span>Bạn có chắc chắn xóa những mục này?</span>}
           </div>
         </Dialog>
         <Dialog
@@ -285,14 +287,6 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           <Diseases_Create />
-          <Button
-            className="button_Dia"
-            id="Create"
-            label="Hủy"
-            severity="secondary"
-            outlined
-            onClick={() => setProductDialog(false)}
-          />
         </Dialog>
       </div>
     </div>

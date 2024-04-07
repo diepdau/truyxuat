@@ -1,245 +1,222 @@
-import { useEffect, useState, useContext, useRef } from "react";
-import "../Category/Category.css";
+import React, { useEffect, useState, useRef } from "react";
+import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
 import axios from "axios";
 import { Toast } from "primereact/toast";
-import { HerdsContext } from "../../service/Herd_data.js";
-import { Dropdown } from "primereact/dropdown";
-import { InputTextarea } from "primereact/inputtextarea";
 import { InputText } from "primereact/inputtext";
-import ImageUploader from "../../../components/Images/Image.jsx";
+import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
-const initFormValue = {
+
+const emptyProduct = {
   name: "",
   member_count: 0,
-  category: "",
+  category: {
+    _id: "",
+    name: "",
+  },
   description: "",
-  quantity: 0,
-  farm: "",
+  farm: {
+    _id: "",
+    name: "",
+  },
   start_date: "",
   location: "",
 };
-function Infor_Herd({ idherd, data, isUpdate, reloadData }) {
 
-  const [formData, setFormData] = useState(data || "");
-  const [categories, setcategories] = useState([]);
-  const [farm, setfarm] = useState([]);
-  const [selectedCategories, setelectedCategories] = useState(null);
-  const [selectedfarm, setSelectedfarm] = useState(null);
-  const { handleGetCategory, handleGetFarm } = useContext(HerdsContext);
+function YourComponent({ data, reloadData, isUpdate }) {
+  const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
+  const [farm, setfarm] = useState({});
+  const [categories, setcategories] = useState({});
+
+  const [selectedCategories, setelectedCategories] = useState(null);
+  const [selectedfarm, setSelectedfarm] = useState(null);
+  const handleChange = (event) => {
+    const { value, name } = event.target;
+
+    setProduct({
+      ...product,
+      [name]: value,
+    });
+  };
   useEffect(() => {
     fetchDataFarm();
     fetchDataCategory();
   }, []);
-
   const fetchDataCategory = async () => {
-    const categoryList = await handleGetCategory();
-    setcategories(categoryList);
+    const categoryList = await axios.get("/categories");
+    setcategories(categoryList.data.categories);
   };
   const fetchDataFarm = async () => {
-    const farmList = await handleGetFarm();
-    setfarm(farmList);
+    const farmList = await axios.get("/farm");
+    setfarm(farmList.data.farms);
   };
-  const handleChange = (event) => {
-    const { value, name } = event.target;
-    const newValue = name === "start_date" ? value.toISOString() : value;
-    setFormData({
-      ...formData,
-      [name]: newValue,
-    });
-  };
-  const handleSubmit = async () => {
+  const onRowEditComplete = async () => {
     if (!validate()) {
       return;
     }
+
     try {
       if (isUpdate) {
-        const res = await axios.patch(`/herds/${data._id}`, formData);
+        const response = await axios.patch(`/herds/${data._id}`, product);
         toast.current.show({
           severity: "success",
           summary: "Sửa hoàn thành",
           life: 3000,
         });
-        reloadData();
-        setFormData(res.data.herd);
+        console.log("tc");
+        console.log(response);
+
+        setProduct({
+          ...product,
+          start_date: response.data.start_date
+            ? new Date(response.data.start_date)
+            : null,
+        });
       } else {
-        await axios.post(`/herds/`, formData);
+        await axios.post(`/herds`, product);
         toast.current.show({
           severity: "success",
           summary: "Thêm hoàn thành",
           life: 3000,
         });
-        reloadData();
-        setFormData(initFormValue);
+        setProduct(emptyProduct);
       }
+      reloadData();
     } catch (error) {
-      console.log("Error:", error);
+      console.log("Error update:", error);
     }
   };
+
   const validate = () => {
     let isValid = true;
     const newErrors = {};
 
-    // // Kiểm tra lỗi cho trường description
-    // if (!formData.description) {
-    //   newErrors.description = "Description is required.";
-    //   isValid = false;
-    // } else if (formData.description.trim().length < 20) {
-    //   newErrors.description =
-    //     "Description must be at least 20 characters long.";
-    //   isValid = false;
-    // }
+    // Kiểm tra lỗi cho trường name
+    if (!product.name) {
+      newErrors.name = "Name is required.";
+      isValid = false;
+    }
 
-    // // Kiểm tra lỗi cho trường name
-    // if (!formData.name) {
-    //   newErrors.name = "Name is required.";
-    //   isValid = false;
-    // }
+    // Kiểm tra lỗi cho trường description
+    if (!product.description) {
+      newErrors.description = "Description is required.";
+      isValid = false;
+    }
 
-    // // Kiểm tra lỗi cho trường location
-    // if (!formData.location) {
-    //   newErrors.location = "Location is required.";
-    //   isValid = false;
-    // }
+    // Kiểm tra lỗi cho trường location
+    if (!product.location) {
+      newErrors.location = "Location is required.";
+      isValid = false;
+    }
 
     setErrors(newErrors);
     return isValid;
   };
-  const parsedDate = formData.start_date ? new Date(formData.start_date) : null;
-  // const farmName = formData.farm.name ? formData.farm.name : "";
-  
-  var url = idherd ? `/herds/upload/${idherd}` : "";
+  const parsedDate = product.start_date ? new Date(product.start_date) : null;
+  const categoryName =
+    product.category && product.category.name ? product.category.name : "";
+  const farmName = product.farm && product.farm.name ? product.farm.name : "";
   return (
     <div>
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <Toast className="toast" ref={toast} />
-          <div className="userUpdateItem">
-            <label>Tên</label>
-            <InputText
-              type="text"
-              name="name"
-              autoResize
-              value={formData.name}
-              onChange={handleChange}
-            />
-            {errors.name && <small className="p-error">{errors.name}</small>}
-          </div>
 
-          <div className="userUpdateItem">
-            <label>Số lượng</label>
-            <InputText
-              type="number"
-              name="member_count"
-              value={formData.member_count}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="userUpdateItem">
-            <label>Quantity</label>
-            <InputText
-              disabled
-              type="number"
-              name="quantity"
-              value={formData.quantity}
-              autoResize
-              onChange={handleChange}
-            />
-          </div>
+          <h4>Tên</h4>
+          <InputText
+            name="name"
+            value={product.name}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.name && <small className="p-error">{errors.name}</small>}
+
+          <h4>Số lượng</h4>
+          <InputText
+            disabled
+            type="number"
+            name="member_count"
+            value={product.member_count}
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          <h4>Ngày</h4>
+          <Calendar
+            name="start_date"
+            value={parsedDate}
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
         </div>
         <div style={{ flex: 1, paddingRight: "1rem" }}>
-          <div className="userUpdateItem">
-            <label>Vị trí</label>
-            <InputTextarea
-              name="location"
-              value={formData.location}
-              autoResize
-              onChange={handleChange}
-            />
-            {errors.location && (
-              <small className="p-error">{errors.location}</small>
-            )}
-          </div>
-          <div className="userUpdateItem">
-            <label>Nhóm</label>
-            <Dropdown
-              // placeholder={formData.category.name}
-              type="text"
-              value={selectedCategories}
-              options={categories}
-              optionLabel="name"
-              onChange={(e) => {
-                setelectedCategories(e.value);
-                formData.category = e.value._id;
-              }}
-              style={{ width: "100%" }}
-            />
-          </div>
-          <div className="userUpdateItem">
-            <label>farm</label>
-            <Dropdown
-              type="text"
-              options={farm}
-              optionLabel="name"
-              // placeholder={farmName}
-              onChange={(e) => {
-                setSelectedfarm(e.value);
-                formData.farm = e.value._id;
-              }}
-              value={selectedfarm}
-            />
-          </div>
-          <div className="userUpdateItem">
-            <label>Start day</label>
-            <Calendar
-              inputId="cal_date"
-              name="start_date"
-              style={{ width: "100%" }}
-              value={parsedDate}
-              // value={formData.start_date}
-              onChange={handleChange}
-            />
-          </div>
+          <h4>Vị trí</h4>
+          <InputTextarea
+            name="location"
+            value={product.location}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.location && (
+            <small className="p-error">{errors.location}</small>
+          )}
+
+          <h4>Nhóm</h4>
+          <Dropdown
+            placeholder={categoryName}
+            type="text"
+            value={selectedCategories}
+            options={categories}
+            optionLabel="name"
+            onChange={(e) => {
+              setelectedCategories(e.value);
+              product.category._id = e.value._id;
+              console.log(product.category._id);
+            }}
+            style={{ width: "100%" }}
+          />
+          <h4>Farm</h4>
+          <Dropdown
+            placeholder={farmName}
+            type="text"
+            options={farm}
+            optionLabel="name"
+            onChange={(e) => {
+              setSelectedfarm(e.value);
+              product.farm._id = e.value._id;
+              console.log(product.farm._id);
+            }}
+            value={selectedfarm}
+            style={{ width: "100%" }}
+          />
         </div>
 
         <div style={{ flex: 1 }}>
-          <div className="userUpdateItem">
-            <label>Mô tả</label>
-            <InputTextarea
-              name="description"
-              value={formData.description}
-              autoResize
-              onChange={handleChange}
-            />
-            {errors.description && (
-              <small className="p-error">{errors.description}</small>
-            )}
-          </div>
+          <h4>Mô tả</h4>
+          <InputTextarea
+            name="description"
+            value={product.description}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.location && (
+            <small className="p-error">{errors.location}</small>
+          )}
         </div>
       </div>
-
       <Button
         className="button_Dia"
         id="Save"
-        label={isUpdate ? "Cập nhật" : "Thêm mới"}
+        label="Cập nhật"
         severity="success"
-        onClick={handleSubmit}
+        onClick={onRowEditComplete}
       />
-      {isUpdate ? (
-        <div className="userUpdateItem">
-          <label>Hình ảnh</label>
-          <ImageUploader
-            uploadUrl={url}
-            images={formData.images}
-            reloadData={reloadData()}
-          />
-        </div>
-      ) : (
-        ""
-      )}
     </div>
   );
 }
-export default Infor_Herd;
+
+export default YourComponent;

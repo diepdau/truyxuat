@@ -30,6 +30,7 @@ const modeOptions = [
   "Bôi ngoài (trên da)",
   "Khác",
 ];
+const siteOptions = ["Mông", "Sườn", "Cổ", "Khác"];
 
 function YourComponent({ data, reloadData, isUpdate }) {
   const [product, setProduct] = useState(data || emptyProduct);
@@ -135,7 +136,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
   const parsedDate = product.retreat_date
     ? new Date(product.retreat_date)
     : null;
-    const herdName = product.herd && product.herd.name ? product.herd.name : "";
+  const herdName = product.herd && product.herd.name ? product.herd.name : "";
 
   return (
     <div>
@@ -169,7 +170,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
             style={{ width: "100%" }}
           />
           {errors.type && <small className="p-error">{errors.type}</small>}
-          <h4>Sản phẩm</h4>
+          <h4>Thuốc sử dụng</h4>
           <InputTextarea
             name="product"
             value={product.product}
@@ -188,7 +189,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
             onChange={handleChange}
           />
           {errors.amount && <small className="p-error">{errors.amount}</small>}
-          <h4>Mode</h4>
+          <h4>Hình thức điều trị</h4>
           <Dropdown
             name="mode"
             value={product.mode}
@@ -214,13 +215,14 @@ function YourComponent({ data, reloadData, isUpdate }) {
           {errors.description && (
             <small className="p-error">{errors.description}</small>
           )}
-          <h4>site</h4>
-          <InputTextarea
+          <h4>Vị trí</h4>
+          <Dropdown
             name="site"
             value={product.site}
             style={{ width: "100%" }}
             onChange={handleChange}
-            autoResize
+            options={siteOptions}
+            placeholder={product.site}
           />
           {errors.site && <small className="p-error">{errors.site}</small>}
 

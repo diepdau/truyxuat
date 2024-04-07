@@ -29,8 +29,7 @@ const emptyProduct = {
   },
 };
 export default function SizeDemo() {
-  const { handleGet} =
-    useContext(HerdsContext);
+  const { handleGet } = useContext(HerdsContext);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
@@ -57,7 +56,7 @@ export default function SizeDemo() {
     // eslint-disable-next-line no-undef
     fetchData();
   };
-  
+
   const leftToolbarTemplate = () => {
     return (
       <div className="flex flex-wrap gap-2">
@@ -159,7 +158,10 @@ export default function SizeDemo() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-          <i className="pi pi-trash" onClick={() => confirmDeleteProduct(rowData)}></i>
+        <i
+          className="pi pi-trash"
+          onClick={() => confirmDeleteProduct(rowData)}
+        ></i>
       </React.Fragment>
     );
   };
@@ -171,25 +173,34 @@ export default function SizeDemo() {
     }
   };
   const representativeFilterTemplate = (options) => {
-    return <MultiSelect value={options.value} options={categories} itemTemplate={representativesItemTemplate} onChange={(e) => options.filterCallback(e.value)} optionLabel="name" placeholder="Any" className="p-column-filter" />;
-};
-const representativeBodyTemplate = (rowData) => {
-  const representative = rowData.category;
-
-  return (
-      <div className="flex align-items-center gap-2">
-          <span>{representative.name}</span>
-      </div>
-  );
-};
-const representativesItemTemplate = (option) => {
     return (
-        <div className="flex align-items-center gap-2">
-            <span>{option.name}</span>
-        </div>
+      <MultiSelect
+        value={options.value}
+        options={categories}
+        itemTemplate={representativesItemTemplate}
+        onChange={(e) => options.filterCallback(e.value)}
+        optionLabel="name"
+        placeholder="Any"
+        className="p-column-filter"
+      />
     );
-};
+  };
+  const representativeBodyTemplate = (rowData) => {
+    const representative = rowData.category;
 
+    return (
+      <div className="flex align-items-center gap-2">
+        <span>{representative.name}</span>
+      </div>
+    );
+  };
+  const representativesItemTemplate = (option) => {
+    return (
+      <div className="flex align-items-center gap-2">
+        <span>{option.name}</span>
+      </div>
+    );
+  };
 
   const [globalFilter, setGlobalFilter] = useState(null);
   const header = (
@@ -251,8 +262,17 @@ const representativesItemTemplate = (option) => {
             value={product.start_date}
             style={{ width: "20%" }}
           ></Column>
-           <Column header="Nhóm"sortable sortField="category.name" filterField="category" showFilterMatchModes={false} 
-        style={{ minWidth: '14rem' }} body={representativeBodyTemplate} filter filterElement={representativeFilterTemplate} />
+          <Column
+            header="Nhóm"
+            sortable
+            sortField="category.name"
+            filterField="category"
+            showFilterMatchModes={false}
+            style={{ minWidth: "14rem" }}
+            body={representativeBodyTemplate}
+            filter
+            filterElement={representativeFilterTemplate}
+          />
           <Column
             body={actionBodyTemplate}
             headerStyle={{ width: "10%", minWidth: "4rem" }}
@@ -299,13 +319,14 @@ const representativesItemTemplate = (option) => {
         </Dialog>
 
         <Dialog
+          header="Thêm mới"
           style={{ width: "50%" }}
           visible={productDialog}
           onHide={() => setProductDialog(false)}
         >
-          <h3>Thêm mới</h3>
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-         <Infor_Create isUpdate={false} reloadData={reloadData()}/>
+          <Infor_Create isUpdate={false} reloadData={reloadData()}/>
+
         </Dialog>
       </div>
     </div>

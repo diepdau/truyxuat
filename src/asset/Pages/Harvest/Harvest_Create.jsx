@@ -21,7 +21,7 @@ const unitOptions = [
   { label: "Túi", value: "Túi" },
 ];
 
-function YourComponent() {
+function Harvest_Create() {
   const [product, setProduct] = useState(emptyProduct);
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState({});
@@ -191,4 +191,4 @@ function YourComponent() {
   );
 }
 
-export default YourComponent;
+export default Harvest_Create;

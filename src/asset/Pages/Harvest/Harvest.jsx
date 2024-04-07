@@ -23,7 +23,8 @@ const emptyProduct = {
   unit: "",
   date: "",
 };
-export default function SizeDemo() {
+function Harvest({ dataHerdHarvest, reloadData1, isherdharvest }) {
+  console.log(dataHerdHarvest);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
@@ -33,16 +34,22 @@ export default function SizeDemo() {
   const toast = useRef(null);
 
   useEffect(() => {
-    const getHerd = async () => {
-      try {
-        const res = await axios.get(`/harvests?limit=32`);
-        setProducts(res.data.harvests);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getHerd();
-  });
+    if (isherdharvest) {
+      setProducts(dataHerdHarvest);
+      console.log(products);
+    } else {
+      const getHerd = async () => {
+        try {
+          const res = await axios.get(`/harvests?limit=50`);
+          setProducts(res.data.harvests);
+          console.log(products);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      getHerd();
+    }
+  }, [products]);
 
   const openNew = () => {
     setProductDialog(true);
@@ -193,10 +200,16 @@ export default function SizeDemo() {
   return (
     <div>
       <Toast className="toast" ref={toast} />
-      {/* eslint-disable-next-line react/jsx-pascal-case */}
-      <Chart_Herds />
-      {/* eslint-disable-next-line react/jsx-pascal-case */}
-      <Chart_Products />
+
+      {!isherdharvest && (
+        <>
+          {/* eslint-disable-next-line react/jsx-pascal-case */}
+          <Chart_Herds />
+          {/* eslint-disable-next-line react/jsx-pascal-case */}
+          <Chart_Products />
+        </>
+      )}
+
       <div className="card">
         <Toolbar
           className="mb-4"
@@ -305,16 +318,9 @@ export default function SizeDemo() {
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
           <Harvest_Create />
-          <Button
-            className="button_Dia"
-            id="Create"
-            label="Hủy"
-            severity="secondary"
-            outlined
-            onClick={() => setProductDialog(false)}
-          />
         </Dialog>
       </div>
     </div>
   );
 }
+export default Harvest;
