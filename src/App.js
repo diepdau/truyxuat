@@ -17,7 +17,6 @@ import Navbar from "./components/Navbar/Navbar.jsx";
 import CultivationLogs from "./asset/Pages/CultivationLogs/CultivationLogs_Herd.jsx";
 import User from "./asset/Pages/User/User.jsx";
 import UserList from "./asset/Pages/UserList/UserList.jsx";
-import Test from "./asset/Pages/CultivationLogs/test.jsx";
 import Categories from "./asset/Pages/Categories/Categories.jsx";
 import Category from "./asset/Pages/Category/Category.jsx";
 import Harvest from "./asset/Pages/Harvest/Harvest.jsx"
@@ -28,6 +27,7 @@ import Processors from "./asset/Pages/Processors/Processors.jsx";
 import ProductPatch from "./asset/Pages/ProductPatchs/ProductPatchs.jsx";
 import Distributor  from "./asset/Pages/Distributor/Distributor.jsx";
 import Products  from "./asset/Pages/Product/Product.jsx";
+import Treatments  from "./asset/Pages/Treatments/Treatments.jsx";
 import Main from "./components/Sidebar/Main.jsx";
 const Layout = () => {
   const { currentUser } = useContext(AuthContext);
@@ -81,10 +81,6 @@ const router = createBrowserRouter([
         element: <UserList />,
       },
       {
-        path: "/test",
-        element: <Test />,
-      },
-      {
         path: "/categories",
         element: <Categories />,
       },
@@ -120,6 +116,10 @@ const router = createBrowserRouter([
       {
         path: "/san-pham",
         element: <Products  />,
+      },
+      {
+        path: "/dieu-tri",
+        element: <Treatments  />,
       },
     ],
   },

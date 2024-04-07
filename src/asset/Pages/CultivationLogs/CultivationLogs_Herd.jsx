@@ -8,11 +8,10 @@ import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
-import { useForm } from "react-hook-form";
 import { TabView, TabPanel } from "primereact/tabview";
-import { Galleria } from "primereact/galleria";
 import CultivationLogs_Update from "./CultivationLogs_Update.jsx";
 import CultivationLogs_Create from "./CultivationLogs_Create.jsx";
+import ImageUploader from "../../../components/Images/Image.jsx";
 
 const emptyProduct = {
   _id: null,
@@ -138,12 +137,7 @@ export default function CulivationLogs_Herd({ idherd }) {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <div className="iconpage">
-          <i
-            className="pi pi-trash"
-            onClick={() => confirmDeleteProduct(rowData)}
-          ></i>
-        </div>
+          <i className="pi pi-trash"onClick={() => confirmDeleteProduct(rowData)} ></i>
       </React.Fragment>
     );
   };
@@ -155,80 +149,25 @@ export default function CulivationLogs_Herd({ idherd }) {
       console.log("Error:", error);
     }
   };
-
-  const { register, handleSubmit } = useForm();
-
-  const upLoadImage = async (data) => {
-    const formData = new FormData();
-    for (const file of data.file) {
-      formData.append("images", file);
-    }
-    console.log(formData);
-    try {
-      await axios.patch(`/cultivation-logs/upload/${product._id}`, formData);
-      reloadData();
-      toast.current.show({
-        severity: "success",
-        summary: "Đã thêm hình",
-        life: 3000,
-      });
-    } catch (error) {
-      console.log("Error img:", error);
-    }
-  };
-
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
+    var url = `/cultivation-logs/upload/${product._id}`;
     return (
       <>
         <TabView>
           <TabPanel header="Thông tin">
+             {/* eslint-disable-next-line react/jsx-pascal-case */}
             <CultivationLogs_Update data={data} />
           </TabPanel>
           <TabPanel header="Hình ảnh">
-            <Galleria
-              className="Image_animals"
-              value={data.images}
-              numVisible={5}
-              circular
-              showItemNavigators
-              showItemNavigatorsOnHover
-              showIndicators
-              showThumbnails={false}
-              style={{ maxWidth: "640px" }}
-              item={thumbnail}
-              thumbnail={thumbnailTemplate}
-            />
-            <div className=" updateimage">
-              <form
-                encType="multipart/formdata"
-                onSubmit={handleSubmit(upLoadImage)}
-              >
-                <input type="file" multiple {...register("file")} />
-                <input type="submit" />
-              </form>
-            </div>
+          <ImageUploader uploadUrl={url} images={data.images} />
           </TabPanel>
         </TabView>
       </>
     );
   };
-  const thumbnailTemplate = (item) => (
-    <img
-      src={item.path}
-      alt={item.herd}
-      style={{ width: "50%", overflow: "hidden", maxHeight: "200px" }}
-    />
-  );
 
-  const thumbnail = (item) => (
-    <img
-      src={item.path}
-      alt={item.herd}
-      style={{ width: "100%", overflow: "hidden", maxHeight: "400px" }}
-    />
-  );
   const allowExpansion = (rowData) => {
     return rowData;
   };
@@ -267,7 +206,7 @@ export default function CulivationLogs_Herd({ idherd }) {
           dataKey="_id"
           paginator
           rows={8}
-          tableStyle={{ minWidth: "50rem" }}
+          tableStyle={{ minWidth: "64rem" }}
           globalFilter={globalFilter}
           header={header}
         >
@@ -333,6 +272,7 @@ export default function CulivationLogs_Herd({ idherd }) {
           visible={productDialog}
           onHide={() => setProductDialog(false)}
         >
+           {/* eslint-disable-next-line react/jsx-pascal-case */}
           <CultivationLogs_Create herd_id={idherd} />
         </Dialog>
       </div>

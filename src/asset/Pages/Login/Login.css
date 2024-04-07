@@ -3,7 +3,7 @@
 	display:flex;
 	justify-content:center;
   align-items: center;
-  background-image: url('luamach.jpg');
+  /* background-image: url('luamach.jpg'); */
 	
 }
 .branding {
@@ -23,14 +23,15 @@
 
 .register-form-container{
   width: 376px;
-  padding:30px 44px;
+  padding:30px 40px;
   box-shadow: 0px 0px 21px rgba(107, 113, 111, 0.2);
   border-radius: 8px;
   background:#fff;
 }
-.title{
+.titlelogin{
   justify-content: center;
   align-items: center;
+  margin: 20px 0px 18px 82px;
 }
 .label{
   width:100%;
@@ -76,6 +77,7 @@ margin-top: 2px;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin: 27px 0px 52px 0px;
 }
 
 .submit-btn:hover {
@@ -105,13 +107,12 @@ margin-top: 2px;
 
 .forgot-password{
   color: #666666;
- 
+  margin-left: 158px;
 }
 
 .forgot-password:hover{
   color: #088247;
   font-weight: bold;
- 
 }
 .or-divider {
   display: flex;

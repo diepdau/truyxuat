@@ -44,11 +44,11 @@ export default function RegisterPage() {
   return (
     <div className="register-page">
       <div className="register-form-container">
-        <div className="branding">
-          <img src={logo} alt="Logo" />
-          <h1>LaFarm</h1>
+      <div className="branding">
+          <i className="pi pi-spin pi-slack" alt="Logo" style={{ fontSize: '3rem' ,color: 'green'}} />
+          {/* <h1 >LaFarm</h1> */}
         </div>
-        <h1 className="title">Đăng kí</h1>
+        <h1 className="titlelogin">Đăng kí</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-2">
             <label htmlFor="first-name" className="form-label">
@@ -112,26 +112,7 @@ export default function RegisterPage() {
           <button type="submit" className="submit-btn">
             Đăng kí
           </button>
-          <div className="or-divider">
-            <div className="or-line"></div>
-            <div className="or-text">HOẶC</div>
-            <div className="or-line"></div>
-          </div>
-
-          <div className="social-icons">
-            <div className="icon facebook">
-              <i
-                className="pi pi-facebook"
-                style={{ fontSize: "1rem", color: "blue" }}
-              ></i>
-            </div>
-            <div className="icon google">
-              <i
-                className="pi pi-google"
-                style={{ fontSize: "1rem", color: "red" }}
-              ></i>
-            </div>
-          </div>
+          
           <Link to="/login" className="create-account">
             <p>Bạn đã có tài khoản. </p>
             <span> Đăng nhập?</span>{" "}

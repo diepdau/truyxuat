@@ -9,13 +9,18 @@ import axios from "axios";
 import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
-import Image_Upload from "../../../components/Images/Image.jsx";
-import Medisease_Create from "./Medicine_Create.jsx";
+import Treatments_Create from "./Treatments_Create.jsx";
+import Image from "../../../components/Images/Image.jsx";
+import "./Treatments.css";
 const emptyProduct = {
   _id: null,
   name: "",
+  herd: "",
+  quantity: "",
+  unit: "",
+  date: "",
 };
-export default function SizeDemo() {
+export default function SizeDemo({ idherd }) {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
@@ -25,21 +30,30 @@ export default function SizeDemo() {
   const toast = useRef(null);
 
   useEffect(() => {
-    const getHerd = async () => {
+    getHerd();
+  });
+  const getHerd = async () => {
+    if (idherd) {
       try {
-        const res = await axios.get(`/medicines`);
-        setProducts(res.data.medicines);
+        const res = await axios.get(`/treatments/herd/${idherd}`);
+        setProducts(res.data.treatments);
+        console.log(products);
       } catch (error) {
         console.log(error);
       }
-    };
-    getHerd();
-  });
-
+    } else {
+      try {
+        const res = await axios.get(`/treatments?limit=32`);
+        setProducts(res.data.treatments);
+        console.log(products);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
   const openNew = () => {
     setProductDialog(true);
   };
-
   const reloadData = () => {
     // eslint-disable-next-line no-undef
     getHerd();
@@ -132,13 +146,17 @@ export default function SizeDemo() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-          <i className="pi pi-trash" onClick={() => confirmDeleteProduct(rowData)} ></i>
+        <i
+          className="pi pi-trash"
+          onClick={() => confirmDeleteProduct(rowData)}
+        ></i>
       </React.Fragment>
     );
   };
+
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/medicines/${product._id}`, product);
+      await axios.delete(`/treatments/${product._id}`, product);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -147,27 +165,26 @@ export default function SizeDemo() {
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
-    var url = `/medicines/upload/${product._id}`;
+    var url = `/treatments/upload/${product._id}`;
     return (
       <>
         <TabView>
           <TabPanel header="Thông tin">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Medisease_Create
+            <Treatments_Create
               data={data}
               reloadData={reloadData}
               isUpdate={true}
             />
           </TabPanel>
           <TabPanel header="Hình ảnh">
-            {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Image_Upload uploadUrl={url} images={data.images} />
+            <Image uploadUrl={url} images={data.images} />
+           
           </TabPanel>
         </TabView>
       </>
     );
   };
-
   const allowExpansion = (rowData) => {
     return rowData;
   };
@@ -206,15 +223,46 @@ export default function SizeDemo() {
           dataKey="_id"
           paginator
           rows={8}
-          tableStyle={{ minWidth: "70rem" }}
+          tableStyle={{ minWidth: "50rem" }}
           globalFilter={globalFilter}
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
-            field="name"
-            header="Tên thuốc"
+            field="herd.name"
+            header="Đàn"
+            value={product.herd?.name}
+            style={{ minWidth: "10rem" }}
+          ></Column>
+          <Column
+            field="type"
+            header="Loại"
+            value={product.type}
+            style={{ minWidth: "5rem" }}
+          ></Column>
+          <Column
+            field="product"
+            header="Sản phẩm"
+            value={product.product}
+            style={{ minWidth: "10rem" }}
+          ></Column>
+          <Column
+            field="amount"
+            header="Liều lượng"
+            value={product.amount}
+            style={{ minWidth: "5rem" }}
+          ></Column>
+          <Column
+            field="mode"
+            header="Mode"
+            value={product.mode}
+            style={{ minWidth: "5rem" }}
+          ></Column>
+          <Column
+            field="date"
+            header="Ngày"
+            value={product.date}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
@@ -262,6 +310,7 @@ export default function SizeDemo() {
             )}
           </div>
         </Dialog>
+
         <Dialog
           header="Thêm mới"
           style={{ width: "50%" }}
@@ -269,7 +318,7 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <Medisease_Create isUpdate={false} />
+          <Treatments_Create isUpdate={false} />
         </Dialog>
       </div>
     </div>

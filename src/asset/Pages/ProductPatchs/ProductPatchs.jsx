@@ -12,9 +12,9 @@ import { TabView, TabPanel } from "primereact/tabview";
 import ProductPatchs_Update from "./ProductPatchs_Update.jsx";
 import ProductPatchs_Create from "./ProductPatchs_Create.jsx";
 import Processors_Update from "../Processors/Processors_Update.jsx";
-
-import Image from "../../../components/Images/Image.jsx";
-import Product_Update from '../Product/Product_Update.jsx';
+import { Image } from "primereact/image";
+import ImageComponent from "../../../components/Images/Image.jsx";
+import Product_Update from "../Product/Product_Update.jsx";
 import "./ProductPatchs.css";
 const emptyProduct = {
   _id: null,
@@ -147,12 +147,10 @@ export default function SizeDemo() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <div className="iconpage">
           <i
             className="pi pi-trash"
             onClick={() => confirmDeleteProduct(rowData)}
           ></i>
-        </div>
       </React.Fragment>
     );
   };
@@ -164,6 +162,11 @@ export default function SizeDemo() {
     } catch (error) {
       console.log("Error:", error);
     }
+  };
+  const imageBodyTemplate = (rowData) => {
+    return (
+      <Image src={rowData.product.qrcode}className="shadow-2 border-round" height="60"preview/>
+    );
   };
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
@@ -177,15 +180,15 @@ export default function SizeDemo() {
             <ProductPatchs_Update data={data} reloadData={reloadData} />
           </TabPanel>
           <TabPanel header="Xử lý/đóng gói">
-          {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <Processors_Update data={data.processor} />
+            {/* eslint-disable-next-line react/jsx-pascal-case */}
+            <Processors_Update data={data.processor} />
           </TabPanel>
           <TabPanel header="Sản phẩm">
-          {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <Product_Update data={data.product} />
+            {/* eslint-disable-next-line react/jsx-pascal-case */}
+            <Product_Update data={data.product} />
           </TabPanel>
           <TabPanel header="Hình ảnh">
-            <Image uploadUrl={url} images={data.images} />
+            <ImageComponent uploadUrl={url} images={data.images} />
           </TabPanel>
         </TabView>
       </>
@@ -235,7 +238,8 @@ export default function SizeDemo() {
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
-
+          <Column field="product.qrcode" header="Qrcode" body={imageBodyTemplate}
+          ></Column>
           <Column
             field="processor.name"
             header="Lô hàng"

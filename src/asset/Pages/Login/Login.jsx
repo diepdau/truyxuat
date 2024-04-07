@@ -7,6 +7,7 @@ import { AuthContext } from "../../service/user_service.js";
 import { InputText } from "primereact/inputtext";
 import { Message } from "primereact/message";
 
+        
 const Login = () => {
   const [email, setEmail] = useState(undefined);
   const [password, setPassword] = useState(undefined);
@@ -28,7 +29,7 @@ const Login = () => {
       await loginApi({ email, password });
       navigate("/");
     } catch (err) {
-      setError(err.response.data.msg);
+      setError("Vui lòng cung cấp đúng email hoặc mật khẩu");
     }
   };
 
@@ -36,10 +37,10 @@ const Login = () => {
     <div className="register-page">
       <div className="register-form-container">
         <div className="branding">
-          <img src={logo} alt="Logo" />
-          <h1 >LaFarm</h1>
+          <i className="pi pi-spin pi-slack" alt="Logo" style={{ fontSize: '3rem' ,color: 'green'}} />
+          {/* <h1 >LaFarm</h1> */}
         </div>
-        <h2 className="title">Đăng nhập</h2>
+        <h2 className="titlelogin">Đăng nhập</h2>
         <form>
           <div className="mb-2">
             <label htmlFor="email" className="form-label">
@@ -65,6 +66,7 @@ const Login = () => {
                 onChange={handlePasswordChange}
               />
             </div>
+            {err && <p className="error-feedback">{err}</p>}
             <Link to="/forgot-password" className="forgot-password">
               Quên mật khẩu?
             </Link>
@@ -80,27 +82,27 @@ const Login = () => {
           >
             Đăng nhập
           </button>
-          {err && <p className="error-feedback">{err}</p>}
-          <div className="or-divider">
+          
+          {/* <div className="or-divider">
             <div className="or-line"></div>
             <div className="or-text">HOẶC</div>
             <div className="or-line"></div>
-          </div>
+          </div> */}
 
-          <div className="social-icons">
+          {/* <div className="social-icons">
             <div className="icon facebook">
               <i
                 className="pi pi-facebook"
-                style={{ fontSize: "1rem", Color: "blue" }}
+                // style={{ fontSize: "1rem", Color: "blue" }}
               ></i>
             </div>
             <div className="icon google">
               <i
                 className="pi pi-google"
-                style={{ fontSize: "1rem", Color: "red" }}
+                // style={{ fontSize: "1rem", Color: "red" }}
               ></i>
             </div>
-          </div>
+          </div> */}
 
           <Link to="/register" className="create-account">
             <p>Bạn chưa có tài khoản. </p>

@@ -19,9 +19,8 @@ const initFormValue = {
   start_date: "",
   location: "",
 };
-function Infor_Herd({ idherd, data, isUpdate, reloadData }) {
-
-  const [formData, setFormData] = useState(data || "");
+function Infor_Herd({idherd, data, isUpdate, reloadData }) {
+  const [formData, setFormData] = useState(initFormValue);
   const [categories, setcategories] = useState([]);
   const [farm, setfarm] = useState([]);
   const [selectedCategories, setelectedCategories] = useState(null);
@@ -44,10 +43,9 @@ function Infor_Herd({ idherd, data, isUpdate, reloadData }) {
   };
   const handleChange = (event) => {
     const { value, name } = event.target;
-    const newValue = name === "start_date" ? value.toISOString() : value;
     setFormData({
       ...formData,
-      [name]: newValue,
+      [name]: value,
     });
   };
   const handleSubmit = async () => {
@@ -55,7 +53,7 @@ function Infor_Herd({ idherd, data, isUpdate, reloadData }) {
       return;
     }
     try {
-      if (isUpdate) {
+      if (data && isUpdate) {
         const res = await axios.patch(`/herds/${data._id}`, formData);
         toast.current.show({
           severity: "success",
@@ -63,7 +61,7 @@ function Infor_Herd({ idherd, data, isUpdate, reloadData }) {
           life: 3000,
         });
         reloadData();
-        setFormData(res.data.herd);
+        setFormData(res.data);
       } else {
         await axios.post(`/herds/`, formData);
         toast.current.show({
@@ -72,7 +70,7 @@ function Infor_Herd({ idherd, data, isUpdate, reloadData }) {
           life: 3000,
         });
         reloadData();
-        setFormData(initFormValue);
+        setFormData(initFormValue); 
       }
     } catch (error) {
       console.log("Error:", error);
@@ -82,35 +80,33 @@ function Infor_Herd({ idherd, data, isUpdate, reloadData }) {
     let isValid = true;
     const newErrors = {};
 
-    // // Kiểm tra lỗi cho trường description
-    // if (!formData.description) {
-    //   newErrors.description = "Description is required.";
-    //   isValid = false;
-    // } else if (formData.description.trim().length < 20) {
-    //   newErrors.description =
-    //     "Description must be at least 20 characters long.";
-    //   isValid = false;
-    // }
+    // Kiểm tra lỗi cho trường description
+    if (!formData.description) {
+      newErrors.description = "Description is required.";
+      isValid = false;
+    } else if (formData.description.trim().length < 20) {
+      newErrors.description =
+        "Description must be at least 20 characters long.";
+      isValid = false;
+    }
 
-    // // Kiểm tra lỗi cho trường name
-    // if (!formData.name) {
-    //   newErrors.name = "Name is required.";
-    //   isValid = false;
-    // }
+    // Kiểm tra lỗi cho trường name
+    if (!formData.name) {
+      newErrors.name = "Name is required.";
+      isValid = false;
+    }
 
-    // // Kiểm tra lỗi cho trường location
-    // if (!formData.location) {
-    //   newErrors.location = "Location is required.";
-    //   isValid = false;
-    // }
+    // Kiểm tra lỗi cho trường location
+    if (!formData.location) {
+      newErrors.location = "Location is required.";
+      isValid = false;
+    }
 
     setErrors(newErrors);
     return isValid;
   };
-  const parsedDate = formData.start_date ? new Date(formData.start_date) : null;
-  // const farmName = formData.farm.name ? formData.farm.name : "";
-  
-  var url = idherd ? `/herds/upload/${idherd}` : "";
+  const parsedDate = formData ? new Date(formData.start_date) : null;
+
   return (
     <div>
       <div className="container_update">
@@ -165,14 +161,14 @@ function Infor_Herd({ idherd, data, isUpdate, reloadData }) {
           <div className="userUpdateItem">
             <label>Nhóm</label>
             <Dropdown
-              // placeholder={formData.category.name}
+              placeholder={formData.category.name}
               type="text"
               value={selectedCategories}
               options={categories}
               optionLabel="name"
               onChange={(e) => {
                 setelectedCategories(e.value);
-                formData.category = e.value._id;
+                formData.categoryId = e.value._id;
               }}
               style={{ width: "100%" }}
             />
@@ -183,10 +179,9 @@ function Infor_Herd({ idherd, data, isUpdate, reloadData }) {
               type="text"
               options={farm}
               optionLabel="name"
-              // placeholder={farmName}
               onChange={(e) => {
                 setSelectedfarm(e.value);
-                formData.farm = e.value._id;
+                formData.farmId = e.value._id;
               }}
               value={selectedfarm}
             />
@@ -227,18 +222,7 @@ function Infor_Herd({ idherd, data, isUpdate, reloadData }) {
         severity="success"
         onClick={handleSubmit}
       />
-      {isUpdate ? (
-        <div className="userUpdateItem">
-          <label>Hình ảnh</label>
-          <ImageUploader
-            uploadUrl={url}
-            images={formData.images}
-            reloadData={reloadData()}
-          />
-        </div>
-      ) : (
-        ""
-      )}
+    
     </div>
   );
 }

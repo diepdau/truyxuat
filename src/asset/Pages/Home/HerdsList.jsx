@@ -7,7 +7,7 @@ import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
-import { Dropdown } from "primereact/dropdown";
+import Infor_Create from "./Infor_Create.jsx";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import Search from "./Search.jsx";
@@ -29,16 +29,13 @@ const emptyProduct = {
   },
 };
 export default function SizeDemo() {
-  const { handleGet, handleGetCategory, handleGetFarm } =
+  const { handleGet} =
     useContext(HerdsContext);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
   const [categories, setcategories] = useState([]);
-  const [farm, setfarm] = useState([]);
   const [product, setProduct] = useState(emptyProduct);
-  const [selectedRole, setSelectedRole] = useState(emptyProduct.category);
-  const [selectedfarm, setSelectedfarm] = useState(emptyProduct.farm);
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
@@ -47,61 +44,20 @@ export default function SizeDemo() {
   const [page, setpage] = useState("");
   const [name, setname] = useState("");
   useEffect(() => {
-    fetchDataFarm();
-    fetchDataCategory();
     fetchData();
   }, [search]);
   const fetchData = async () => {
-    const userList = await handleGet(name, "32", "", search);
+    const userList = await handleGet(name, "50", "", search);
     setProducts(userList);
-  };
-  const fetchDataCategory = async () => {
-    const categoryList = await handleGetCategory();
-    setcategories(categoryList);
-  };
-  const fetchDataFarm = async () => {
-    const farmList = await handleGetFarm();
-    setfarm(farmList);
   };
   const openNew = () => {
     setProductDialog(true);
-  };
-  const handleChange = (event) => {
-    const { value, name } = event.target;
-    setProduct({
-      ...product,
-      [name]: value,
-    });
   };
   const reloadData = () => {
     // eslint-disable-next-line no-undef
     fetchData();
   };
-  const handleCreateUser = async (event) => {
-    event.preventDefault();
-    try {
-      const a = await axios.post("/herds", {
-        name: product.name,
-        start_date: product.start_date,
-        categoryId: selectedRole._id._id,
-        description: product.description,
-        location: product.location,
-        farmId: selectedfarm._id._id,
-      });
-      setProductDialog(false);
-      reloadData();
-      toast.current.show({
-        severity: "success",
-        summary: "Successful",
-        detail: "Tạo đàn",
-        life: 3000,
-      });
-      console.log(a);
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  };
-
+  
   const leftToolbarTemplate = () => {
     return (
       <div className="flex flex-wrap gap-2">
@@ -203,12 +159,7 @@ export default function SizeDemo() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <div className="iconpage">
-          <i
-            className="pi pi-trash"
-            onClick={() => confirmDeleteProduct(rowData)}
-          ></i>
-        </div>
+          <i className="pi pi-trash" onClick={() => confirmDeleteProduct(rowData)}></i>
       </React.Fragment>
     );
   };
@@ -300,13 +251,6 @@ const representativesItemTemplate = (option) => {
             value={product.start_date}
             style={{ width: "20%" }}
           ></Column>
-          <Column
-            field="category.name"
-            header="Nhóm"
-            value={product.category._id}
-            style={{ width: "20%" }}
-            sortable
-          ></Column>
            <Column header="Nhóm"sortable sortField="category.name" filterField="category" showFilterMatchModes={false} 
         style={{ minWidth: '14rem' }} body={representativeBodyTemplate} filter filterElement={representativeFilterTemplate} />
           <Column
@@ -360,96 +304,8 @@ const representativesItemTemplate = (option) => {
           onHide={() => setProductDialog(false)}
         >
           <h3>Thêm mới</h3>
-          <div>
-            <form className="userUpdateForm">
-              <div className="userUpdateLeft">
-                <div className="userUpdateItem">
-                  <label>Tên</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={product.name}
-                    onChange={handleChange}
-                    className="userUpdateInput"
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Ngày bắt đầu</label>
-                  <input
-                    type="text"
-                    name="start_date"
-                    value={product.start_date}
-                    onChange={handleChange}
-                    className="userUpdateInput"
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Mô tả</label>
-                  <input
-                    type="description"
-                    name="description"
-                    value={product.description}
-                    onChange={handleChange}
-                    className="userUpdateInput"
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Nhóm</label>
-                  <Dropdown
-                    type="text"
-                    options={categories}
-                    optionLabel="name"
-                    onChange={(e) => {
-                      setSelectedRole({ name: e.label, _id: e.value });
-                      selectedRole.name = e.value.name;
-                      selectedRole._id = e.value._id;
-                    }}
-                    value={selectedRole._id}
-                    className="userUpdateInput"
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Farm</label>
-                  <Dropdown
-                    type="text"
-                    options={farm}
-                    optionLabel="name"
-                    onChange={(e) => {
-                      setSelectedfarm({ name: e.label, _id: e.value });
-                      selectedfarm.name = e.value.name;
-                      selectedfarm._id = e.value._id;
-                    }}
-                    value={selectedfarm._id}
-                    className="userUpdateInput"
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Vị trí</label>
-                  <input
-                    type="location"
-                    name="location"
-                    value={product.location}
-                    onChange={handleChange}
-                    className="userUpdateInput"
-                  />
-                </div>
-              </div>
-            </form>
-
-            <Button
-              className="button_Dia"
-              label="Lưu"
-              severity="danger"
-              onClick={handleCreateUser}
-            />
-            <Button
-              className="button_Dia"
-              label="Hủy"
-              severity="secondary"
-              outlined
-              onClick={() => setProductDialog(false)}
-            />
-          </div>
+          {/* eslint-disable-next-line react/jsx-pascal-case */}
+         <Infor_Create isUpdate={false} reloadData={reloadData()}/>
         </Dialog>
       </div>
     </div>

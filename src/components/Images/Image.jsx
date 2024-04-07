@@ -4,17 +4,15 @@ import { useForm } from "react-hook-form";
 import { Galleria } from "primereact/galleria";
 import { Toast } from "primereact/toast";
 import { InputText } from "primereact/inputtext";
-import "./Image.css"
-const ImageUploader = ({ uploadUrl, images }) => {
+import "./Image.css";
+const ImageUploader = ({ uploadUrl, images, reloadData }) => {
   const { register, handleSubmit } = useForm();
   const toast = useRef(null);
-
   const upLoadImage = async (data) => {
     const formData = new FormData();
     for (const file of data.file) {
       formData.append("images", file);
     }
-    console.log(formData);
     try {
       await axios.patch(uploadUrl, formData);
       toast.current.show({
@@ -22,6 +20,7 @@ const ImageUploader = ({ uploadUrl, images }) => {
         summary: "Đã thêm hình",
         life: 3000,
       });
+      reloadData();
     } catch (error) {
       console.log("Error img:", error);
     }
@@ -59,9 +58,13 @@ const ImageUploader = ({ uploadUrl, images }) => {
         item={thumbnail}
         thumbnail={thumbnailTemplate}
       />
-      <form  className="input_file" encType="multipart/formdata" onSubmit={handleSubmit(upLoadImage)}>
+      <form
+        className="input_file"
+        encType="multipart/formdata"
+        onSubmit={handleSubmit(upLoadImage)}
+      >
         <InputText type="file" multiple {...register("file")} />
-        <InputText  className="input_file1" type="submit" value="Thêm" />
+        <InputText className="input_file1" type="submit" value="Thêm" />
       </form>
     </div>
   );

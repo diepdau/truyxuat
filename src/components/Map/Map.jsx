@@ -29,7 +29,7 @@ const Map123 = ({ coordinates, nameAres }) => {
         />
         <TileLayer
           attribution="Google Maps"
-           url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}" // regular
+          url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}" // regular
           // url="http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}" // satellite
           // url="http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}" // terrain
           maxZoom={20}

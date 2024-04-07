@@ -123,9 +123,9 @@ function YourComponent({ data, reloadData }) {
           <Dropdown
             placeholder={data.herd.name}
             type="text"
-            value={selectedHerd}
+            value={selectedHerd.name}
             options={herds}
-            optionLabel="name"
+            optionLabel="herds.name"
             onChange={(e) => {
               setSelectedHerd(e.value);
               product.herd = e.value._id;
@@ -198,6 +198,7 @@ function YourComponent({ data, reloadData }) {
         className="button_Dia"
         id="Save"
         label="Lưu"
+        
         severity="success"
         onClick={handleCreate}
       />

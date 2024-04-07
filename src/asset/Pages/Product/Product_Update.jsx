@@ -135,14 +135,14 @@ function YourComponent({ data, reloadData }) {
             onChange={handleChange}
           />
 
-          <h4>Thông tin</h4>
+          {/* <h4>Thông tin</h4>
           <InputText
             name="info"
             value={product.info}
             autoResize
             style={{ width: "100%" }}
             onChange={handleChange}
-          />
+          /> */}
         </div>
       </div>
       <Button

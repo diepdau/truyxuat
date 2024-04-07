@@ -215,13 +215,13 @@ export default function SizeDemo() {
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
+          <Column selectionMode="multiple" exportable={true}></Column>
           <Column field="qrcode" header="Qrcode" body={imageBodyTemplate}></Column>
           <Column
             field="name"
             header="Tên gói sản phẩm"
             style={{ minWidth: "200px" }}
           ></Column>
-
           <Column
             field="price"
             header="Giá"
@@ -246,7 +246,7 @@ export default function SizeDemo() {
             value={product.expiration_date}
             style={{ minWidth: "10rem" }}
           ></Column>
-          <Column selectionMode="multiple" exportable={true}></Column>
+         
           <Column
             body={actionBodyTemplate}
             headerStyle={{ width: "10%", minWidth: "4rem" }}

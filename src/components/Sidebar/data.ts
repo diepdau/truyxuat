@@ -59,5 +59,11 @@ export const menu = [
         icon: 'pi pi-truck',
         url: '/phan-phoi',
       },
+      {
+        id: 11,
+        label: 'Phương pháp điều trị',
+        icon: 'pi pi-shield',
+        url: '/dieu-tri',
+      },
     
 ]

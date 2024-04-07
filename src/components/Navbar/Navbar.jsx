@@ -60,7 +60,7 @@ export default function Navbar() {
           <image src={lg}></image>
          <h1 style={{color:"green"}}>Farming</h1>
         </div>
-
+        
         <div
           className={classNames("layout-topbar-menu")}
           style={{ cursor: "pointer" }}

@@ -67,14 +67,14 @@ function YourComponent() {
         {/* Cột trái */}
         <div style={{ flex: 1 }}>
           <Toast className="toast" ref={toast} />
-          <h4>Name</h4>
+          <h4>Tên sản phẩm</h4>
           <InputTextarea
             name="name"
             value={product.name}
             style={{ width: "100%" }}
             onChange={handleChange}
           />
-          <h4>Price</h4>
+          <h4>Giá</h4>
           <InputText
             type="number"
             name="price"
@@ -82,7 +82,7 @@ function YourComponent() {
             style={{ width: "100%" }}
             onChange={handleChange}
           />
-          <h4>Quantity</h4>
+          <h4>Số lượng</h4>
           <InputText
             type="number"
             name="quantity"
@@ -91,7 +91,7 @@ function YourComponent() {
             onChange={handleChange}
           />
 
-          <h4>Unit</h4>
+          <h4>Đơn vị</h4>
           <Dropdown
             name="unit"
             value={product.unit}
@@ -101,18 +101,18 @@ function YourComponent() {
             style={{ width: "100%" }}
           />
 
-          <h4>Info</h4>
+          {/* <h4>Info</h4>
           <InputTextarea
             name="info"
             value={product.info}
             style={{ width: "100%" }}
             onChange={handleChange}
-          />
+          /> */}
         </div>
 
         {/* Cột phải */}
         <div style={{ flex: 1 }}>
-          <h4>Description</h4>
+          <h4>Mô tả</h4>
           <InputTextarea
             name="description"
             value={product.description}
@@ -121,7 +121,7 @@ function YourComponent() {
             autoResize
           />
 
-          <h4>Production Date</h4>
+          <h4>Ngày sản xuất</h4>
           <Calendar
             inputId="cal_production_date"
             name="production_date"
@@ -132,7 +132,7 @@ function YourComponent() {
             }
           />
 
-          <h4>Expiration Date</h4>
+          <h4>Ngày hết hạn</h4>
           <Calendar
             inputId="cal_expiration_date"
             name="expiration_date"
@@ -142,7 +142,7 @@ function YourComponent() {
               setProduct({ ...product, expiration_date: e.value })
             }
           />
-          <h4>Storage Method</h4>
+          <h4>Phương thức lưu trữ</h4>
           <InputTextarea
             name="storage_method"
             value={product.storage_method}
