@@ -1,25 +1,24 @@
 {
   "files": {
-    "main.css": "/truyxuat/static/css/main.d12c65e0.css",
-    "main.js": "/truyxuat/static/js/main.d71fc602.js",
-    "static/js/885.68806d1f.chunk.js": "/truyxuat/static/js/885.68806d1f.chunk.js",
-    "static/media/luamach.jpg": "/truyxuat/static/media/luamach.63958a9af8d426753450.jpg",
-    "static/media/primeicons.svg": "/truyxuat/static/media/primeicons.e1441b135b3ca9ad643c.svg",
-    "static/media/Inter-italic.var.woff2?v=3.19": "/truyxuat/static/media/Inter-italic.var.30807be7abc48ba8c73c.woff2",
-    "static/media/Inter-roman.var.woff2?v=3.19": "/truyxuat/static/media/Inter-roman.var.ba4caefcdf5b36b438db.woff2",
-    "static/media/primeicons.eot": "/truyxuat/static/media/primeicons.d44157bdfa026dc877af.eot",
-    "static/media/primeicons.woff": "/truyxuat/static/media/primeicons.10d3152104f2208ac82a.woff",
-    "static/media/primeicons.ttf": "/truyxuat/static/media/primeicons.ea5358601d0a3fd6670b.ttf",
-    "static/media/primeicons.woff2": "/truyxuat/static/media/primeicons.78172950b335ccdb94e2.woff2",
-    "static/media/map1.png": "/truyxuat/static/media/map1.64cdcb0ef97818161310.png",
-    "static/media/adminName.png": "/truyxuat/static/media/adminName.3c51d3940d6a3cfbaeb9.png",
-    "index.html": "/truyxuat/index.html",
-    "main.d12c65e0.css.map": "/truyxuat/static/css/main.d12c65e0.css.map",
-    "main.d71fc602.js.map": "/truyxuat/static/js/main.d71fc602.js.map",
-    "885.68806d1f.chunk.js.map": "/truyxuat/static/js/885.68806d1f.chunk.js.map"
+    "main.css": "/truyxuat/public/index.html/static/css/main.f71b64cb.css",
+    "main.js": "/truyxuat/public/index.html/static/js/main.d1b9684a.js",
+    "static/js/885.68806d1f.chunk.js": "/truyxuat/public/index.html/static/js/885.68806d1f.chunk.js",
+    "static/media/primeicons.svg": "/truyxuat/public/index.html/static/media/primeicons.e1441b135b3ca9ad643c.svg",
+    "static/media/Inter-italic.var.woff2?v=3.19": "/truyxuat/public/index.html/static/media/Inter-italic.var.30807be7abc48ba8c73c.woff2",
+    "static/media/Inter-roman.var.woff2?v=3.19": "/truyxuat/public/index.html/static/media/Inter-roman.var.ba4caefcdf5b36b438db.woff2",
+    "static/media/primeicons.eot": "/truyxuat/public/index.html/static/media/primeicons.d44157bdfa026dc877af.eot",
+    "static/media/primeicons.woff": "/truyxuat/public/index.html/static/media/primeicons.10d3152104f2208ac82a.woff",
+    "static/media/primeicons.ttf": "/truyxuat/public/index.html/static/media/primeicons.ea5358601d0a3fd6670b.ttf",
+    "static/media/primeicons.woff2": "/truyxuat/public/index.html/static/media/primeicons.78172950b335ccdb94e2.woff2",
+    "static/media/map1.png": "/truyxuat/public/index.html/static/media/map1.64cdcb0ef97818161310.png",
+    "static/media/adminName.png": "/truyxuat/public/index.html/static/media/adminName.3c51d3940d6a3cfbaeb9.png",
+    "index.html": "/truyxuat/public/index.html/index.html",
+    "main.f71b64cb.css.map": "/truyxuat/public/index.html/static/css/main.f71b64cb.css.map",
+    "main.d1b9684a.js.map": "/truyxuat/public/index.html/static/js/main.d1b9684a.js.map",
+    "885.68806d1f.chunk.js.map": "/truyxuat/public/index.html/static/js/885.68806d1f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d12c65e0.css",
-    "static/js/main.d71fc602.js"
+    "static/css/main.f71b64cb.css",
+    "static/js/main.d1b9684a.js"
   ]
 }
