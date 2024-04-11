@@ -5,9 +5,9 @@ export const HerdsContext = createContext();
 
 export const HerdsContextProvider = ({ children }) => {
 
-const handleGet = async (name, limit, page,search) => {
+const handleGet = async (name) => {
     try {
-      const response = await axios.get(`/herds?sort=${name},-start_date&limit=${limit}&page=${page}&searchQuery=${search}`);
+      const response = await axios.get(`/herds?sort=${name}`);
       return response.data.herds;
     } catch (error) {
       console.log("Error: ", error);
@@ -33,7 +33,7 @@ const handleDelete = async (product) => {
 
   const handleGetCategory = async () => {
     try {
-      const response = await axios.get("/categories");
+      const response = await axios.get("/categories?limit=50");
       return response.data.categories;
     } catch (error) {
       console.log("Error: ", error);
@@ -41,14 +41,23 @@ const handleDelete = async (product) => {
   };
   const handleGetFarm = async () => {
     try {
-      const response = await axios.get("/farm");
+      const response = await axios.get("/farm?limit=50");
       return response.data.farms;
     } catch (error) {
       console.log("Error: ", error);
     }
   };
+  const fetchAllHerds = async (limit,page) => {
+    try {
+      const response = await axios.get(`/herds?limit=${limit}&page=${page}`);
+      return response.data.herds;
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
   return (
-    <HerdsContext.Provider value={{ handleGet, handleCreate, handleDelete,handleGetCategory,handleGetFarm}}>
+    <HerdsContext.Provider value={{ handleGet, handleCreate, handleDelete,handleGetCategory,handleGetFarm,fetchAllHerds}}>
       {children}
     </HerdsContext.Provider>
   );

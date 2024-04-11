@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { AuthContext } from "../../service/user_service.js";
-import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
@@ -36,24 +35,7 @@ export default function SizeDemo() {
   });
 
   const roles = [{ name: "user" }, { name: "manager" }];
-  const textEditor = (options) => {
-    return (
-      <InputText
-        type="text"
-        value={options.value}
-        onChange={(e) => options.editorCallback(e.target.value)}
-      />
-    );
-  };
-  const emailEditor = (options) => {
-    return (
-      <InputText
-        type="email"
-        value={options.value}
-        onChange={(e) => options.editorCallback(e.target.value)}
-      />
-    );
-  };
+
   const roleEditor = () => {
     return (
       <Dropdown

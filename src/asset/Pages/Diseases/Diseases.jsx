@@ -32,7 +32,7 @@ export default function SizeDemo() {
   useEffect(() => {
     const getHerd = async () => {
       try {
-        const res = await axios.get(`/diseases`);
+        const res = await axios.get(`/diseases?limit=50`);
         setProducts(res.data.diseases);
       } catch (error) {
         console.log(error);

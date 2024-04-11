@@ -6,7 +6,7 @@ export const SearchBar = ({ setResults, isSearch }) => {
   const fetchData = async (value) => {
     try {
       const response = await fetch(
-        `https://agriculture-traceability.vercel.app/api/v1/herds?limit=50&page=1&searchQuery=${encodeURIComponent(
+        `https://agriculture-traceability.vercel.app/api/v1/products?limit=5&page=1&searchQuery=${encodeURIComponent(
           value
         )}`
       );
@@ -14,7 +14,7 @@ export const SearchBar = ({ setResults, isSearch }) => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      setResults(data.herds);
+      setResults(data.products);
       console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error);

@@ -150,8 +150,15 @@ export default function SizeDemo() {
     }
   };
   const imageBodyTemplate = (rowData) => {
-    return <Image src={rowData.qrcode} className="shadow-2 border-round" height="60" preview/>;
-};
+    return (
+      <Image
+        src={rowData.qrcode}
+        className="shadow-2 border-round"
+        height="60"
+        preview
+      />
+    );
+  };
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
@@ -177,7 +184,7 @@ export default function SizeDemo() {
   const [globalFilter, setGlobalFilter] = useState(null);
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Manage Records</h4>
+      <h4 className="m-0">Manage Product</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -209,6 +216,7 @@ export default function SizeDemo() {
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
           paginator
+          rowsPerPageOptions={[5, 10, 20]}
           rows={8}
           tableStyle={{ minWidth: "50rem" }}
           globalFilter={globalFilter}
@@ -216,7 +224,11 @@ export default function SizeDemo() {
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
-          <Column field="qrcode" header="Qrcode" body={imageBodyTemplate}></Column>
+          <Column
+            field="qrcode"
+            header="Qrcode"
+            body={imageBodyTemplate}
+          ></Column>
           <Column
             field="name"
             header="Tên gói sản phẩm"
@@ -246,15 +258,14 @@ export default function SizeDemo() {
             value={product.expiration_date}
             style={{ minWidth: "10rem" }}
           ></Column>
-         
+
           <Column
             body={actionBodyTemplate}
             headerStyle={{ width: "10%", minWidth: "4rem" }}
             bodyStyle={{ left: "0" }}
           ></Column>
-           
         </DataTable>
-       
+
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}

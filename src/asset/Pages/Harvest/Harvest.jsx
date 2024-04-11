@@ -24,7 +24,6 @@ const emptyProduct = {
   date: "",
 };
 function Harvest({ dataHerdHarvest, reloadData1, isherdharvest }) {
-  console.log(dataHerdHarvest);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
@@ -217,6 +216,8 @@ function Harvest({ dataHerdHarvest, reloadData1, isherdharvest }) {
           // right={rightToolbarTemplate}
         ></Toolbar>
         <DataTable
+          globalFilter={globalFilter}
+          header={header}
           value={products}
           selectionMode={"row"}
           selection={selectedProducts}
@@ -226,11 +227,10 @@ function Harvest({ dataHerdHarvest, reloadData1, isherdharvest }) {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
+          rowsPerPageOptions={[5, 10, 20]}
           paginator
           rows={8}
           tableStyle={{ minWidth: "50rem" }}
-          globalFilter={globalFilter}
-          header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>

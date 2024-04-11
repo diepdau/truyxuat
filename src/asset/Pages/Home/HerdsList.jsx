@@ -10,7 +10,7 @@ import axios from "axios";
 import Infor_Create from "./Infor_Create.jsx";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
-import Search from "./Search.jsx";
+import { SearchBar } from "./Search.jsx";
 import "./HerdsList.css";
 import { MultiSelect } from "primereact/multiselect";
 const emptyProduct = {
@@ -29,7 +29,7 @@ const emptyProduct = {
   },
 };
 export default function SizeDemo() {
-  const { handleGet } = useContext(HerdsContext);
+  const { handleGet, fetchAllHerds } = useContext(HerdsContext);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
@@ -38,17 +38,20 @@ export default function SizeDemo() {
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
-  const [search, setSearch] = useState("");
-  const [limit, setlimit] = useState("");
-  const [page, setpage] = useState("");
-  const [name, setname] = useState("");
+
   useEffect(() => {
     fetchData();
-  }, [search]);
+  }, [handleGet]);
   const fetchData = async () => {
-    const userList = await handleGet(name, "50", "", search);
-    setProducts(userList);
+    try {
+      const userList = await handleGet();
+      // setProducts(userList);
+      console.log(userList);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
+
   const openNew = () => {
     setProductDialog(true);
   };
@@ -75,7 +78,6 @@ export default function SizeDemo() {
       </div>
     );
   };
-
   const confirmDeleteSelected = () => {
     setDeleteProductsDialog(true);
   };
@@ -201,22 +203,7 @@ export default function SizeDemo() {
       </div>
     );
   };
-
-  const [globalFilter, setGlobalFilter] = useState(null);
-  const header = (
-    <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Manage Herds</h4>
-      <span className="p-input-icon-left">
-        <i className="pi pi-search" />
-        <InputText
-          type="search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search..."
-        />
-      </span>
-    </div>
-  );
+  const header = <SearchBar setResults={setProducts} />;
   return (
     <div>
       <Toast className="toast" ref={toast} />
@@ -227,18 +214,15 @@ export default function SizeDemo() {
           left={leftToolbarTemplate}
           // right={rightToolbarTemplate}
         ></Toolbar>
+
         <DataTable
           value={products}
           selectionMode={"row"}
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           editMode="row"
-          rowsPerPageOptions={[5, 10, 25]}
           dataKey="_id"
-          paginator
-          rows={10}
           tableStyle={{ minWidth: "50rem" }}
-          globalFilter={globalFilter}
           header={header}
         >
           <Column selectionMode="multiple" exportable={true}></Column>
@@ -264,14 +248,13 @@ export default function SizeDemo() {
           ></Column>
           <Column
             header="Nhóm"
-            sortable
             sortField="category.name"
             filterField="category"
-            showFilterMatchModes={false}
+            // showFilterMatchModes={false}
             style={{ minWidth: "14rem" }}
             body={representativeBodyTemplate}
-            filter
-            filterElement={representativeFilterTemplate}
+            // filter
+            // filterElement={representativeFilterTemplate}
           />
           <Column
             body={actionBodyTemplate}
@@ -325,8 +308,7 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <Infor_Create isUpdate={false} reloadData={reloadData()}/>
-
+          <Infor_Create isUpdate={false} reloadData={reloadData()} />
         </Dialog>
       </div>
     </div>

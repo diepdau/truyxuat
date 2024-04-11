@@ -6,6 +6,7 @@ import { Toast } from "primereact/toast";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
+import ImageUploader from "../../../components/Images/Image";
 
 const emptyProduct = {
   name: "",
@@ -29,7 +30,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
   const toast = useRef(null);
   const [farm, setfarm] = useState({});
   const [categories, setcategories] = useState({});
-
+  var url = data ? `herds/upload/${data._id}` : "";
   const [selectedCategories, setelectedCategories] = useState(null);
   const [selectedfarm, setSelectedfarm] = useState(null);
   const handleChange = (event) => {
@@ -215,6 +216,14 @@ function YourComponent({ data, reloadData, isUpdate }) {
         severity="success"
         onClick={onRowEditComplete}
       />
+      <hr style={{ margin: "1rem 0rem" }} />
+      {isUpdate && (
+        <ImageUploader
+          uploadUrl={url}
+          images={product.images}
+          reloadData={reloadData}
+        />
+      )}
     </div>
   );
 }

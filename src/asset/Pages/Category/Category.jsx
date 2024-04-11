@@ -3,8 +3,7 @@ import { useLocation } from "react-router-dom";
 import "./Category.css";
 import { Button } from "primereact/button";
 import axios from "axios";
-import { Galleria } from "primereact/galleria";
-import { useForm } from "react-hook-form";
+import ImageUploader from "../../../components/Images/Image";
 const initFormValue = {
   _id: null,
   name: "",
@@ -53,23 +52,6 @@ export default function User() {
       console.log(error);
     }
   };
-  const { register, handleSubmit } = useForm();
-  const upLoadImage = async (data) => {
-    const formData = new FormData();
-    for (const file of data.file) {
-      formData.append("images", file);
-    }
-    try {
-      const responseImg = await axios.patch(
-        `/categories/upload/${userId}`,
-        formData
-      );
-      console.log("Product updated img successfully:", responseImg.data);
-      alert("Chỉnh sửa thành công!");
-    } catch (error) {
-      console.log("Error updating product:", error);
-    }
-  };
 
   return (
     <div className="user">
@@ -112,30 +94,7 @@ export default function User() {
                     onChange={handleChange}
                   />
                 </div>
-                {/* <Galleria
-                  className="image1"
-                  value={user.category.image}
-                  numVisible={5}
-                  style={{ maxWidth: "600px" }}
-                  item={thumbnail}
-                  thumbnail={thumbnailTemplate}
-                /> */}
-                <img
-                  className="image1"
-                  src={user.category.image}
-                  alt="Hình ảnh"
-                  style={{ maxWidth: "600px" }}
-                />
-
-                <div className="card updateimage">
-                  <form
-                    encType="multipart/formdata"
-                    onSubmit={handleSubmit(upLoadImage)}
-                  >
-                    <input type="file" multiple {...register("file")} />
-                    <input type="submit" />
-                  </form>
-                </div>
+                <ImageUploader uploadUrl={`/categories/upload/${userId}`} images={user.category.images}/>
               </div>
               <div className="userUpdateRight">
                 <Button

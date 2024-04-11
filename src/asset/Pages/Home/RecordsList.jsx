@@ -101,7 +101,6 @@ export default function SizeDemo({ herdId }) {
     }
   };
   const reloadData = () => {
-    // eslint-disable-next-line no-undef
     getHerd();
   };
   //Button xóa, thêm tự động
@@ -134,10 +133,8 @@ export default function SizeDemo({ herdId }) {
   const deleteSelectedProducts = () => {
     for (const selectedProduct of selectedProducts) {
       handleDeleteUser(selectedProduct);
-      try {
-        reloadData();
-      } catch {}
     }
+    reloadData();
     toast.current.show({
       severity: "success",
       summary: "Đã xóa 1 số đàn",
@@ -149,9 +146,7 @@ export default function SizeDemo({ herdId }) {
     let _products = products.filter((val) => val._id === product._id);
     const firstObject = _products[0];
     handleDeleteUser(firstObject);
-    try {
-      reloadData();
-    } catch {}
+    reloadData();
     setDeleteProductDialog(false);
     toast.current.show({
       severity: "success",
@@ -339,6 +334,7 @@ export default function SizeDemo({ herdId }) {
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey="_id"
           paginator
+          rowsPerPageOptions={[5, 10, 20]}
           rows={8}
           tableStyle={{ minWidth: "50rem" }}
           globalFilter={globalFilter}
@@ -512,13 +508,15 @@ export default function SizeDemo({ herdId }) {
           visible={productDialogNewAuto}
           onHide={() => setProductDialogNewAuto(false)}
         >
-          <label>Số lượng</label>
-          <InputText
-            type="number"
-            name="quantity"
-            value={product.quantity}
-            onChange={handleChange}
-          />
+          <div>
+            <h4>Số lượng</h4>
+            <InputText
+              type="number"
+              name="quantity"
+              value={product.quantity}
+              onChange={handleChange}
+            />
+          </div>
           <Button
             className="button_Dia"
             label="Lưu"

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../Login/Login.css";
 import "primeicons/primeicons.css";
-import logo from "../../Img/Desktop/logo.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const initFormValue = {

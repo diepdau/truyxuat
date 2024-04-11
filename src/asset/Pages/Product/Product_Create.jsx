@@ -40,7 +40,23 @@ function YourComponent() {
       [name]: value,
     });
   };
+  const validate = () => {
+    let isValid = true;
+    const newErrors = {};
 
+    if (!product.name) {
+      newErrors.name = "Name is required.";
+      isValid = false;
+    }
+    if (!product.price || product.price < 0) {
+      newErrors.name =
+        "Product price must be a non-negative value/ is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
   const handleUnitChange = (event) => {
     setProduct({
       ...product,
@@ -49,6 +65,9 @@ function YourComponent() {
   };
 
   const handleCreate = async () => {
+    if (!validate()) {
+      return;
+    }
     try {
       await axios.post(`/products`, product);
       toast.current.show({
@@ -74,6 +93,8 @@ function YourComponent() {
             style={{ width: "100%" }}
             onChange={handleChange}
           />
+          {errors.name && <small className="p-error">{errors.name}</small>}
+
           <h4>Giá</h4>
           <InputText
             type="number"
@@ -82,6 +103,9 @@ function YourComponent() {
             style={{ width: "100%" }}
             onChange={handleChange}
           />
+           {errors.price && (
+            <small className="p-error">{errors.price}</small>
+          )}
           <h4>Số lượng</h4>
           <InputText
             type="number"

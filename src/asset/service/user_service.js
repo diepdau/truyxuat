@@ -20,7 +20,7 @@ export const AuthContexProvider = ({ children }) => {
   };
 const getuserList = async () => {
     try {
-        const res = await axios.get("/users");
+        const res = await axios.get("/users?limit=50");
         return res.data.users;
     } catch (error) {
         console.log(error)

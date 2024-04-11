@@ -14,28 +14,7 @@ export default function BasicDemo() {
   const [harvestHerd, setharvestHerd] = useState({});
   const location = useLocation();
   const herdId = location.pathname.split("/")[2];
-  useEffect(() => {
-    const getHerd = async () => {
-      try {
-        const res = await axios.get(`/herds/${herdId}`);
-        setFormData(res.data.herd);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    const getHerdHarvest = async () => {
-      try {
-        const res = await axios.get(`/harvests/herd/${herdId}`);
-        setharvestHerd(res.data.harvests);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getHerdHarvest();
-    getHerd();
-  }, [formData, harvestHerd]);
-
-  const reloadData = async () => {
+  const getHerd = async () => {
     try {
       const res = await axios.get(`/herds/${herdId}`);
       setFormData(res.data.herd);
@@ -43,7 +22,7 @@ export default function BasicDemo() {
       console.log(error);
     }
   };
-  const reloadDataHarvest = async () => {
+  const getHerdHarvest = async () => {
     try {
       const res = await axios.get(`/harvests/herd/${herdId}`);
       setharvestHerd(res.data.harvests);
@@ -51,11 +30,23 @@ export default function BasicDemo() {
       console.log(error);
     }
   };
+  useEffect(() => {
+    getHerdHarvest();
+    getHerd();
+  }, [formData, harvestHerd]);
+  const reloadData123 = () => {
+    // eslint-disable-next-line no-undef
+    getHerd();
+  };
+
+  const reloadDataHarvest = () => {
+    getHerdHarvest();
+  };
   return (
     <div className="card card_herd">
       <TabView>
         <TabPanel header="Thông tin">
-          <Infor_Herd data={formData} reloadData={reloadData()} />
+          <Infor_Herd  data={formData}  reloadData={reloadData123}  isUpdate={true}  />
         </TabPanel>
         <TabPanel header="Danh sách con">
           <RecordsList herdId={herdId} />
@@ -64,10 +55,7 @@ export default function BasicDemo() {
           <CultivationLogs_Herd idherd={herdId} />
         </TabPanel>
         <TabPanel header="Thu hoạch">
-          <Harvest
-            dataHerdHarvest={harvestHerd}
-            reloadData1={reloadDataHarvest}
-            isherdharvest={true}
+          <Harvest dataHerdHarvest={harvestHerd} reloadData1={reloadDataHarvest} isherdharvest={true}
           />
         </TabPanel>
         <TabPanel header="Điều trị">

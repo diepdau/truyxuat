@@ -90,7 +90,6 @@ const router = createBrowserRouter([
       },
       {
         path: "/herds/:id",
-        // eslint-disable-next-line react/jsx-pascal-case
         element: <Herds_Details_List />,
       }, 
       {
@@ -99,7 +98,6 @@ const router = createBrowserRouter([
       }, 
       {
         path: "/harvests/:id",
-        // eslint-disable-next-line react/jsx-pascal-case
         element: <Harvest_Update />,
       }, 
       {
@@ -121,6 +119,7 @@ const router = createBrowserRouter([
         path: "/dieu-tri",
         element: <Treatments  />,
       },
+      
     ],
   },
   

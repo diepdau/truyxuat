@@ -206,6 +206,7 @@ export default function SizeDemo() {
           dataKey="_id"
           paginator
           rows={8}
+          rowsPerPageOptions={[5, 10, 20]}
           tableStyle={{ minWidth: "70rem" }}
           globalFilter={globalFilter}
           header={header}

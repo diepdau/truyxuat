@@ -12,6 +12,7 @@ import { TabView, TabPanel } from "primereact/tabview";
 import Distributor_Create from "./Distributor_Create.jsx";
 import Image from "../../../components/Images/Image.jsx";
 import "./Distributor.css";
+import { PaginatorList } from "../Home/PaginatorList.jsx";
 const emptyProduct = {};
 export default function SizeDemo() {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -24,12 +25,14 @@ export default function SizeDemo() {
 
   useEffect(() => {
     const getHerd = async () => {
-      try {
-        const res = await axios.get(`/distributors?limit=32`);
-        setProducts(res.data.distributors);
-      } catch (error) {
-        console.log(error);
-      }
+      <PaginatorList setData={setProducts} url={"distributors"} />
+      console.log("distributors",products)
+      // try {
+      //   const res = await axios.get(`/distributors?limit=50`);
+      //   setProducts(res.data.distributors);
+      // } catch (error) {
+      //   console.log(error);
+      // }
     };
     getHerd();
   });
@@ -202,8 +205,9 @@ export default function SizeDemo() {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          paginator
-          rows={8}
+          // paginator
+          // rows={8}
+          // rowsPerPageOptions={[5, 10, 20]}
           tableStyle={{ minWidth: "50rem" }}
           globalFilter={globalFilter}
           header={header}
@@ -236,6 +240,7 @@ export default function SizeDemo() {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
+        <PaginatorList setData={setProducts} url={"distributors"} />
 
         <Dialog
           visible={deleteProductsDialog}

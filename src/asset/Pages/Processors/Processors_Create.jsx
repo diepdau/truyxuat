@@ -13,7 +13,7 @@ const emptyProduct = {
   location: "",
   date: null,
   harvest: {
-    _id:"",
+    _id: "",
     herd: "",
     name: "",
     quantity: "",
@@ -25,8 +25,8 @@ const unitOptions = [
   { label: "Túi", value: "Túi" },
 ];
 
-function YourComponent({ data }) {
-  const [product, setProduct] = useState(emptyProduct);
+function YourComponent({ data, reloadData, isUpdate }) {
+  const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState({});
   const [selectedHerd, setSelectedHerd] = useState(null);
@@ -61,12 +61,12 @@ function YourComponent({ data }) {
 
   const handleChange = (event) => {
     const { value, name } = event.target;
+    const newValue = name === "date" ? value.toISOString() : value;
     setProduct({
       ...product,
-      [name]: value,
+      [name]: newValue,
     });
   };
-
   const handleUnitChange = (event) => {
     setProduct({
       ...product,
@@ -83,15 +83,25 @@ function YourComponent({ data }) {
     }
 
     try {
-      await axios.post(`/processors`, product);
-      toast.current.show({
-        severity: "success",
-        summary: "Thêm hoàn thành",
-        life: 3000,
-      });
-      setProduct(emptyProduct);
+      if (isUpdate) {
+        await axios.patch(`/processors/${data._id}`, product);
+        toast.current.show({
+          severity: "success",
+          summary: "Sửa hoàn thành",
+          life: 3000,
+        });
+      } else {
+        await axios.post(`/processors`, product);
+        toast.current.show({
+          severity: "success",
+          summary: "Thêm hoàn thành",
+          life: 3000,
+        });
+        setProduct(emptyProduct);
+      }
+      reloadData();
     } catch (error) {
-      console.log("Error update:", error);
+      console.log("Error :", error);
     }
   };
 
@@ -100,38 +110,40 @@ function YourComponent({ data }) {
     const newErrors = {};
 
     if (!product.name.trim()) {
-      newErrors.name = "Name is required.";
+      newErrors.name = "Tên ?";
       isValid = false;
     }
 
     if (!product.location.trim()) {
-      newErrors.location = "Location is required.";
+      newErrors.location = "Vị trí ?.";
       isValid = false;
     }
 
     if (!product.date) {
-      newErrors.date = "Date is required.";
-      isValid = false;
+      product.date = new Date();
+      isValid = true;
     }
 
     if (!product.harvest.herd) {
-      newErrors.herd = "Herd is required.";
+      newErrors.herd = "Thu hoạch từ đàn ?";
       isValid = false;
     }
 
     if (!product.harvest.name.trim()) {
-      newErrors.harvestName = "Harvest Name is required.";
+      newErrors.harvestName = "Tên sản phẩm ?";
       isValid = false;
     }
 
-    if (!product.harvest.quantity.trim()) {
-      newErrors.quantity = "Quantity is required.";
+    if (!product.harvest.quantity) {
+      newErrors.quantity = "Số lượng ?";
       isValid = false;
-    } else if (isNaN(product.harvest.quantity) || parseFloat(product.harvest.quantity) < 0) {
-      newErrors.quantity = "Quantity must be a non-negative number.";
+    } else if (
+      isNaN(product.harvest.quantity) ||
+      parseFloat(product.harvest.quantity) < 0
+    ) {
+      newErrors.quantity = "Số lượng là phải dương ?";
       isValid = false;
     }
-    
 
     setErrors(newErrors);
     return isValid;
@@ -144,7 +156,7 @@ function YourComponent({ data }) {
         <div style={{ flex: 1 }}>
           <Toast className="toast" ref={toast} />
 
-          <h4>Name</h4>
+          <h4>Tên</h4>
           <InputText
             name="name"
             value={product.name}
@@ -153,7 +165,7 @@ function YourComponent({ data }) {
           />
           {errors.name && <small className="p-error">{errors.name}</small>}
 
-          <h4>Location</h4>
+          <h4>Vị trí</h4>
           <InputTextarea
             name="location"
             value={product.location}
@@ -167,8 +179,10 @@ function YourComponent({ data }) {
 
         {/* Cột phải */}
         <div style={{ flex: 1 }}>
-          <h4>Harvest Herd</h4>
+          <h4>Thu hoạch từ đàn</h4>
           <Dropdown
+            placeholder={data ? data.harvest.name : ""}
+
             type="text"
             value={selectedHerd}
             options={herds}
@@ -188,7 +202,7 @@ function YourComponent({ data }) {
           />
           {errors.herd && <small className="p-error">{errors.herd}</small>}
 
-          <h4>Harvest Name</h4>
+          <h4>Tên sản phẩm</h4>
           <InputText
             name="harvestName"
             value={product.harvest.name}
@@ -207,7 +221,7 @@ function YourComponent({ data }) {
             <small className="p-error">{errors.harvestName}</small>
           )}
 
-          <h4>Quantity</h4>
+          <h4>Số lượng</h4>
           <InputText
             type="number"
             name="quantity"
@@ -227,18 +241,18 @@ function YourComponent({ data }) {
             <small className="p-error">{errors.quantity}</small>
           )}
 
-          <h4>Unit</h4>
+          <h4>Đơn vị</h4>
           <Dropdown
             name="unit"
             value={product.harvest.unit}
             options={unitOptions}
             onChange={handleUnitChange}
-            placeholder="Select a unit"
+            placeholder={data ? data.harvest.unit : ""}
             style={{ width: "100%" }}
           />
           {errors.unit && <small className="p-error">{errors.unit}</small>}
 
-          <h4>Date</h4>
+          <h4>Ngày</h4>
           <Calendar
             inputId="cal_date"
             name="date"
@@ -246,13 +260,12 @@ function YourComponent({ data }) {
             value={product.date}
             onChange={(e) => setProduct({ ...product, date: e.value })}
           />
-          {errors.date && <small className="p-error">{errors.date}</small>}
         </div>
       </div>
       <Button
         className="button_Dia"
-        id="Luu"
-        label="Lưu"
+        id="Save"
+        label={isUpdate ? "Cập nhật" : "Lưu"}
         severity="success"
         onClick={handleCreate}
       />

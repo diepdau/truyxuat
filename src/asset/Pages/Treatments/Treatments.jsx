@@ -10,6 +10,7 @@ import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
 import Treatments_Create from "./Treatments_Create.jsx";
+import {PaginatorList}from "../Home/PaginatorList.jsx";
 import "./Treatments.css";
 const emptyProduct = {
   _id: null,
@@ -33,19 +34,21 @@ export default function SizeDemo({ idherd }) {
   });
   const getHerd = async () => {
     if (idherd) {
-      try {
-        const res = await axios.get(`/treatments/herd/${idherd}`);
-        setProducts(res.data.treatments);
-      } catch (error) {
-        console.log(error);
-      }
+      // try {
+      //   const res = await axios.get(`/treatments/herd/${idherd}`);
+      //   setProducts(res.data.treatments);
+      // } catch (error) {
+      //   console.log(error);
+      // }
     } else {
-      try {
-        const res = await axios.get(`/treatments?limit=32`);
-        setProducts(res.data.treatments);
-      } catch (error) {
-        console.log(error);
-      }
+      <PaginatorList setData={setProducts} url={"treatments"} />;
+      console.log("check", products);
+      // try {
+      //   const res = await axios.get(`/treatments?limit=50`);
+      //   setProducts(res.data.treatments);
+      // } catch (error) {
+      //   console.log(error);
+      // }
     }
   };
   const openNew = () => {
@@ -215,6 +218,7 @@ export default function SizeDemo({ idherd }) {
           dataKey="_id"
           paginator
           rows={8}
+          rowsPerPageOptions={[5, 10, 20]}
           tableStyle={{ minWidth: "50rem" }}
           globalFilter={globalFilter}
           header={header}
@@ -263,7 +267,7 @@ export default function SizeDemo({ idherd }) {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
-
+        <PaginatorList setData={setProducts} url={"treatments"} />;
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}
@@ -302,7 +306,6 @@ export default function SizeDemo({ idherd }) {
             )}
           </div>
         </Dialog>
-
         <Dialog
           header="Thêm mới"
           style={{ width: "50%" }}

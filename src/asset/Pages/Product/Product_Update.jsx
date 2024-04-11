@@ -24,7 +24,6 @@ function YourComponent({ data, reloadData }) {
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
 
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     setProduct({
@@ -96,6 +95,7 @@ function YourComponent({ data, reloadData }) {
             style={{ width: "100%" }}
             onChange={handleChange}
           />
+          {errors.price && <small className="p-error">{errors.price}</small>}
           <h4>Đơn vị</h4>
           <InputText
             name="unit"

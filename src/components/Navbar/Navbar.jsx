@@ -5,7 +5,6 @@ import imgadmin from "../../asset/Img/Desktop/adminName.png";
 import { classNames } from "primereact/utils";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../asset/service/user_service.js";
-import lg from "../../asset/Img/Desktop/logo.png"
 import Sidebar from "../Sidebar/Sidebar.js"
 export default function Navbar() {
   const { currentUser, logout } = useContext(AuthContext);
@@ -56,9 +55,7 @@ export default function Navbar() {
     <div>
       <div className="layout-topbar">
         <div className="layout-topbar-logo">
-          <i className="pi pi-bars" id="sidebar-close"style={{ cursor: "pointer" }}onClick={() => setVisibleSidebar((prevVisible) => !prevVisible)} ></i>
-          <image src={lg}></image>
-         <h1 style={{color:"green"}}>Farming</h1>
+          <i className="pi pi-bars" id="sidebar-close"style={{ cursor: "pointer" }}onClick={() => setVisibleSidebar((prevVisible) => !prevVisible)} ></i>         <h1 style={{color:"green"}}>Farming</h1>
         </div>
         
         <div

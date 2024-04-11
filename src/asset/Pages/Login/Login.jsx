@@ -1,17 +1,13 @@
-
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
-import logo from "../../Img/Desktop/logo.png";
 import { AuthContext } from "../../service/user_service.js";
 import { InputText } from "primereact/inputtext";
-import { Message } from "primereact/message";
 
-        
 const Login = () => {
   const [email, setEmail] = useState(undefined);
   const [password, setPassword] = useState(undefined);
-  const {loginApi } = useContext(AuthContext);
+  const { loginApi } = useContext(AuthContext);
   const [err, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -29,7 +25,12 @@ const Login = () => {
       await loginApi({ email, password });
       navigate("/");
     } catch (err) {
-      setError("Vui lòng cung cấp đúng email hoặc mật khẩu");
+      const er = err.response.data.msg;
+      if (er.includes("Incorrect")) {
+        setError("Email hoặc mật khẩu sai");
+      } else {
+        setError("Chưa nhập email hoặc mật khẩu");
+      }
     }
   };
 
@@ -37,7 +38,11 @@ const Login = () => {
     <div className="register-page">
       <div className="register-form-container">
         <div className="branding">
-          <i className="pi pi-spin pi-slack" alt="Logo" style={{ fontSize: '3rem' ,color: 'green'}} />
+          <i
+            className="pi pi-spin pi-slack"
+            alt="Logo"
+            style={{ fontSize: "3rem", color: "green" }}
+          />
           {/* <h1 >LaFarm</h1> */}
         </div>
         <h2 className="titlelogin">Đăng nhập</h2>
@@ -51,7 +56,8 @@ const Login = () => {
               className="form-control"
               type="text"
               name="email"
-              onChange={handleEmailChange}/>
+              onChange={handleEmailChange}
+            />
           </div>
           <div className="mb-2">
             <label htmlFor="password" className="form-label">
@@ -82,31 +88,9 @@ const Login = () => {
           >
             Đăng nhập
           </button>
-          
-          {/* <div className="or-divider">
-            <div className="or-line"></div>
-            <div className="or-text">HOẶC</div>
-            <div className="or-line"></div>
-          </div> */}
-
-          {/* <div className="social-icons">
-            <div className="icon facebook">
-              <i
-                className="pi pi-facebook"
-                // style={{ fontSize: "1rem", Color: "blue" }}
-              ></i>
-            </div>
-            <div className="icon google">
-              <i
-                className="pi pi-google"
-                // style={{ fontSize: "1rem", Color: "red" }}
-              ></i>
-            </div>
-          </div> */}
-
           <Link to="/register" className="create-account">
             <p>Bạn chưa có tài khoản. </p>
-            <span> Đăng kí?</span>{" "}
+            <span> Đăng kí?</span>
           </Link>
         </form>
       </div>

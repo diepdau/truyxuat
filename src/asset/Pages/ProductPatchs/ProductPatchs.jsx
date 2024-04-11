@@ -231,6 +231,7 @@ export default function SizeDemo() {
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
           paginator
+          rowsPerPageOptions={[5, 10, 20]}
           rows={8}
           tableStyle={{ minWidth: "50rem" }}
           globalFilter={globalFilter}

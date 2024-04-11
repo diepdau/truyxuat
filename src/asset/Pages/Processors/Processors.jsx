@@ -12,6 +12,8 @@ import Processors_Update from "./Processors_Update.jsx";
 import Processors_Create from "./Processors_Create.jsx";
 import Image_Upload from "../../../components/Images/Image.jsx";
 import "./Processors.css";
+import { SearchBar } from "./Search.jsx";
+import { Paginator } from "primereact/paginator";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -25,25 +27,39 @@ export default function SizeDemo() {
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentLimit, setCurrentLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    const getHerd = async () => {
-      try {
-        const res = await axios.get(`/processors?limit=32`);
-        setProducts(res.data.processor);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getHerd();
-  });
+    fetchData();
+  }, [currentPage, currentLimit]);
+
+  const fetchData = async (value = "") => {
+    try {
+      const response = await fetch(
+        `/processors?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+          value
+        )}`
+      );
+      const data = await response.json();
+      setProducts(data.processor);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
+  };
+
+  const onPageChange = (event) => {
+    setCurrentPage(+event.page + 1);
+    setCurrentLimit(event.rows);
+  };
 
   const openNew = () => {
     setProductDialog(true);
   };
   const reloadData = () => {
-    // eslint-disable-next-line no-undef
-    getHerd();
+    fetchData();
   };
   const leftToolbarTemplate = () => {
     return (
@@ -73,6 +89,7 @@ export default function SizeDemo() {
     for (const selectedProduct of selectedProducts) {
       handleDeleteUser(selectedProduct);
       setDeleteProductsDialog(false);
+      reloadData();
       toast.current.show({
         severity: "success",
         summary: "Đã xóa",
@@ -84,6 +101,7 @@ export default function SizeDemo() {
     let _products = products.filter((val) => val._id === product._id);
     const firstObject = _products[0];
     handleDeleteUser(firstObject);
+    reloadData();
     setDeleteProductDialog(false);
     toast.current.show({
       severity: "success",
@@ -179,7 +197,11 @@ export default function SizeDemo() {
         <TabView>
           <TabPanel header="Thông tin">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Processors_Update data={data} reloadData={reloadData} />
+            <Processors_Create
+              data={data}
+              reloadData={reloadData}
+              isUpdate={true}
+            />
           </TabPanel>
           <TabPanel header="Hình ảnh">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
@@ -192,15 +214,19 @@ export default function SizeDemo() {
   const allowExpansion = (rowData) => {
     return rowData;
   };
-  const [globalFilter, setGlobalFilter] = useState(null);
+  const [input, setInput] = useState("");
+  const handleChange = (value) => {
+    setInput(value);
+    fetchData(value);
+  };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
       <h4 className="m-0">Manage Records</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
-          type="search"
-          onInput={(e) => setGlobalFilter(e.target.value)}
+          value={input}
+          onChange={(e) => handleChange(e.target.value)}
           placeholder="Search..."
         />
       </span>
@@ -218,10 +244,7 @@ export default function SizeDemo() {
   const headerTemplate = (data) => {
     return (
       <React.Fragment>
-        <span
-          className=" card font-bold"
-          style={{ zIndex: 200 }}
-        >
+        <span className=" card font-bold" style={{ zIndex: 200 }}>
           {data.name}
         </span>
       </React.Fragment>
@@ -229,127 +252,132 @@ export default function SizeDemo() {
   };
 
   return (
-    <div>
-      <Toast className="toast" ref={toast} />
-      <div className="card">
-        <Toolbar
-          className="mb-4"
-          left={leftToolbarTemplate}
-          // right={rightToolbarTemplate}
-        ></Toolbar>
-        <DataTable
-          selectionMode={"row"}
-          selection={selectedProducts}
-          onSelectionChange={(e) => setSelectedProducts(e.value)}
-          editMode="row"
-          rowExpansionTemplate={rowExpansionTemplate}
-          dataKey="_id"
-          paginator
-          rows={10}
-          onRowEditComplete={onRowEditComplete}
-          globalFilter={globalFilter}
-          header={header}
-          value={products}
-          expandedRows={expandedRows}
-          onRowToggle={(e) => setExpandedRows(e.data)}
-          rowGroupMode="rowspan"
-          groupRowsBy="name"
-          sortMode="single"
-          sortField="name"
-          sortOrder={1}
-          tableStyle={{ minWidth: "50rem" }}
-        >
-          <Column expander={allowExpansion} style={{ width: "5rem" }} />
+    <>
+      <div>
+        <Toast className="toast" ref={toast} />
+        <div className="card">
+          <Toolbar
+            className="mb-4"
+            left={leftToolbarTemplate}
+            // right={rightToolbarTemplate}
+          ></Toolbar>
+          <DataTable
+            selectionMode={"row"}
+            selection={selectedProducts}
+            onSelectionChange={(e) => setSelectedProducts(e.value)}
+            editMode="row"
+            rowExpansionTemplate={rowExpansionTemplate}
+            dataKey="_id"
+            onRowEditComplete={onRowEditComplete}
+            header={header}
+            value={products}
+            expandedRows={expandedRows}
+            onRowToggle={(e) => setExpandedRows(e.data)}
+            rowGroupMode="rowspan"
+            groupRowsBy="name"
+            sortMode="single"
+            sortField="name"
+            sortOrder={1}
+            tableStyle={{ minWidth: "50rem" }}
+          >
+            <Column expander={allowExpansion} style={{ width: "5rem" }} />
 
-          <Column
-            field="name"
-            editor={(options) => Name(options)}
-            header="Tên gói sản phẩm"
-            body={headerTemplate}
-            style={{ minWidth: "200px" }}
-          ></Column>
+            <Column
+              field="name"
+              editor={(options) => Name(options)}
+              header="Tên gói sản phẩm"
+              body={headerTemplate}
+              style={{ minWidth: "200px" }}
+            ></Column>
 
-          <Column
-            field="harvest.name"
-            header="Tên sản phẩm"
-            value={product.harvest.name}
-            style={{ minWidth: "10rem" }}
-          ></Column>
-          <Column
-            field="harvest.quantity"
-            header="Số lượng"
-            value={product.harvest.quantity}
-            style={{ minWidth: "10rem" }}
-          ></Column>
-          <Column
-            field="harvest.unit"
-            header="Đơn vị"
-            value={product.harvest.unit}
-            style={{ minWidth: "10rem" }}
-          ></Column>
-          <Column
-            field="date"
-            header="Ngày xuất"
-            value={product.date}
-            style={{ minWidth: "10rem" }}
-          ></Column>
-          <Column selectionMode="multiple" exportable={true}></Column>
-          <Column
-            body={actionBodyTemplate}
-            headerStyle={{ width: "10%", minWidth: "4rem" }}
-            bodyStyle={{ left: "0" }}
-          ></Column>
-        </DataTable>
+            <Column
+              field="harvest.name"
+              header="Tên sản phẩm"
+              value={product.harvest.name}
+              style={{ minWidth: "10rem" }}
+            ></Column>
+            <Column
+              field="harvest.quantity"
+              header="Số lượng"
+              value={product.harvest.quantity}
+              style={{ minWidth: "10rem" }}
+            ></Column>
+            <Column
+              field="harvest.unit"
+              header="Đơn vị"
+              value={product.harvest.unit}
+              style={{ minWidth: "10rem" }}
+            ></Column>
+            <Column
+              field="date"
+              header="Ngày xuất"
+              value={product.date}
+              style={{ minWidth: "10rem" }}
+            ></Column>
+            <Column selectionMode="multiple" exportable={true}></Column>
+            <Column
+              body={actionBodyTemplate}
+              headerStyle={{ width: "10%", minWidth: "4rem" }}
+              bodyStyle={{ left: "0" }}
+            ></Column>
+          </DataTable>
+          <Paginator
+            first={(currentPage - 1) * currentLimit}
+            totalRecords={totalPages * currentLimit} // Assuming you set the correct total number of records here
+            rows={currentLimit}
+            rowsPerPageOptions={[5, 10, 20]}
+            onPageChange={onPageChange}
+          />
+          <Dialog
+            visible={deleteProductsDialog}
+            style={{ width: "32rem" }}
+            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+            header="Thông báo"
+            modal
+            footer={deleteProductDialogFooter}
+            onHide={hideDeleteProductsDialog}
+          >
+            <div className="confirmation-content">
+              <i
+                className="pi pi-exclamation-triangle mr-3"
+                style={{ fontSize: "2rem" }}
+              />
+              {product && <span>Bạn có chắc chắn xóa những đàn này?</span>}
+            </div>
+          </Dialog>
+          <Dialog
+            visible={deleteProductDialog}
+            style={{ width: "32rem" }}
+            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+            header="Thông báo"
+            modal
+            footer={deleteoneProductDialogFooter}
+            onHide={hideDeleteProductDialog}
+          >
+            <div className="confirmation-content">
+              <i
+                className="pi pi-exclamation-triangle mr-3"
+                style={{ fontSize: "2rem" }}
+              />
+              {product && (
+                <span>
+                  Bạn có chắc chắn muốn xóa <b>{product.name}</b>?
+                </span>
+              )}
+            </div>
+          </Dialog>
 
-        <Dialog
-          visible={deleteProductsDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header="Thông báo"
-          modal
-          footer={deleteProductDialogFooter}
-          onHide={hideDeleteProductsDialog}
-        >
-          <div className="confirmation-content">
-            <i
-              className="pi pi-exclamation-triangle mr-3"
-              style={{ fontSize: "2rem" }}
-            />
-            {product && <span>Bạn có chắc chắn xóa những đàn này?</span>}
-          </div>
-        </Dialog>
-        <Dialog
-          visible={deleteProductDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header="Thông báo"
-          modal
-          footer={deleteoneProductDialogFooter}
-          onHide={hideDeleteProductDialog}
-        >
-          <div className="confirmation-content">
-            <i
-              className="pi pi-exclamation-triangle mr-3"
-              style={{ fontSize: "2rem" }}
-            />
-            {product && (
-              <span>
-                Bạn có chắc chắn muốn xóa <b>{product.name}</b>?
-              </span>
-            )}
-          </div>
-        </Dialog>
-
-        <Dialog
-          header="Thêm mới"
-          style={{ width: "50%" }}
-          visible={productDialog}
-          onHide={() => setProductDialog(false)}
-        >
-          {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <Processors_Create />
-        </Dialog>
+          <Dialog
+            header="Thêm mới"
+            style={{ width: "50%" }}
+            visible={productDialog}
+            onHide={() => setProductDialog(false)}
+          >
+            {/* eslint-disable-next-line react/jsx-pascal-case */}
+            <Processors_Create reloadData={reloadData} isUpdate={false} />
+          </Dialog>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

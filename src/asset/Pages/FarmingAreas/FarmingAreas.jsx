@@ -33,7 +33,7 @@ export default function SizeDemo() {
   });
   const getHerd = async () => {
     try {
-      const res = await axios.get(`/farm`);
+      const res = await axios.get(`/farm?limit=50`);
       setProducts(res.data.farms);
     } catch (error) {
       console.log(error);
