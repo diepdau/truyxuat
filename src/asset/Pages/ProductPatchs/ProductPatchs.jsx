@@ -41,18 +41,6 @@ export default function SizeDemo() {
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
-
-  // useEffect(() => {
-  //   const getHerd = async () => {
-  //     try {
-  //       const res = await axios.get(`/product-patchs?limit=32`);
-  //       setProducts(res.data.productPatchs);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   getHerd();
-  // });
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
@@ -214,10 +202,10 @@ export default function SizeDemo() {
           </TabPanel>
           <TabPanel header="Sản phẩm">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Product_Update data={data.product} />
+            <Product_Update data={data.product} reloadData={reloadData}  />
           </TabPanel>
           <TabPanel header="Hình ảnh">
-            <ImageComponent uploadUrl={url} images={data.images} />
+            <ImageComponent uploadUrl={url} images={data.images} reloadData={reloadData}  />
           </TabPanel>
         </TabView>
       </>

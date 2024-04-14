@@ -24,7 +24,7 @@ const emptyProduct = {
   unit: "",
   date: "",
 };
-function Harvest({ dataHerdHarvest, reloadData1, isherdharvest }) {
+function Harvest({ isherdharvest }) {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [harvests, setHarvests] = useState([]);
@@ -42,7 +42,21 @@ function Harvest({ dataHerdHarvest, reloadData1, isherdharvest }) {
 
   const fetchData = async (value = "") => {
     if (isherdharvest) {
-      setHarvests(dataHerdHarvest);
+      try {
+        // const response = await fetch(
+        //   `/harvests/herd/${isherdharvest}&limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+        //     value
+        //   )}`
+        // );
+        const response = await fetch(
+            `/harvests/herd/${isherdharvest}`);
+        const data = await response.json();
+        console.log(data.harvests);
+        setHarvests(data.harvests);
+        // setTotalPages(data.totalPages);
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
+      }
     } else {
       try {
         const response = await fetch(
@@ -51,13 +65,13 @@ function Harvest({ dataHerdHarvest, reloadData1, isherdharvest }) {
           )}`
         );
         const data = await response.json();
+        console.log(data.harvests);
         setHarvests(data.harvests);
         setTotalPages(data.totalPages);
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
     }
-    fetchData();
   };
   const onPageChange = (event) => {
     setCurrentPage(+event.page + 1);
@@ -114,6 +128,7 @@ function Harvest({ dataHerdHarvest, reloadData1, isherdharvest }) {
       summary: "Đã xóa",
       life: 3000,
     });
+    reloadData();
   };
 
   const deleteProductDialogFooter = (
@@ -181,11 +196,14 @@ function Harvest({ dataHerdHarvest, reloadData1, isherdharvest }) {
       <>
         <TabView>
           <TabPanel header="Thông tin">
-            {/* eslint-disable-next-line react/jsx-pascal-case */}
             <Harvest_Update data={data} reloadData={reloadData} />
           </TabPanel>
           <TabPanel header="Hình ảnh">
-            <Image uploadUrl={url} images={data.images} />
+            <Image
+              uploadUrl={url}
+              images={data.images}
+              reloadData={reloadData}
+            />
           </TabPanel>
         </TabView>
       </>
@@ -218,9 +236,7 @@ function Harvest({ dataHerdHarvest, reloadData1, isherdharvest }) {
 
       {!isherdharvest && (
         <>
-          {/* eslint-disable-next-line react/jsx-pascal-case */}
           <Chart_Herds />
-          {/* eslint-disable-next-line react/jsx-pascal-case */}
           <Chart_Products />
         </>
       )}
@@ -334,8 +350,7 @@ function Harvest({ dataHerdHarvest, reloadData1, isherdharvest }) {
           visible={productDialog}
           onHide={() => setProductDialog(false)}
         >
-          {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <Harvest_Create />
+          <Harvest_Create reloadData={reloadData} idherd={isherdharvest} />
         </Dialog>
       </div>
     </div>

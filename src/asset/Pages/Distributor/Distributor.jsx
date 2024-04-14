@@ -179,7 +179,7 @@ export default function SizeDemo() {
             />
           </TabPanel>
           <TabPanel header="Hình ảnh">
-            <Image uploadUrl={url} images={data.images} />
+            <Image uploadUrl={url} images={data.images} reloadData={reloadData} />
           </TabPanel>
         </TabView>
       </>

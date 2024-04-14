@@ -32,17 +32,7 @@ export default function CulivationLogs_Herd({ idherd }) {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
 
-  // useEffect(() => {
-  //   const getHerd = async () => {
-  //     try {
-  //       const res = await axios.get(`/cultivation-logs/herd/${idherd}`);
-  //       setProducts(res.data.cultivationLogs);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   getHerd();
-  // });
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
@@ -185,11 +175,14 @@ export default function CulivationLogs_Herd({ idherd }) {
       <>
         <TabView>
           <TabPanel header="Thông tin">
-            {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <CultivationLogs_Update data={data} />
+            <CultivationLogs_Update reloadData={reloadData} data={data} />
           </TabPanel>
           <TabPanel header="Hình ảnh">
-            <ImageUploader uploadUrl={url} images={data.images} />
+            <ImageUploader
+              uploadUrl={url}
+              images={data.images}
+              reloadData={reloadData}
+            />
           </TabPanel>
         </TabView>
       </>
@@ -245,6 +238,11 @@ export default function CulivationLogs_Herd({ idherd }) {
             field="name"
             header="Tên hoạt động"
             value={product.name}
+            style={{ minWidth: "10rem" }}
+          ></Column>
+          <Column
+            field="date"
+            header="Ngày"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
@@ -307,7 +305,6 @@ export default function CulivationLogs_Herd({ idherd }) {
           visible={productDialog}
           onHide={() => setProductDialog(false)}
         >
-          {/* eslint-disable-next-line react/jsx-pascal-case */}
           <CultivationLogs_Create reloadData={reloadData} herd_id={idherd} />
         </Dialog>
       </div>

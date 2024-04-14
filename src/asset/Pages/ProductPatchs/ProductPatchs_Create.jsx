@@ -20,7 +20,7 @@ const unitOptions = [
   { label: "Túi", value: "Túi" },
 ];
 
-function YourComponent(data, reloadData) {
+function YourComponent(reloadData) {
   const [product, setProduct] = useState(emptyProduct);
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState({});

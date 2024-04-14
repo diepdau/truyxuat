@@ -10,7 +10,6 @@ import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
 import Treatments_Create from "./Treatments_Create.jsx";
-import { PaginatorList } from "../Home/PaginatorList.jsx";
 import "./Treatments.css";
 import { Paginator } from "primereact/paginator";
 
@@ -338,7 +337,7 @@ export default function SizeDemo({ idherd }) {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <Treatments_Create isUpdate={false} />
+          <Treatments_Create reloadData={reloadData} isUpdate={false} />
         </Dialog>
       </div>
     </div>

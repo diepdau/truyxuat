@@ -185,6 +185,7 @@ export default function SizeDemo() {
   const handleDeleteUser = async (product) => {
     try {
       await axios.delete(`/herds/${product._id}`, product);
+      reloadData();
     } catch (error) {
       console.log("Error:", error);
     }
@@ -222,7 +223,6 @@ export default function SizeDemo() {
     <div>
       <Toast className="toast" ref={toast} />
       <div className="card">
-        {/* <Search /> */}
         <Toolbar
           className="mb-4"
           left={leftToolbarTemplate}
@@ -329,7 +329,7 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <Infor_Create isUpdate={false} reloadData={reloadData()} />
+          <Infor_Create isUpdate={false} reloadData={reloadData} />
         </Dialog>
       </div>
     </div>

@@ -6,6 +6,7 @@ import { Toast } from "primereact/toast";
 import "./Product.css";
 import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
+import { Dropdown } from "primereact/dropdown";
 
 const emptyProduct = {
   unit: "",
@@ -18,6 +19,11 @@ const emptyProduct = {
   storage_method: "",
   info: "",
 };
+const unitOptions = [
+  { label: "Đồng", value: "Đồng" },
+  { label: "$", value: "$" },
+  { label: "Euro", value: "Euro" },
+];
 
 function YourComponent({ data, reloadData }) {
   const [product, setProduct] = useState(data || emptyProduct);
@@ -31,7 +37,12 @@ function YourComponent({ data, reloadData }) {
       [name]: value,
     });
   };
-
+  const handleUnitChange = (event) => {
+    setProduct({
+      ...product,
+      unit: event.value,
+    });
+  };
   const handleCreate = async () => {
     if (!validate()) {
       return;
@@ -54,9 +65,23 @@ function YourComponent({ data, reloadData }) {
   const validate = () => {
     let isValid = true;
     const newErrors = {};
-
     if (!product.name) {
       newErrors.name = "Name is required.";
+      isValid = false;
+    }
+    if (!product.price || product.price < 0) {
+      newErrors.price =
+        "Product price must be a non-negative value/ is required";
+      isValid = false;
+    }
+    if (!product.quantity || product.quantity < 0) {
+      newErrors.quantity =
+        "Quantity price must be a non-negative value/ is required";
+      isValid = false;
+    }
+    if (product.production_date && product.expiration_date && product.production_date > product.expiration_date) {
+      newErrors.production_date = "Production date must be before expiration date.";
+      newErrors.expiration_date = "Expiration date must be after production date.";
       isValid = false;
     }
     setErrors(newErrors);
@@ -97,12 +122,14 @@ function YourComponent({ data, reloadData }) {
           />
           {errors.price && <small className="p-error">{errors.price}</small>}
           <h4>Đơn vị</h4>
-          <InputText
+        
+          <Dropdown
             name="unit"
             value={product.unit}
-            autoResize
+            options={unitOptions}
+            onChange={handleUnitChange}
+            placeholder="Select a unit"
             style={{ width: "100%" }}
-            onChange={handleChange}
           />
         </div>
 
@@ -116,7 +143,7 @@ function YourComponent({ data, reloadData }) {
             value={new Date(product.production_date)}
             onChange={handleChange}
           />
-
+ {errors.production_date && <small className="p-error">{errors.production_date}</small>}
           <h4>Ngày hết hạn</h4>
           <Calendar
             inputId="cal_expiration_date"
@@ -125,7 +152,7 @@ function YourComponent({ data, reloadData }) {
             value={new Date(product.expiration_date)}
             onChange={handleChange}
           />
-
+ {errors.expiration_date && <small className="p-error">{errors.expiration_date}</small>}
           <h4>Phương pháp bảo quản</h4>
           <InputTextarea
             name="storage_method"

@@ -65,3 +65,9 @@ h4 {
         justify-content: flex-start;
     }
   }
+
+.quantity_auto{
+    font-weight: bold;
+    margin-bottom: 2vh;
+
+}

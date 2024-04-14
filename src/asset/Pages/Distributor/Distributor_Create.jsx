@@ -84,7 +84,17 @@ function YourComponent({ data, reloadData, isUpdate }) {
     if (!product.delivery_date) {
       newErrors.delivery_date = new Date();
     }
-
+    if (
+      product.delivery_date &&
+      product.received_date &&
+      product.received_date < product.delivery_date
+    ) {
+      newErrors.delivery_date =
+        "delivery_date date must be before received_date date.";
+      newErrors.received_date =
+        "received_date date must be after delivery_date date.";
+      isValid = false;
+    }
     setErrors(newErrors);
     return isValid;
   };

@@ -21,17 +21,15 @@ const unitOptions = [
   { label: "Túi", value: "Túi" },
 ];
 
-function Harvest_Create() {
+function Harvest_Create({ reloadData, idherd }) {
   const [product, setProduct] = useState(emptyProduct);
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState({});
   const [selectedHerd, setSelectedHerd] = useState(null);
 
-
   const toast = useRef(null);
   useEffect(() => {
     getHerd();
-   
   }, []);
   const getHerd = async () => {
     try {
@@ -48,6 +46,7 @@ function Harvest_Create() {
       ...product,
       [name]: value,
     });
+    
   };
   const handleUnitChange = (event) => {
     setProduct({
@@ -72,6 +71,7 @@ function Harvest_Create() {
     } catch (error) {
       console.log("Error update:", error);
     }
+    reloadData();
   };
 
   const validate = () => {
@@ -121,19 +121,30 @@ function Harvest_Create() {
           <Toast className="toast" ref={toast} />
 
           <h4>Herds</h4>
-          <Dropdown
-            type="text"
-            value={selectedHerd}
-            options={herds}
-            optionLabel="name"
-            onChange={(e) => {
-              setSelectedHerd(e.value);
-              product.herd = e.value._id;
-            }}
-            style={{ width: "100%" }}
-          />
-          {errors.herd && <small className="p-error">{errors.herd}</small>}
-
+          {idherd ? (
+            <InputText
+              disabled
+              type="text"
+              name="herd"
+              placeholder={idherd}
+              style={{ width: "100%" }}
+            />
+          ) : (
+            <>
+              <Dropdown
+                type="text"
+                value={selectedHerd}
+                options={herds}
+                optionLabel="name"
+                onChange={(e) => {
+                  setSelectedHerd(e.value);
+                  product.herd = e.value._id;
+                }}
+                style={{ width: "100%" }}
+              />
+              {errors.herd && <small className="p-error">{errors.herd}</small>}
+            </>
+          )}
           <h4>Name</h4>
           <InputTextarea
             name="name"

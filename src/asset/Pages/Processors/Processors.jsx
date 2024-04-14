@@ -8,11 +8,9 @@ import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import { Toast } from "primereact/toast";
 import { TabView, TabPanel } from "primereact/tabview";
-import Processors_Update from "./Processors_Update.jsx";
 import Processors_Create from "./Processors_Create.jsx";
 import Image_Upload from "../../../components/Images/Image.jsx";
 import "./Processors.css";
-import { SearchBar } from "./Search.jsx";
 import { Paginator } from "primereact/paginator";
 const emptyProduct = {
   _id: null,
@@ -205,7 +203,11 @@ export default function SizeDemo() {
           </TabPanel>
           <TabPanel header="Hình ảnh">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Image_Upload uploadUrl={url} images={data.images} />
+            <Image_Upload
+              uploadUrl={url}
+              images={data.images}
+              reloadData={reloadData}
+            />
           </TabPanel>
         </TabView>
       </>

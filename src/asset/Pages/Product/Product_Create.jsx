@@ -58,7 +58,11 @@ function YourComponent(reloadData) {
         "Quantity price must be a non-negative value/ is required";
       isValid = false;
     }
-
+    if (product.production_date && product.expiration_date && product.production_date > product.expiration_date) {
+      newErrors.production_date = "Production date must be before expiration date.";
+      newErrors.expiration_date = "Expiration date must be after production date.";
+      isValid = false;
+    }
     setErrors(newErrors);
     return isValid;
   };
@@ -68,38 +72,13 @@ function YourComponent(reloadData) {
       unit: event.value,
     });
   };
-  const handleProductionDateChange = (e) => {
-    const newProductionDate = e.value;
-    const newExpirationDate = product.expiration_date;
-
-    if (newExpirationDate && newProductionDate > newExpirationDate) {
-      // Nếu ngày sản xuất mới lớn hơn ngày hết hạn, bạn có thể thực hiện xử lý tương ứng ở đây.
-      // Ví dụ: hiển thị thông báo lỗi hoặc thực hiện hành động khác.
-      console.log("Ngày sản xuất không được lớn hơn ngày hết hạn");
-    } else {
-      setProduct({ ...product, production_date: newProductionDate });
-    }
-  };
-
-  const handleExpirationDateChange = (e) => {
-    const newExpirationDate = e.value;
-    const newProductionDate = product.production_date;
-
-    if (newProductionDate && newProductionDate > newExpirationDate) {
-      // Nếu ngày sản xuất lớn hơn ngày hết hạn mới, bạn có thể thực hiện xử lý tương ứng ở đây.
-      // Ví dụ: hiển thị thông báo lỗi hoặc thực hiện hành động khác.
-      console.log("Ngày sản xuất không được lớn hơn ngày hết hạn");
-    } else {
-      setProduct({ ...product, expiration_date: newExpirationDate });
-    }
-  };
 
   const handleCreate = async () => {
     if (!validate()) {
       return;
     }
     try {
-      const a = await axios.post(`/products`, product);
+      const a=await axios.post(`/products`, product);
 
       toast.current.show({
         severity: "success",
@@ -108,7 +87,7 @@ function YourComponent(reloadData) {
       });
       reloadData();
       setProduct(emptyProduct);
-      console.log(product, a);
+      console.log(product,a)
     } catch (error) {
       console.log("Error update:", error);
     }
@@ -143,7 +122,7 @@ function YourComponent(reloadData) {
             value={product.quantity}
             style={{ width: "100%" }}
             onChange={handleChange}
-          />{" "}
+          />
           {errors.quantity && (
             <small className="p-error">{errors.quantity}</small>
           )}
@@ -182,8 +161,10 @@ function YourComponent(reloadData) {
             name="production_date"
             style={{ width: "100%" }}
             value={product.production_date}
-            onChange={handleProductionDateChange}
-          />
+            onChange={(e) =>
+              setProduct({ ...product, production_date: e.value })
+            }
+          />  {errors.production_date && <small className="p-error">{errors.production_date}</small>}
 
           <h4>Ngày hết hạn</h4>
           <Calendar
@@ -191,8 +172,10 @@ function YourComponent(reloadData) {
             name="expiration_date"
             style={{ width: "100%" }}
             value={product.expiration_date}
-            onChange={handleExpirationDateChange}
-          />
+            onChange={(e) =>
+              setProduct({ ...product, expiration_date: e.value })
+            }
+          />  {errors.expiration_date && <small className="p-error">{errors.expiration_date}</small>}
           <h4>Phương thức lưu trữ</h4>
           <InputTextarea
             name="storage_method"

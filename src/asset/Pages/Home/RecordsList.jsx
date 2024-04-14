@@ -11,6 +11,7 @@ import { Toast } from "primereact/toast";
 import "./HerdsList.css";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
+import { Paginator } from "primereact/paginator";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -31,16 +32,6 @@ export default function SizeDemo({ herdId }) {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
 
-  //Lấy danh sách con trong 1 đàn
-  // const getHerd = async () => {
-  //   try {
-  //     const res = await axios.get(`/herds/${herdId}`);
-  //     setProducts(res.data.herd.records);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
@@ -52,12 +43,13 @@ export default function SizeDemo({ herdId }) {
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        `/product-patchs?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+        `/herds/${herdId}?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
           value
         )}`
       );
       const data = await response.json();
-      setProducts(data.productPatchs);
+      setProducts(data.herd.records);
+      console.log(data);
       setTotalPages(data.totalPages);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
@@ -65,6 +57,10 @@ export default function SizeDemo({ herdId }) {
   };
   const reloadData = () => {
     fetchData();
+  };
+  const onPageChange = (event) => {
+    setCurrentPage(+event.page + 1);
+    setCurrentLimit(event.rows);
   };
 
   const openNew = () => {
@@ -321,16 +317,19 @@ export default function SizeDemo({ herdId }) {
   const allowExpansion = (rowData) => {
     return rowData;
   };
-
-  const [globalFilter, setGlobalFilter] = useState(null);
+  const [input, setInput] = useState("");
+  const handleChangeSearch = (value) => {
+    setInput(value);
+    fetchData(value);
+  };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
       <h4 className="m-0">Manage Records</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
-          type="search"
-          onInput={(e) => setGlobalFilter(e.target.value)}
+          value={input}
+          onChange={(e) => handleChangeSearch(e.target.value)}
           placeholder="Search..."
         />
       </span>
@@ -356,11 +355,7 @@ export default function SizeDemo({ herdId }) {
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey="_id"
-          paginator
-          rowsPerPageOptions={[5, 10, 20]}
-          rows={8}
           tableStyle={{ minWidth: "50rem" }}
-          globalFilter={globalFilter}
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
@@ -406,7 +401,13 @@ export default function SizeDemo({ herdId }) {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
-
+        <Paginator
+          first={(currentPage - 1) * currentLimit}
+          totalRecords={totalPages * currentLimit} // Assuming you set the correct total number of records here
+          rows={currentLimit}
+          rowsPerPageOptions={[5, 10, 20]}
+          onPageChange={onPageChange}
+        />
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}
@@ -453,21 +454,27 @@ export default function SizeDemo({ herdId }) {
           style={{ width: "50%" }}
           visible={productDialog}
           onHide={() => setProductDialog(false)}
+          modal
         >
           <div>
-            <form className="userUpdateForm">
-              <div className="userUpdateLeft">
-                <div className="userUpdateItem">
+            <form className="container_update">
+              <div className="container_update">
+                <div
+                  style={{
+                    flex: 1,
+                    paddingRight: "1rem",
+                    marginBottom: "2vh",
+                    marginTop: "3vh",
+                  }}
+                >
                   <label>Tên</label>
                   <InputText
                     type="text"
                     name="name"
                     value={product.name}
                     onChange={handleChange}
-                    className="userUpdateInput"
+                    style={{ width: "100%" }}
                   />
-                </div>
-                <div className="userUpdateItem">
                   <label>Ngày sinh</label>
                   <Calendar
                     inputId="cal_date"
@@ -476,26 +483,17 @@ export default function SizeDemo({ herdId }) {
                     value={product.birth_date}
                     onChange={handleChange}
                   />
-                  {/* <input
-                    type="text"
-                    name="birth_date"
-                    value={product.birth_date}
-                    onChange={handleChange}
-                    className="userUpdateInput"
-                  /> */}
                 </div>
-                <div className="userUpdateItem">
+                <div style={{ flex: 1, marginBottom: "2vh", marginTop: "3vh" }}>
                   <label>Cân nặng</label>
                   <InputText
                     type="number"
                     name="birth_weight"
                     value={product.birth_weight}
                     onChange={handleChange}
-                    className="userUpdateInput"
+                    style={{ width: "100%" }}
                   />
-                </div>
 
-                <div className="userUpdateItem">
                   <label>Thu hoạch</label>
                   <Dropdown
                     type="text"
@@ -503,7 +501,7 @@ export default function SizeDemo({ herdId }) {
                     optionLabel="name"
                     value={selectedIsHarvested}
                     onChange={(e) => setSelectedIsHarvested(e.value)}
-                    className="userUpdateInput"
+                    style={{ width: "100%" }}
                   />
                 </div>
               </div>
@@ -527,17 +525,19 @@ export default function SizeDemo({ herdId }) {
 
         <Dialog
           header="Thêm mới tự động"
-          style={{ width: "30%" }}
+          style={{ width: "20%" }}
           visible={productDialogNewAuto}
           onHide={() => setProductDialogNewAuto(false)}
+          modal
         >
           <div>
-            <h4>Số lượng</h4>
+            <h4 className="quantity_auto">Số lượng</h4>
             <InputText
               type="number"
               name="quantity"
               value={product.quantity}
               onChange={handleChange}
+              style={{ width: "100%", marginBottom: "2vh" }}
             />
           </div>
           <Button
