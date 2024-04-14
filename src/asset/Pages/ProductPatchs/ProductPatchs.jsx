@@ -16,6 +16,8 @@ import { Image } from "primereact/image";
 import ImageComponent from "../../../components/Images/Image.jsx";
 import Product_Update from "../Product/Product_Update.jsx";
 import "./ProductPatchs.css";
+import { Paginator } from "primereact/paginator";
+
 const emptyProduct = {
   _id: null,
   processor: {
@@ -40,24 +42,51 @@ export default function SizeDemo() {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
 
+  // useEffect(() => {
+  //   const getHerd = async () => {
+  //     try {
+  //       const res = await axios.get(`/product-patchs?limit=32`);
+  //       setProducts(res.data.productPatchs);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getHerd();
+  // });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentLimit, setCurrentLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+
   useEffect(() => {
-    const getHerd = async () => {
-      try {
-        const res = await axios.get(`/product-patchs?limit=32`);
-        setProducts(res.data.productPatchs);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getHerd();
-  });
+    fetchData();
+  }, [currentPage, currentLimit]);
+
+  const fetchData = async (value = "") => {
+    try {
+      const response = await fetch(
+        `/product-patchs?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+          value
+        )}`
+      );
+      const data = await response.json();
+      setProducts(data.productPatchs);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
+  };
+
+  const onPageChange = (event) => {
+    setCurrentPage(+event.page + 1);
+    setCurrentLimit(event.rows);
+  };
 
   const openNew = () => {
     setProductDialog(true);
   };
   const reloadData = () => {
-    // eslint-disable-next-line no-undef
-    getHerd();
+    fetchData();
+
   };
   const leftToolbarTemplate = () => {
     return (
@@ -181,7 +210,7 @@ export default function SizeDemo() {
           </TabPanel>
           <TabPanel header="Xử lý/đóng gói">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Processors_Update data={data.processor} />
+            <Processors_Update data={data.processor} reloadData={reloadData} />
           </TabPanel>
           <TabPanel header="Sản phẩm">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
@@ -197,15 +226,19 @@ export default function SizeDemo() {
   const allowExpansion = (rowData) => {
     return rowData;
   };
-  const [globalFilter, setGlobalFilter] = useState(null);
+  const [input, setInput] = useState("");
+  const handleChange = (value) => {
+    setInput(value);
+    fetchData(value);
+  };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
       <h4 className="m-0">Manage Records</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
-          type="search"
-          onInput={(e) => setGlobalFilter(e.target.value)}
+          value={input}
+          onChange={(e) => handleChange(e.target.value)}
           placeholder="Search..."
         />
       </span>
@@ -230,11 +263,7 @@ export default function SizeDemo() {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          paginator
-          rowsPerPageOptions={[5, 10, 20]}
-          rows={8}
           tableStyle={{ minWidth: "50rem" }}
-          globalFilter={globalFilter}
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
@@ -267,7 +296,13 @@ export default function SizeDemo() {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
-
+        <Paginator
+          first={(currentPage - 1) * currentLimit}
+          totalRecords={totalPages * currentLimit} // Assuming you set the correct total number of records here
+          rows={currentLimit}
+          rowsPerPageOptions={[5, 10, 20]}
+          onPageChange={onPageChange}
+        />
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}
@@ -314,7 +349,7 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <ProductPatchs_Create />
+          <ProductPatchs_Create reloadData={reloadData}  />
         </Dialog>
       </div>
     </div>

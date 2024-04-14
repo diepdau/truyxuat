@@ -46,7 +46,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
           summary: "Sửa hoàn thành",
           life: 3000,
         });
-        reloadData();
+
         setFormData(res.data);
       } else {
         await axios.post(`/farm`, formData);
@@ -57,6 +57,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
         });
         setFormData(emptyData);
       }
+      reloadData();
     } catch (error) {
       console.log("Error:", error);
     }
@@ -79,6 +80,9 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
     if (!formData.area) {
       newErrors.area = "Area is required.";
       isValid = false;
+    } else if (parseFloat(formData.area) < 0) {
+      newErrors.area = "Area must be a positive number.";
+      isValid = false;
     }
 
     if (!formData.address.trim()) {
@@ -89,8 +93,18 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
     if (!formData.coordinates) {
       newErrors.coordinates = "Coordinates are required.";
       isValid = false;
+    } else {
+      const coordinatesArray = formData.coordinates.split(",").map(Number);
+      if (
+        coordinatesArray.length !== 2 ||
+        coordinatesArray.some((coord) => isNaN(coord)) ||
+        coordinatesArray.some((coord) => coord <= 0)
+      ) {
+        newErrors.coordinates =
+          "Invalid coordinates format or coordinates must be positive and non-zero.";
+        isValid = false;
+      }
     }
-
     setErrors(newErrors);
     return isValid;
   };

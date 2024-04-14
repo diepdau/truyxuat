@@ -12,7 +12,7 @@ const emptyProduct = {
   date: "",
 };
 
-function YourComponent({ data }) {
+function YourComponent({ reloadData,data }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
@@ -43,6 +43,7 @@ function YourComponent({ data }) {
         summary: "Sửa hoàn thành",
         life: 3000,
       });
+      reloadData();
       setProduct({
         ...product,
         name: product.data.name,

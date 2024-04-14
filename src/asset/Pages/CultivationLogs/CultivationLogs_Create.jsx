@@ -12,7 +12,7 @@ const emptyProduct = {
   date: new Date().toISOString().slice(0, 10), // Lấy ngày hiện tại dưới dạng chuỗi
 };
 
-function YourComponent({ herd_id }) {
+function YourComponent({ reloadData,herd_id }) {
   const [product, setProduct] = useState(emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
@@ -44,6 +44,7 @@ function YourComponent({ herd_id }) {
         summary: "Thêm hoàn thành",
         life: 3000,
       });
+      reloadData();
       setProduct(emptyProduct);
     } catch (error) {
       console.log("Error update:", error);

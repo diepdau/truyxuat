@@ -43,7 +43,6 @@ const Login = () => {
             alt="Logo"
             style={{ fontSize: "3rem", color: "green" }}
           />
-          {/* <h1 >LaFarm</h1> */}
         </div>
         <h2 className="titlelogin">Đăng nhập</h2>
         <form>

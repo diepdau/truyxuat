@@ -12,7 +12,7 @@ import { TabView, TabPanel } from "primereact/tabview";
 import Distributor_Create from "./Distributor_Create.jsx";
 import Image from "../../../components/Images/Image.jsx";
 import "./Distributor.css";
-import { PaginatorList } from "../Home/PaginatorList.jsx";
+import { Paginator } from "primereact/paginator";
 const emptyProduct = {};
 export default function SizeDemo() {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -23,26 +23,39 @@ export default function SizeDemo() {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentLimit, setCurrentLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+
   useEffect(() => {
-    const getHerd = async () => {
-      <PaginatorList setData={setProducts} url={"distributors"} />
-      console.log("distributors",products)
-      // try {
-      //   const res = await axios.get(`/distributors?limit=50`);
-      //   setProducts(res.data.distributors);
-      // } catch (error) {
-      //   console.log(error);
-      // }
-    };
-    getHerd();
-  });
+    fetchData();
+  }, [currentPage, currentLimit]);
+
+  const fetchData = async (value = "") => {
+    try {
+      const response = await fetch(
+        `/distributors?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+          value
+        )}`
+      );
+      const data = await response.json();
+      setProducts(data.distributors);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
+  };
+
+  const onPageChange = (event) => {
+    setCurrentPage(+event.page + 1);
+    setCurrentLimit(event.rows);
+  };
 
   const openNew = () => {
     setProductDialog(true);
   };
   const reloadData = () => {
-    // eslint-disable-next-line no-undef
-    getHerd();
+    fetchData();
   };
   const leftToolbarTemplate = () => {
     return (
@@ -159,7 +172,10 @@ export default function SizeDemo() {
         <TabView>
           <TabPanel header="Thông tin">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Distributor_Create data={data} reloadData={reloadData} isUpdate={true}
+            <Distributor_Create
+              data={data}
+              reloadData={reloadData}
+              isUpdate={true}
             />
           </TabPanel>
           <TabPanel header="Hình ảnh">
@@ -172,15 +188,19 @@ export default function SizeDemo() {
   const allowExpansion = (rowData) => {
     return rowData;
   };
-  const [globalFilter, setGlobalFilter] = useState(null);
+  const [input, setInput] = useState("");
+  const handleChange = (value) => {
+    setInput(value);
+    fetchData(value);
+  };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
       <h4 className="m-0">Manage Records</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
-          type="search"
-          onInput={(e) => setGlobalFilter(e.target.value)}
+          value={input}
+          onChange={(e) => handleChange(e.target.value)}
           placeholder="Search..."
         />
       </span>
@@ -205,11 +225,7 @@ export default function SizeDemo() {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          // paginator
-          // rows={8}
-          // rowsPerPageOptions={[5, 10, 20]}
-          tableStyle={{ minWidth: "50rem" }}
-          globalFilter={globalFilter}
+          tableStyle={{ minWidth: "69rem" }}
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
@@ -240,7 +256,13 @@ export default function SizeDemo() {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
-        <PaginatorList setData={setProducts} url={"distributors"} />
+        <Paginator
+          first={(currentPage - 1) * currentLimit}
+          totalRecords={totalPages * currentLimit} // Assuming you set the correct total number of records here
+          rows={currentLimit}
+          rowsPerPageOptions={[5, 10, 20]}
+          onPageChange={onPageChange}
+        />
 
         <Dialog
           visible={deleteProductsDialog}
@@ -288,7 +310,7 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <Distributor_Create isUpdate={false} />
+          <Distributor_Create reloadData={reloadData} isUpdate={false} />
         </Dialog>
       </div>
     </div>

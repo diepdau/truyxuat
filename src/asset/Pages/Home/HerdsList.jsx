@@ -10,9 +10,9 @@ import axios from "axios";
 import Infor_Create from "./Infor_Create.jsx";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
-import { SearchBar } from "./Search.jsx";
 import "./HerdsList.css";
-import { MultiSelect } from "primereact/multiselect";
+import { Paginator } from "primereact/paginator";
+
 const emptyProduct = {
   _id: null,
   name: "",
@@ -39,24 +39,39 @@ export default function SizeDemo() {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentLimit, setCurrentLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+
   useEffect(() => {
     fetchData();
-  }, [handleGet]);
-  const fetchData = async () => {
+  }, [currentPage, currentLimit]);
+
+  const fetchData = async (value = "") => {
     try {
-      const userList = await handleGet();
-      // setProducts(userList);
-      console.log(userList);
+      const response = await fetch(
+        `/herds?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+          value
+        )}`
+      );
+      const data = await response.json();
+      console.log(data.herds);
+      setProducts(data.herds);
+      setTotalPages(data.totalPages);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("There was a problem with the fetch operation:", error);
     }
+  };
+
+  const onPageChange = (event) => {
+    setCurrentPage(+event.page + 1);
+    setCurrentLimit(event.rows);
   };
 
   const openNew = () => {
     setProductDialog(true);
   };
   const reloadData = () => {
-    // eslint-disable-next-line no-undef
     fetchData();
   };
 
@@ -174,19 +189,7 @@ export default function SizeDemo() {
       console.log("Error:", error);
     }
   };
-  const representativeFilterTemplate = (options) => {
-    return (
-      <MultiSelect
-        value={options.value}
-        options={categories}
-        itemTemplate={representativesItemTemplate}
-        onChange={(e) => options.filterCallback(e.value)}
-        optionLabel="name"
-        placeholder="Any"
-        className="p-column-filter"
-      />
-    );
-  };
+
   const representativeBodyTemplate = (rowData) => {
     const representative = rowData.category;
 
@@ -196,14 +199,25 @@ export default function SizeDemo() {
       </div>
     );
   };
-  const representativesItemTemplate = (option) => {
-    return (
-      <div className="flex align-items-center gap-2">
-        <span>{option.name}</span>
-      </div>
-    );
+
+  const [input, setInput] = useState("");
+  const handleChange = (value) => {
+    setInput(value);
+    fetchData(value);
   };
-  const header = <SearchBar setResults={setProducts} />;
+  const header = (
+    <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
+      <h4 className="m-0">Manage Records</h4>
+      <span className="p-input-icon-left">
+        <i className="pi pi-search" />
+        <InputText
+          value={input}
+          onChange={(e) => handleChange(e.target.value)}
+          placeholder="Search..."
+        />
+      </span>
+    </div>
+  );
   return (
     <div>
       <Toast className="toast" ref={toast} />
@@ -262,6 +276,13 @@ export default function SizeDemo() {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
+        <Paginator
+          first={(currentPage - 1) * currentLimit}
+          totalRecords={totalPages * currentLimit} // Assuming you set the correct total number of records here
+          rows={currentLimit}
+          rowsPerPageOptions={[5, 10, 20]}
+          onPageChange={onPageChange}
+        />
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}

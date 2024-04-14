@@ -10,8 +10,10 @@ import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
 import Treatments_Create from "./Treatments_Create.jsx";
-import {PaginatorList}from "../Home/PaginatorList.jsx";
+import { PaginatorList } from "../Home/PaginatorList.jsx";
 import "./Treatments.css";
+import { Paginator } from "primereact/paginator";
+
 const emptyProduct = {
   _id: null,
   name: "",
@@ -29,34 +31,51 @@ export default function SizeDemo({ idherd }) {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentLimit, setCurrentLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
   useEffect(() => {
-    getHerd();
-  });
-  const getHerd = async () => {
+    fetchData();
+  }, [currentPage, currentLimit]);
+
+  const fetchData = async (value = "") => {
     if (idherd) {
-      // try {
-      //   const res = await axios.get(`/treatments/herd/${idherd}`);
-      //   setProducts(res.data.treatments);
-      // } catch (error) {
-      //   console.log(error);
-      // }
+      try {
+        const res = await fetch(
+          `/treatments/herd/${idherd}?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+            value
+          )}`
+        );
+        const data = await res.json();
+        setProducts(data.treatments);
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
+      }
     } else {
-      <PaginatorList setData={setProducts} url={"treatments"} />;
-      console.log("check", products);
-      // try {
-      //   const res = await axios.get(`/treatments?limit=50`);
-      //   setProducts(res.data.treatments);
-      // } catch (error) {
-      //   console.log(error);
-      // }
+      try {
+        const res = await fetch(
+          `/treatments?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+            value
+          )}`
+        );
+        const data = await res.json();
+        setProducts(data.treatments);
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
+      }
     }
+  };
+  const onPageChange = (event) => {
+    setCurrentPage(+event.page + 1);
+    setCurrentLimit(event.rows);
   };
   const openNew = () => {
     setProductDialog(true);
   };
   const reloadData = () => {
-    // eslint-disable-next-line no-undef
-    getHerd();
+    fetchData();
   };
   const leftToolbarTemplate = () => {
     return (
@@ -183,15 +202,19 @@ export default function SizeDemo({ idherd }) {
   const allowExpansion = (rowData) => {
     return rowData;
   };
-  const [globalFilter, setGlobalFilter] = useState(null);
+  const [input, setInput] = useState("");
+  const handleChange = (value) => {
+    setInput(value);
+    fetchData(value);
+  };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
       <h4 className="m-0">Manage Records</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
-          type="search"
-          onInput={(e) => setGlobalFilter(e.target.value)}
+          value={input}
+          onChange={(e) => handleChange(e.target.value)}
           placeholder="Search..."
         />
       </span>
@@ -216,11 +239,7 @@ export default function SizeDemo({ idherd }) {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          paginator
-          rows={8}
-          rowsPerPageOptions={[5, 10, 20]}
           tableStyle={{ minWidth: "50rem" }}
-          globalFilter={globalFilter}
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
@@ -267,7 +286,13 @@ export default function SizeDemo({ idherd }) {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
-        <PaginatorList setData={setProducts} url={"treatments"} />;
+        <Paginator
+          first={(currentPage - 1) * currentLimit}
+          totalRecords={totalPages * currentLimit} // Assuming you set the correct total number of records here
+          rows={currentLimit}
+          rowsPerPageOptions={[5, 10, 20]}
+          onPageChange={onPageChange}
+        />
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}

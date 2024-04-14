@@ -20,7 +20,7 @@ const unitOptions = [
   { label: "Túi", value: "Túi" },
 ];
 
-function YourComponent() {
+function YourComponent(data, reloadData) {
   const [product, setProduct] = useState(emptyProduct);
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState({});
@@ -64,6 +64,7 @@ function YourComponent() {
         summary: "Thêm hoàn thành",
         life: 3000,
       });
+      reloadData();
       setProduct(emptyProduct);
     } catch (error) {
       console.log("Error update:", error);

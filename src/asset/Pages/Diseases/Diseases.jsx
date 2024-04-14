@@ -13,6 +13,7 @@ import Diseases_Update from "./Diseases_Update.jsx";
 import Diseases_Create from "./Diseases_Create.jsx";
 import Image from "../../../components/Images/Image.jsx";
 import "./Diseases.css";
+import { Paginator } from "primereact/paginator";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -28,26 +29,41 @@ export default function SizeDemo() {
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentLimit, setCurrentLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+
 
   useEffect(() => {
-    const getHerd = async () => {
-      try {
-        const res = await axios.get(`/diseases?limit=50`);
-        setProducts(res.data.diseases);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getHerd();
-  });
+    fetchData();
+  }, [currentPage, currentLimit]);
 
+  const fetchData = async (value = "") => {
+    try {
+      const response = await fetch(
+        `/diseases?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+          value
+        )}`
+      );
+      const data = await response.json();
+      console.log(data.diseases);
+      setProducts(data.diseases);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
+  };
+
+  const onPageChange = (event) => {
+    setCurrentPage(+event.page + 1);
+    setCurrentLimit(event.rows);
+  };
   const openNew = () => {
     setProductDialog(true);
   };
 
   const reloadData = () => {
-    // eslint-disable-next-line no-undef
-    getHerd();
+    fetchData();
   };
   const leftToolbarTemplate = () => {
     return (
@@ -77,7 +93,9 @@ export default function SizeDemo() {
     for (const selectedProduct of selectedProducts) {
       handleDeleteUser(selectedProduct);
       setDeleteProductsDialog(false);
-      try{ reloadData();}catch{};
+      try {
+        reloadData();
+      } catch {}
       toast.current.show({
         severity: "success",
         summary: "Đã xóa",
@@ -89,7 +107,9 @@ export default function SizeDemo() {
     let _products = products.filter((val) => val._id === product._id);
     const firstObject = _products[0];
     handleDeleteUser(firstObject);
-    try{ reloadData();}catch{};
+    try {
+      reloadData();
+    } catch {}
     setDeleteProductDialog(false);
     toast.current.show({
       severity: "success",
@@ -148,6 +168,7 @@ export default function SizeDemo() {
       </React.Fragment>
     );
   };
+
   const handleDeleteUser = async (product) => {
     try {
       await axios.delete(`/diseases/${product._id}`, product);
@@ -155,15 +176,6 @@ export default function SizeDemo() {
     } catch (error) {
       console.log("Error:", error);
     }
-  };
-  const textEditor = (options) => {
-    return (
-      <InputText
-        type="text"
-        value={options.value}
-        onChange={(e) => options.editorCallback(e.target.value)}
-      />
-    );
   };
 
   const [expandedRows, setExpandedRows] = useState(null);
@@ -174,10 +186,10 @@ export default function SizeDemo() {
       <>
         <TabView>
           <TabPanel header="Thông tin">
-            <Diseases_Update data={data} />
+            <Diseases_Update data={data} reloadData={reloadData} />
           </TabPanel>
           <TabPanel header="Hình ảnh">
-            <Image uploadUrl={url} images={data.images} />
+            <Image uploadUrl={url} images={data.images} reloadData={reloadData} />
           </TabPanel>
         </TabView>
       </>
@@ -186,15 +198,19 @@ export default function SizeDemo() {
   const allowExpansion = (rowData) => {
     return rowData;
   };
-  const [globalFilter, setGlobalFilter] = useState(null);
+  const [input, setInput] = useState("");
+  const handleChange = (value) => {
+    setInput(value);
+    fetchData(value);
+  };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
       <h4 className="m-0">Quản lý bệnh</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
-          type="search"
-          onInput={(e) => setGlobalFilter(e.target.value)}
+          value={input}
+          onChange={(e) => handleChange(e.target.value)}
           placeholder="Search..."
         />
       </span>
@@ -219,10 +235,7 @@ export default function SizeDemo() {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          paginator
-          rows={8}
           tableStyle={{ minWidth: "50rem" }}
-          globalFilter={globalFilter}
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
@@ -231,7 +244,6 @@ export default function SizeDemo() {
             field="name"
             header="Bệnh"
             value={product.name}
-            editor={(options) => textEditor(options)}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
@@ -240,6 +252,13 @@ export default function SizeDemo() {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
+        <Paginator
+          first={(currentPage - 1) * currentLimit}
+          totalRecords={totalPages * currentLimit} // Assuming you set the correct total number of records here
+          rows={currentLimit}
+          rowsPerPageOptions={[5, 10, 20]}
+          onPageChange={onPageChange}
+        />
 
         <Dialog
           visible={deleteProductsDialog}
@@ -286,7 +305,7 @@ export default function SizeDemo() {
           visible={productDialog}
           onHide={() => setProductDialog(false)}
         >
-          <Diseases_Create />
+          <Diseases_Create/>
         </Dialog>
       </div>
     </div>

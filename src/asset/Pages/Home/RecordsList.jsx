@@ -32,17 +32,40 @@ export default function SizeDemo({ herdId }) {
   const toast = useRef(null);
 
   //Lấy danh sách con trong 1 đàn
-  const getHerd = async () => {
+  // const getHerd = async () => {
+  //   try {
+  //     const res = await axios.get(`/herds/${herdId}`);
+  //     setProducts(res.data.herd.records);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentLimit, setCurrentLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, currentLimit]);
+
+  const fetchData = async (value = "") => {
     try {
-      const res = await axios.get(`/herds/${herdId}`);
-      setProducts(res.data.herd.records);
+      const response = await fetch(
+        `/product-patchs?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+          value
+        )}`
+      );
+      const data = await response.json();
+      setProducts(data.productPatchs);
+      setTotalPages(data.totalPages);
     } catch (error) {
-      console.log(error);
+      console.error("There was a problem with the fetch operation:", error);
     }
   };
-  useEffect(() => {
-    getHerd();
-  }, [products]);
+  const reloadData = () => {
+    fetchData();
+  };
 
   const openNew = () => {
     setProductDialog(true);
@@ -100,9 +123,9 @@ export default function SizeDemo({ herdId }) {
       console.log("Error:", error);
     }
   };
-  const reloadData = () => {
-    getHerd();
-  };
+  // const reloadData = () => {
+  //   handleCreateNewAuto();
+  // };
   //Button xóa, thêm tự động
   const leftToolbarTemplate = () => {
     return (

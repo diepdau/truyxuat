@@ -28,7 +28,7 @@ const unitOptions = [
   { label: "Euro", value: "Euro" },
 ];
 
-function YourComponent() {
+function YourComponent(reloadData) {
   const [product, setProduct] = useState(emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
@@ -53,6 +53,11 @@ function YourComponent() {
         "Product price must be a non-negative value/ is required";
       isValid = false;
     }
+    if (!product.quantity || product.quantity < 0) {
+      newErrors.quantity =
+        "Quantity price must be a non-negative value/ is required";
+      isValid = false;
+    }
 
     setErrors(newErrors);
     return isValid;
@@ -63,19 +68,47 @@ function YourComponent() {
       unit: event.value,
     });
   };
+  const handleProductionDateChange = (e) => {
+    const newProductionDate = e.value;
+    const newExpirationDate = product.expiration_date;
+
+    if (newExpirationDate && newProductionDate > newExpirationDate) {
+      // Nếu ngày sản xuất mới lớn hơn ngày hết hạn, bạn có thể thực hiện xử lý tương ứng ở đây.
+      // Ví dụ: hiển thị thông báo lỗi hoặc thực hiện hành động khác.
+      console.log("Ngày sản xuất không được lớn hơn ngày hết hạn");
+    } else {
+      setProduct({ ...product, production_date: newProductionDate });
+    }
+  };
+
+  const handleExpirationDateChange = (e) => {
+    const newExpirationDate = e.value;
+    const newProductionDate = product.production_date;
+
+    if (newProductionDate && newProductionDate > newExpirationDate) {
+      // Nếu ngày sản xuất lớn hơn ngày hết hạn mới, bạn có thể thực hiện xử lý tương ứng ở đây.
+      // Ví dụ: hiển thị thông báo lỗi hoặc thực hiện hành động khác.
+      console.log("Ngày sản xuất không được lớn hơn ngày hết hạn");
+    } else {
+      setProduct({ ...product, expiration_date: newExpirationDate });
+    }
+  };
 
   const handleCreate = async () => {
     if (!validate()) {
       return;
     }
     try {
-      await axios.post(`/products`, product);
+      const a = await axios.post(`/products`, product);
+
       toast.current.show({
         severity: "success",
         summary: "Thêm hoàn thành",
         life: 3000,
       });
+      reloadData();
       setProduct(emptyProduct);
+      console.log(product, a);
     } catch (error) {
       console.log("Error update:", error);
     }
@@ -94,7 +127,6 @@ function YourComponent() {
             onChange={handleChange}
           />
           {errors.name && <small className="p-error">{errors.name}</small>}
-
           <h4>Giá</h4>
           <InputText
             type="number"
@@ -103,9 +135,7 @@ function YourComponent() {
             style={{ width: "100%" }}
             onChange={handleChange}
           />
-           {errors.price && (
-            <small className="p-error">{errors.price}</small>
-          )}
+          {errors.price && <small className="p-error">{errors.price}</small>}
           <h4>Số lượng</h4>
           <InputText
             type="number"
@@ -113,8 +143,10 @@ function YourComponent() {
             value={product.quantity}
             style={{ width: "100%" }}
             onChange={handleChange}
-          />
-
+          />{" "}
+          {errors.quantity && (
+            <small className="p-error">{errors.quantity}</small>
+          )}
           <h4>Đơn vị</h4>
           <Dropdown
             name="unit"
@@ -124,7 +156,6 @@ function YourComponent() {
             placeholder="Select a unit"
             style={{ width: "100%" }}
           />
-
           {/* <h4>Info</h4>
           <InputTextarea
             name="info"
@@ -151,9 +182,7 @@ function YourComponent() {
             name="production_date"
             style={{ width: "100%" }}
             value={product.production_date}
-            onChange={(e) =>
-              setProduct({ ...product, production_date: e.value })
-            }
+            onChange={handleProductionDateChange}
           />
 
           <h4>Ngày hết hạn</h4>
@@ -162,9 +191,7 @@ function YourComponent() {
             name="expiration_date"
             style={{ width: "100%" }}
             value={product.expiration_date}
-            onChange={(e) =>
-              setProduct({ ...product, expiration_date: e.value })
-            }
+            onChange={handleExpirationDateChange}
           />
           <h4>Phương thức lưu trữ</h4>
           <InputTextarea

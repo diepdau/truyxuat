@@ -73,10 +73,16 @@ function YourComponent({ data, reloadData, isUpdate }) {
       newErrors.warehouse_address = "warehouse_address is required.";
       isValid = false;
     }
-
+    // if (!product.product_patch) {
+    //   newErrors.product_patch = "Lô hàng ?";
+    //   isValid = false;
+    // }
     if (!product.stores) {
       newErrors.stores = "stores is required.";
       isValid = false;
+    }
+    if (!product.delivery_date) {
+      newErrors.delivery_date = new Date();
     }
 
     setErrors(newErrors);

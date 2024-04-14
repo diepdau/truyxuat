@@ -5,12 +5,13 @@ import axios from "axios";
 import { Toast } from "primereact/toast";
 
 const emptyProduct = {
+  name: "",
   description: "",
   symptoms: "",
   preventive_measures: "",
 };
 
-function YourComponent({ data }) {
+function YourComponent({ data, reloadData }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
@@ -44,10 +45,12 @@ function YourComponent({ data }) {
       });
       setProduct({
         ...product,
+        name: response.data.name,
         description: response.data.description,
         symptoms: response.data.symptoms,
         preventive_measures: response.data.preventive_measures,
       });
+      reloadData();
     } catch (error) {
       console.log("Error update:", error);
     }
@@ -56,7 +59,10 @@ function YourComponent({ data }) {
   const validate = () => {
     let isValid = true;
     const newErrors = {};
-
+    if (!product.name.trim()) {
+      newErrors.name = "name is required.";
+      isValid = false;
+    }
     // Kiểm tra lỗi cho trường description
     if (!product.description.trim()) {
       newErrors.description = "Description is required.";
@@ -93,6 +99,15 @@ function YourComponent({ data }) {
   return (
     <div>
       <Toast className="toast" ref={toast} />
+      <h4>Tên bệnh</h4>
+      <InputTextarea
+        name="name"
+        value={product.name}
+        autoResize
+        style={{ width: "100%" }}
+        onChange={handleChange}
+      />
+      {errors.name && <small className="p-error">{errors.name}</small>}
       <h4>Mô tả</h4>
       <InputTextarea
         name="description"
