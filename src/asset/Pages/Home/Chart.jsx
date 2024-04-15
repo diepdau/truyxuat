@@ -3,14 +3,14 @@ import axios from "axios";
 import { Chart } from "primereact/chart";
 import "./Home.css";
 
-const FarmProduct = () => {
+const FarmProduct = ({reloadData}) => {
   const [herds, setHerds] = useState([]); 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchHerds = async () => {
       try {
-        const response = await axios.get("/herds");
+        const response = await axios.get("/herds?limit=50");
         setHerds(response.data.herds);
         setLoading(false);
       } catch (error) {

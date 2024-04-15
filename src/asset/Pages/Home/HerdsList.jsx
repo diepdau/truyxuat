@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import "./HerdsList.css";
 import { Paginator } from "primereact/paginator";
+import { Calendar } from "primereact/calendar";
 
 const emptyProduct = {
   _id: null,
@@ -255,11 +256,18 @@ export default function SizeDemo() {
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
-            field="start_date"
-            header="Ngày tạo"
-            value={product.start_date}
-            style={{ width: "20%" }}
-          ></Column>
+            // field="start_date"
+            // header="Ngày tạo"
+            // value={product.start_date}
+            // style={{ width: "20%" }}
+          > <Calendar
+          inputId="cal_date"
+          name="start_date"
+          style={{ width: "100%" }}
+          value={product.start_date} dateFormat="dd/mm/yy" 
+          // onChange={handleChange}
+        />pppp
+          </Column>
           <Column
             header="Nhóm"
             sortField="category.name"

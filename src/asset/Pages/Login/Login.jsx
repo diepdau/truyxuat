@@ -23,7 +23,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await loginApi({ email, password });
-      navigate("/");
+      navigate("/danh-sach-dan");
     } catch (err) {
       const er = err.response.data.msg;
       if (er.includes("Incorrect")) {

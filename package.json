@@ -75,5 +75,5 @@
     "express": "^4.18.2"
   },
   "proxy": "https://agriculture-traceability.vercel.app/api/v1/",
-  "homepage": "https://diepdau.github.io/login"
+  "homepage": "https://diepdau.github.io/truyxuat/"
 }

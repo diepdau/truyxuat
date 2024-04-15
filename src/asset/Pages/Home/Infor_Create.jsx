@@ -7,7 +7,6 @@ import { HerdsContext } from "../../service/Herd_data.js";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import { InputText } from "primereact/inputtext";
-import ImageUploader from "../../../components/Images/Image.jsx";
 import { Calendar } from "primereact/calendar";
 const initFormValue = {
   name: "",
