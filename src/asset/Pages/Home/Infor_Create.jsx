@@ -1,5 +1,4 @@
 import { useEffect, useState, useContext, useRef } from "react";
-import "../Category/Category.css";
 import { Button } from "primereact/button";
 import axios from "axios";
 import { Toast } from "primereact/toast";

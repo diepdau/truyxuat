@@ -235,7 +235,7 @@ export default function SizeDemo() {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          tableStyle={{ minWidth: "50rem" }}
+          tableStyle={{ minWidth: "68rem" }}
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />

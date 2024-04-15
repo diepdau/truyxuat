@@ -18,7 +18,6 @@ import CultivationLogs from "./asset/Pages/CultivationLogs/CultivationLogs_Herd.
 import User from "./asset/Pages/User/User.jsx";
 import UserList from "./asset/Pages/UserList/UserList.jsx";
 import Categories from "./asset/Pages/Categories/Categories.jsx";
-import Category from "./asset/Pages/Category/Category.jsx";
 import Harvest from "./asset/Pages/Harvest/Harvest.jsx"
 import Harvest_Update from "./asset/Pages/Harvest/Harvest_Update.jsx"
 import { AuthContext } from "./asset/service/user_service.js";
@@ -90,10 +89,6 @@ const router = createBrowserRouter([
       {
         path: "/categories",
         element: <Categories />,
-      },
-      {
-        path: "/categories/:id",
-        element: <Category />,
       },
       {
         path: "/herds/:id",

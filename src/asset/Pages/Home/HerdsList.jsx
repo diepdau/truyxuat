@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect,  useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { HerdsContext } from "../../service/Herd_data.js";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
@@ -12,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import "./HerdsList.css";
 import { Paginator } from "primereact/paginator";
-import { Calendar } from "primereact/calendar";
+import DateConverter from "../../../components/Date/Date.jsx";
 
 const emptyProduct = {
   _id: null,
@@ -30,11 +29,9 @@ const emptyProduct = {
   },
 };
 export default function SizeDemo() {
-  const { handleGet, fetchAllHerds } = useContext(HerdsContext);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
-  const [categories, setcategories] = useState([]);
   const [product, setProduct] = useState(emptyProduct);
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
@@ -56,7 +53,9 @@ export default function SizeDemo() {
         )}`
       );
       const data = await response.json();
-      console.log(data.herds);
+      data.herds.forEach((element) => {
+        element.date = <DateConverter originalDate={element.start_date} />;
+      });
       setProducts(data.herds);
       setTotalPages(data.totalPages);
     } catch (error) {
@@ -237,7 +236,7 @@ export default function SizeDemo() {
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           editMode="row"
           dataKey="_id"
-          tableStyle={{ minWidth: "50rem" }}
+          tableStyle={{ minWidth: "68rem" }}
           header={header}
         >
           <Column selectionMode="multiple" exportable={true}></Column>
@@ -256,18 +255,11 @@ export default function SizeDemo() {
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
-            // field="start_date"
-            // header="Ngày tạo"
-            // value={product.start_date}
-            // style={{ width: "20%" }}
-          > <Calendar
-          inputId="cal_date"
-          name="start_date"
-          style={{ width: "100%" }}
-          value={product.start_date} dateFormat="dd/mm/yy" 
-          // onChange={handleChange}
-        />pppp
-          </Column>
+            field="date"
+            header="Ngày tạo"
+            value={product.start_date}
+            style={{ width: "20%" }}
+          ></Column>
           <Column
             header="Nhóm"
             sortField="category.name"

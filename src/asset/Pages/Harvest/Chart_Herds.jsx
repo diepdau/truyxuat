@@ -2,52 +2,68 @@ import React, { useState, useEffect } from 'react';
 import { Chart } from 'primereact/chart';
 import axios from 'axios';
 
-export default function BasicDemo() {
+export default function StackedBarDemo() {
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("/harvests?limit=29");
+                const response = await axios.get("/harvests?limit=200");
                 const harvests = response.data.harvests;
 
-                // Tạo mảng chứa các nhãn (labels) và dữ liệu (data) cho biểu đồ
-                const labels = [];
-                const data = [];
-
-                // Lặp qua mỗi mục trong mảng harvests và thêm nhãn và dữ liệu tương ứng
+                const datasets = {};
+                // Lặp qua mỗi mục trong mảng harvests và tính tổng số lượng sản phẩm của mỗi loại trong mỗi đàn cừu
                 harvests.forEach((harvest) => {
-                    labels.push(harvest.herd.name); // Nhãn là tên của đàn (herd)
-                    data.push(harvest.quantity); // Dữ liệu là số lượng (quantity)
+                    const herdName = harvest.herd.name;
+                    const productName = harvest.name;
+                    const quantity = harvest.quantity;
+
+                    // Kiểm tra xem dataset cho đàn cừu đã tồn tại hay chưa
+                    if (!datasets[herdName]) {
+                        datasets[herdName] = {};
+                    }
+
+                    // Tăng số lượng sản phẩm của loại đó trong đàn cừu lên
+                    if (!datasets[herdName][productName]) {
+                        datasets[herdName][productName] = quantity;
+                    } else {
+                        datasets[herdName][productName] += quantity;
+                    }
                 });
+
+                // Tạo mảng chứa các nhãn (labels) và dữ liệu (data) cho biểu đồ
+                
+                const labels 
+                = Object.keys(datasets);
+                
+                const data = Object.values(datasets).map((products) =>
+                    Object.values(products)
+                );
 
                 // Định dạng dữ liệu cho biểu đồ
                 const chartData = {
                     labels: labels,
-                    datasets: [
-                        {
-                            label: 'Số lượng', // Nhãn cho dữ liệu
-                            data: data, // Dữ liệu số lượng
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Màu nền cho cột
-                            borderColor: 'rgba(75, 192, 192, 1)', // Màu viền cho cột
-                            borderWidth: 1 // Độ rộng viền cho cột
-                        }
-                    ]
+                    datasets: data.map((products, index) => ({
+                        label: labels[index],
+                        data: products,
+                        backgroundColor: getRandomColor(), // Màu ngẫu nhiên cho mỗi đàn cừu
+                    })),
                 };
 
                 // Định dạng tùy chọn cho biểu đồ
                 const chartOptions = {
                     scales: {
-                        y: {
-                            beginAtZero: true // Bắt đầu từ 0 trên trục y
-                        }
+                        x: { stacked: true },
+                        y: { stacked: true }
                     }
                 };
 
                 // Cập nhật trạng thái của biểu đồ và tùy chọn
                 setChartData(chartData);
+                console.log(chartData)
                 setChartOptions(chartOptions);
+                console.log(chartOptions)
             } catch (error) {
                 console.log("Error fetching data:", error);
             }
@@ -57,9 +73,19 @@ export default function BasicDemo() {
         fetchData();
     }, []);
 
+    // Hàm để tạo màu ngẫu nhiên
+    const getRandomColor = () => {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    };
+
     return (
         <div className="card">
-             <h5>Biểu đồ tổng số lượng theo đàn</h5>
+            <h5>Biểu đồ cột trồng của một đàn</h5>
             <Chart type="bar" data={chartData} options={chartOptions} />
         </div>
     )

@@ -33,7 +33,7 @@ export default function RegisterPage() {
           email: formValue.email,
           password: formValue.password,
         });
-        navigate("/login");
+        navigate("/");
       } catch (err) {
         setError(err.response.data.msg);
       }

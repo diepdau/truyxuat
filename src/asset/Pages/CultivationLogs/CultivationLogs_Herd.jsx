@@ -13,6 +13,7 @@ import CultivationLogs_Update from "./CultivationLogs_Update.jsx";
 import CultivationLogs_Create from "./CultivationLogs_Create.jsx";
 import ImageUploader from "../../../components/Images/Image.jsx";
 import { Paginator } from "primereact/paginator";
+import DateConverter from "../../../components/Date/Date.jsx";
 const emptyProduct = {
   _id: null,
   herd: {
@@ -49,6 +50,9 @@ export default function CulivationLogs_Herd({ idherd }) {
         )}`
       );
       const data = await response.json();
+      data.cultivationLogs.forEach((element) => {
+        element.date = <DateConverter originalDate={element.date} />;
+      });
       setProducts(data.cultivationLogs);
       setTotalPages(data.totalPages);
     } catch (error) {

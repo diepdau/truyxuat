@@ -12,6 +12,7 @@ import "./HerdsList.css";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
 import { Paginator } from "primereact/paginator";
+import DateConverter from "../../../components/Date/Date";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -48,8 +49,10 @@ export default function SizeDemo({ herdId }) {
         )}`
       );
       const data = await response.json();
+      data.herd.records.forEach((element) => {
+        element.birth_date = <DateConverter originalDate={element.birth_date} />;
+      });
       setProducts(data.herd.records);
-      console.log(data);
       setTotalPages(data.totalPages);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
@@ -355,7 +358,7 @@ export default function SizeDemo({ herdId }) {
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey="_id"
-          tableStyle={{ minWidth: "50rem" }}
+          tableStyle={{ minWidth: "68rem" }}
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />

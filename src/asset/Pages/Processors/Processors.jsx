@@ -12,6 +12,7 @@ import Processors_Create from "./Processors_Create.jsx";
 import Image_Upload from "../../../components/Images/Image.jsx";
 import "./Processors.css";
 import { Paginator } from "primereact/paginator";
+import DateConverter from "../../../components/Date/Date.jsx";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -41,6 +42,9 @@ export default function SizeDemo() {
         )}`
       );
       const data = await response.json();
+      data.processor.forEach((element) => {
+        element.date = <DateConverter originalDate={element.date} />;
+      });
       setProducts(data.processor);
       setTotalPages(data.totalPages);
     } catch (error) {
@@ -280,7 +284,7 @@ export default function SizeDemo() {
             sortMode="single"
             sortField="name"
             sortOrder={1}
-            tableStyle={{ minWidth: "50rem" }}
+            tableStyle={{ minWidth: "68rem" }}
           >
             <Column expander={allowExpansion} style={{ width: "5rem" }} />
 

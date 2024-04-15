@@ -12,6 +12,7 @@ import { TabView, TabPanel } from "primereact/tabview";
 import Treatments_Create from "./Treatments_Create.jsx";
 import "./Treatments.css";
 import { Paginator } from "primereact/paginator";
+import DateConverter from "../../../components/Date/Date.jsx";
 
 const emptyProduct = {
   _id: null,
@@ -46,6 +47,9 @@ export default function SizeDemo({ idherd }) {
           )}`
         );
         const data = await res.json();
+        data.treatments.forEach((element) => {
+          element.date = <DateConverter originalDate={element.date} />;
+        });
         setProducts(data.treatments);
         setTotalPages(data.totalPages);
       } catch (error) {
@@ -59,6 +63,9 @@ export default function SizeDemo({ idherd }) {
           )}`
         );
         const data = await res.json();
+        data.treatments.forEach((element) => {
+          element.date = <DateConverter originalDate={element.date} />;
+        });
         setProducts(data.treatments);
         setTotalPages(data.totalPages);
       } catch (error) {
@@ -238,7 +245,7 @@ export default function SizeDemo({ idherd }) {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          tableStyle={{ minWidth: "50rem" }}
+          tableStyle={{ minWidth: "68rem" }}
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />

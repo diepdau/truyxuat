@@ -196,7 +196,7 @@ export default function SizeDemo() {
           editMode="row"
           dataKey="_id"
           onRowEditComplete={onRowEditComplete}
-          tableStyle={{ minWidth: "50rem" }}
+          tableStyle={{ minWidth: "68rem" }}
         >
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column

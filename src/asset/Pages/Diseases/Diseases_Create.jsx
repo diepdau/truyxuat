@@ -3,7 +3,7 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
 import axios from "axios";
 import { Toast } from "primereact/toast";
-import "./Diseases.css"
+import "./Diseases.css";
 const emptyProduct = {
   name: "",
   description: "",
@@ -76,65 +76,71 @@ function YourComponent() {
     if (!product.symptoms.trim()) {
       newErrors.symptoms = "Symptoms is required.";
       isValid = false;
-    } 
+    }
 
     // Kiểm tra lỗi cho trường preventive_measures
     if (!product.preventive_measures.trim()) {
       newErrors.preventive_measures = "Preventive measures is required.";
       isValid = false;
-    } 
+    }
 
     setErrors(newErrors);
     return isValid;
   };
 
   return (
-    <div>
+    <div >
       <Toast className="toast" ref={toast} />
-      <h4>Tên</h4>
-      <InputTextarea
-        name="name"
-        value={product.name}
-        autoResize
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.name && <small className="p-error">{errors.name}</small>}
+      <div className="container_update_areas">
+        <div style={{ flex: 1, paddingRight: "1rem" }}>
+          <h4>Tên</h4>
+          <InputTextarea
+            name="name"
+            value={product.name}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.name && <small className="p-error">{errors.name}</small>}
 
-      <h4>Mô tả</h4>
-      <InputTextarea
-        name="description"
-        value={product.description}
-        autoResize
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.description && (
-        <small className="p-error">{errors.description}</small>
-      )}
+          <h4>Mô tả</h4>
+          <InputTextarea
+            name="description"
+            value={product.description}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.description && (
+            <small className="p-error">{errors.description}</small>
+          )}
+        </div>
+        <div style={{ flex: 1 }}>
+          <h4>Triệu chứng</h4>
+          <InputTextarea
+            name="symptoms"
+            value={product.symptoms}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.symptoms && (
+            <small className="p-error">{errors.symptoms}</small>
+          )}
 
-      <h4>Triệu chứng</h4>
-      <InputTextarea
-        name="symptoms"
-        value={product.symptoms}
-        autoResize
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.symptoms && <small className="p-error">{errors.symptoms}</small>}
-
-      <h4>Biện pháp phòng ngừa</h4>
-      <InputTextarea
-        name="preventive_measures"
-        value={product.preventive_measures}
-        autoResize
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.preventive_measures && (
-        <small className="p-error">{errors.preventive_measures}</small>
-      )}
-
+          <h4>Biện pháp phòng ngừa</h4>
+          <InputTextarea
+            name="preventive_measures"
+            value={product.preventive_measures}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.preventive_measures && (
+            <small className="p-error">{errors.preventive_measures}</small>
+          )}
+        </div>
+      </div>
       <Button
         className="button_Dia"
         id="Luu"

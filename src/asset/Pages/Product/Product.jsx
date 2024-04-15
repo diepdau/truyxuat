@@ -14,6 +14,7 @@ import Image_Upload from "../../../components/Images/Image.jsx";
 import "./Product.css";
 import { Image } from "primereact/image";
 import { Paginator } from "primereact/paginator";
+import DateConverter from "../../../components/Date/Date.jsx";
 
 const emptyProduct = {
   _id: null,
@@ -44,6 +45,10 @@ export default function SizeDemo() {
         )}`
       );
       const data = await response.json();
+      data.products.forEach((element) => {
+        element.production_date = <DateConverter originalDate={element.production_date} />;
+        element.expiration_date = <DateConverter originalDate={element.expiration_date} />;
+      });
       setProducts(data.products);
       setTotalPages(data.totalPages);
     } catch (error) {
@@ -240,7 +245,7 @@ export default function SizeDemo() {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          tableStyle={{ minWidth: "50rem" }}
+          tableStyle={{ minWidth: "68rem" }}
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />

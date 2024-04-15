@@ -99,48 +99,55 @@ function YourComponent({ data, reloadData }) {
   return (
     <div>
       <Toast className="toast" ref={toast} />
-      <h4>Tên bệnh</h4>
-      <InputTextarea
-        name="name"
-        value={product.name}
-        autoResize
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.name && <small className="p-error">{errors.name}</small>}
-      <h4>Mô tả</h4>
-      <InputTextarea
-        name="description"
-        value={product.description}
-        autoResize
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.description && (
-        <small className="p-error">{errors.description}</small>
-      )}
+      <div className="container_update_areas">
+        <div style={{ flex: 1, paddingRight: "1rem" }}>
+          <h4>Tên bệnh</h4>
+          <InputTextarea
+            name="name"
+            value={product.name}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.name && <small className="p-error">{errors.name}</small>}
+          <h4>Mô tả</h4>
+          <InputTextarea
+            name="description"
+            value={product.description}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.description && (
+            <small className="p-error">{errors.description}</small>
+          )}
+        </div>
+        <div style={{ flex: 1 }}>
+          <h4>Triệu chứng</h4>
+          <InputTextarea
+            name="symptoms"
+            value={product.symptoms}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.symptoms && (
+            <small className="p-error">{errors.symptoms}</small>
+          )}
 
-      <h4>Triệu chứng</h4>
-      <InputTextarea
-        name="symptoms"
-        value={product.symptoms}
-        autoResize
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.symptoms && <small className="p-error">{errors.symptoms}</small>}
-
-      <h4>Biện pháp phòng ngừa</h4>
-      <InputTextarea
-        name="preventive_measures"
-        value={product.preventive_measures}
-        autoResize
-        style={{ width: "100%" }}
-        onChange={handleChange}
-      />
-      {errors.preventive_measures && (
-        <small className="p-error">{errors.preventive_measures}</small>
-      )}
+          <h4>Biện pháp phòng ngừa</h4>
+          <InputTextarea
+            name="preventive_measures"
+            value={product.preventive_measures}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.preventive_measures && (
+            <small className="p-error">{errors.preventive_measures}</small>
+          )}
+        </div>
+      </div>
       <Button
         className="button_Dia"
         id="Save"

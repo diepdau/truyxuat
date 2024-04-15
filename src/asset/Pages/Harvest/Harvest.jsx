@@ -16,6 +16,7 @@ import Chart_Herds from "./Chart_Herds.jsx";
 import Chart_Products from "./Chart_Products.jsx";
 import "./Harvest.css";
 import { Paginator } from "primereact/paginator";
+import DateConverter from "../../../components/Date/Date.jsx";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -51,7 +52,9 @@ function Harvest({ isherdharvest }) {
         const response = await fetch(
             `/harvests/herd/${isherdharvest}`);
         const data = await response.json();
-        console.log(data.harvests);
+        data.harvests.forEach((element) => {
+          element.date = <DateConverter originalDate={element.date} />;
+        });
         setHarvests(data.harvests);
         // setTotalPages(data.totalPages);
       } catch (error) {
@@ -65,7 +68,9 @@ function Harvest({ isherdharvest }) {
           )}`
         );
         const data = await response.json();
-        console.log(data.harvests);
+        data.harvests.forEach((element) => {
+          element.date = <DateConverter originalDate={element.date} />;
+        });
         setHarvests(data.harvests);
         setTotalPages(data.totalPages);
       } catch (error) {
@@ -258,7 +263,7 @@ function Harvest({ isherdharvest }) {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          tableStyle={{ minWidth: "50rem" }}
+          tableStyle={{ minWidth: "68rem" }}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>

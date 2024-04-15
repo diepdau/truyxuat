@@ -1,99 +1,81 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { AuthContext } from "../../service/user_service.js";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Toast } from "primereact/toast";
+import "../Home/HerdsList.css";
+import Categories_Create from "./Categories_Create.jsx"
+import { TabPanel, TabView } from "primereact/tabview";
+import { Paginator } from "primereact/paginator";
 const emptyProduct = {
   _id: null,
   name: "",
-  slug: "",
   description: "",
+  slug: "",
+  address: "",
+  coordinates: [0, 0],
 };
-export default function Categories() {
+export default function FarmmingAreas() {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState(emptyProduct);
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
+  const toast = useRef(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentLimit, setCurrentLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+
   useEffect(() => {
-    const fetchFarmingAreas = async () => {
-      try {
-        const response = await axios.get("/categories");
-        const farmingAreasData = response.data.categories;
-        setProducts(farmingAreasData);
-        console.log(farmingAreasData);
-      } catch (error) {
-        console.log("Error fetching farming areas:", error);
-      }
-    };
-    fetchFarmingAreas();
-  });
-  const textEditor = (options) => {
-    return (
-      <InputText
-        type="text"
-        value={options.value}
-        onChange={(e) => options.editorCallback(e.target.value)}
-      />
-    );
+    fetchData();
+  }, [currentPage, currentLimit]);
+
+  const fetchData = async (value = "") => {
+    try {
+      const response = await fetch(
+        `/categories?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+          value
+        )}`
+      );
+      const data = await response.json();
+      console.log(data.categories);
+      setProducts(data.categories);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
   };
-  const emailEditor = (options) => {
-    return (
-      <InputText
-        type="description"
-        value={options.value}
-        onChange={(e) => options.editorCallback(e.target.value)}
-      />
-    );
+
+  const onPageChange = (event) => {
+    setCurrentPage(+event.page + 1);
+    setCurrentLimit(event.rows);
   };
   const openNew = () => {
     setProductDialog(true);
   };
-  const handleChange = (event) => {
-    const { value, name } = event.target;
-    setProduct({
-      ...product,
-      [name]: value,
-    });
-  };
-  const handleCreateUser = async (event) => {
-    event.preventDefault();
-    try {
-      await axios.post("/categories", {
-        name: product.name,
-        slug: product.slug,
-        description: product.description,
-      });
-      alert("tạo thành công");
-    } catch (error) {
-      console.log("Error:", error);
-    }
+  const reloadData = () => {
+    fetchData();
   };
 
   const leftToolbarTemplate = () => {
     return (
       <div className="flex flex-wrap gap-2">
-        <Button label="Tạo nhóm" severity="success" onClick={openNew} />
+        <Button label="Tạo" severity="success" onClick={openNew} />
         <Button
           label="Xóa"
           severity="danger"
           onClick={confirmDeleteSelected}
           disabled={!selectedProducts || !selectedProducts.length}
         />
-        <Button
-          label="Xem chi tiết"
-          severity="success"
-          onClick={onRowDoubleClick}
-        />
       </div>
     );
   };
+
   const confirmDeleteSelected = () => {
     setDeleteProductsDialog(true);
   };
@@ -102,46 +84,69 @@ export default function Categories() {
   };
   const hideDeleteProductDialog = () => {
     setDeleteProductDialog(false);
+    setDeleteProductsDialog(false);
   };
   const deleteSelectedProducts = () => {
     for (const selectedProduct of selectedProducts) {
       handleDeleteUser(selectedProduct);
+      try {
+        reloadData();
+      } catch {}
       setDeleteProductsDialog(false);
+      toast.current.show({
+        severity: "success",
+        summary: "Đã xóa",
+        life: 3000,
+      });
     }
   };
   const deleteProduct = () => {
     let _products = products.filter((val) => val._id === product._id);
     const firstObject = _products[0];
     handleDeleteUser(firstObject);
+    try {
+      reloadData();
+    } catch {}
     setDeleteProductDialog(false);
+    toast.current.show({
+      severity: "success",
+      summary: "Đã xóa",
+      life: 3000,
+    });
   };
-  const navigate = useNavigate();
-  const onRowDoubleClick = () => {
-    for (const selectedProduct of selectedProducts) {
-      navigate(`/categories/${selectedProduct._id}`);
-    }
-  }; ///////////////////////////////////
 
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
-        label="No"
-        icon="pi pi-times"
+        label="Thoát"
+        severity="secondary"
         outlined
         onClick={hideDeleteProductsDialog}
+        className="button_Dia"
       />
       <Button
-        label="Yes"
-        icon="pi pi-check"
+        label="Đồng ý"
         onClick={deleteSelectedProducts}
         severity="danger"
+        className="button_Dia"
       />
     </React.Fragment>
   );
   const deleteoneProductDialogFooter = (
     <React.Fragment>
-      <Button label="Không" outlined onClick={hideDeleteProductDialog} />
-      <Button label="Đồng ý" severity="danger" onClick={deleteProduct} />
+      <Button
+        className="button_Dia"
+        label="Thoát"
+        severity="secondary"
+        outlined
+        onClick={hideDeleteProductDialog}
+      />
+      <Button
+        className="button_Dia"
+        label="Đồng ý"
+        severity="danger"
+        onClick={deleteProduct}
+      />
     </React.Fragment>
   );
   const confirmDeleteProduct = (product) => {
@@ -151,46 +156,68 @@ export default function Categories() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <div className="iconpage">
-          <i
-            className="pi pi-trash"
-            onClick={() => confirmDeleteProduct(rowData)}
-          ></i>
-        </div>
+        <i
+          className="pi pi-trash"
+          onClick={() => confirmDeleteProduct(rowData)}
+        ></i>
       </React.Fragment>
     );
   };
   const handleDeleteUser = async (product) => {
     try {
       await axios.delete(`/categories/${product._id}`, product);
-      alert("xóa thành công");
+      // reloadData();
     } catch (error) {
       console.log("Error:", error);
     }
   };
-  const onRowEditComplete = async () => {
-    for (const selectedProduct of selectedProducts) {
-      var userId = selectedProduct._id;
-    }
-    try {
-      const response = await axios.patch(`/categories/${userId}`, {
-        name: product.name,
-        slug: product.slug,
-        description: product.description,
-      });
-      alert("sửa thành công");
-      console.log(response);
-    } catch (error) {
-      console.log("Error update:", error);
-    }
+
+  const [expandedRows, setExpandedRows] = useState(null);
+  const rowExpansionTemplate = (data) => {
+    product._id = data._id;
+    return (
+      <>
+        <TabView>
+          <TabPanel header="Thông tin">
+          <Categories_Create
+              data={data}
+              isUpdate={true}
+              reloadData={reloadData}
+            />
+          </TabPanel>
+        </TabView>
+      </>
+    );
   };
+  const allowExpansion = (rowData) => {
+    return rowData;
+  };
+  const [input, setInput] = useState("");
+  const handleChange = (value) => {
+    setInput(value);
+    fetchData(value);
+  };
+  const header = (
+    <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
+      <h4 className="m-0">Manage Records</h4>
+      <span className="p-input-icon-left">
+        <i className="pi pi-search" />
+        <InputText
+          value={input}
+          onChange={(e) => handleChange(e.target.value)}
+          placeholder="Search..."
+        />
+      </span>
+    </div>
+  );
   return (
-    <div className="card">
+    <div>
+      <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar
           className="mb-4"
           left={leftToolbarTemplate}
-          //   right={rightToolbarTemplate}
+          // right={rightToolbarTemplate}
         ></Toolbar>
         <DataTable
           value={products}
@@ -198,37 +225,26 @@ export default function Categories() {
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           editMode="row"
+          expandedRows={expandedRows}
+          onRowToggle={(e) => setExpandedRows(e.data)}
+          rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          onRowEditComplete={onRowEditComplete}
-          tableStyle={{ minWidth: "50rem" }}
+          tableStyle={{ minWidth: "68rem" }}
+          header={header}
         >
+          <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
             field="name"
-            header="Tên"
+            header="Tên nhóm"
             value={product.name}
-            editor={(options) => textEditor(options)}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
             field="slug"
             header="Slug"
             value={product.slug}
-            editor={(options) => textEditor(options)}
             style={{ minWidth: "10rem" }}
-          ></Column>
-          {/* <Column
-            field="description"
-            header="Mô tả"
-            value={product.description}
-            editor={(options) => emailEditor(options)}
-            style={{ width: "20%" }}
-          ></Column>
-       */}
-          <Column
-            rowEditor
-            headerStyle={{ width: "10%", minWidth: "4rem" }}
-            bodyStyle={{ textAlign: "center" }}
           ></Column>
           <Column
             body={actionBodyTemplate}
@@ -236,6 +252,14 @@ export default function Categories() {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
+        <Paginator
+          first={(currentPage - 1) * currentLimit}
+          totalRecords={totalPages * currentLimit} // Assuming you set the correct total number of records here
+          rows={currentLimit}
+          rowsPerPageOptions={[5, 10, 20]}
+          onPageChange={onPageChange}
+        />
+
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}
@@ -275,57 +299,13 @@ export default function Categories() {
           </div>
         </Dialog>
 
-        <Dialog visible={productDialog} onHide={() => setProductDialog(false)}>
-          <h3>Thêm mới</h3>
-          <div>
-            <form className="userUpdateForm">
-              <div className="userUpdateLeft">
-                <div className="userUpdateItem">
-                  <label>Tên nhóm</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={product.name}
-                    onChange={handleChange}
-                    className="userUpdateInput"
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>slug</label>
-                  <input
-                    type="text"
-                    name="Slug"
-                    value={product.slug}
-                    onChange={handleChange}
-                    className="userUpdateInput"
-                  />
-                </div>
-                <div className="userUpdateItem">
-                  <label>Mô tả</label>
-                  <input
-                    type="text"
-                    name="description"
-                    value={product.description}
-                    onChange={handleChange}
-                    className="userUpdateInput"
-                  />
-                </div>
-              </div>
-            </form>
-
-            <Button
-              label="Lưu"
-              icon="pi pi-check"
-              severity="danger"
-              onClick={handleCreateUser}
-            />
-            <Button
-              label="Hủy"
-              icon="pi pi-times"
-              outlined
-              onClick={() => setProductDialog(false)}
-            />
-          </div>
+        <Dialog
+          header="Thêm mới"
+          style={{ width: "50%" }}
+          visible={productDialog}
+          onHide={() => setProductDialog(false)}
+        >
+          <Categories_Create reloadData={reloadData}isUpdate={false}/>
         </Dialog>
       </div>
     </div>
