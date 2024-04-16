@@ -174,19 +174,11 @@ export default function CulivationLogs_Herd({ idherd }) {
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
-    var url = `/cultivation-logs/upload/${product._id}`;
     return (
       <>
         <TabView>
           <TabPanel header="Thông tin">
-            <CultivationLogs_Update reloadData={reloadData} data={data} />
-          </TabPanel>
-          <TabPanel header="Hình ảnh">
-            <ImageUploader
-              uploadUrl={url}
-              images={data.images}
-              reloadData={reloadData}
-            />
+            <CultivationLogs_Update reloadData={reloadData} data={data}  />
           </TabPanel>
         </TabView>
       </>

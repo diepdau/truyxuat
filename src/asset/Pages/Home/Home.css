@@ -71,3 +71,10 @@ display: none;
   padding: 1px 2px;
   }
 }
+.chart-container {
+  display: flex;
+  justify-content: center;
+}
+.p-tabview .p-tabview-panels {
+  padding: 0px;
+}

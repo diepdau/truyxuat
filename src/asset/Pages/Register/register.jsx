@@ -26,25 +26,28 @@ export default function RegisterPage() {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-      try {
-        await axios.post("/auth/register", {
-          first_name: formValue.first_name,
-          last_name: formValue.last_name,
-          email: formValue.email,
-          password: formValue.password,
-        });
-        navigate("/");
-      } catch (err) {
-        setError(err.response.data.msg);
-      }
-
+    try {
+      await axios.post("/auth/register", {
+        first_name: formValue.first_name,
+        last_name: formValue.last_name,
+        email: formValue.email,
+        password: formValue.password,
+      });
+      navigate("/");
+    } catch (err) {
+      setError(err.response.data.msg);
+    }
   };
   const navigate = useNavigate();
   return (
     <div className="register-page">
       <div className="register-form-container">
-      <div className="branding">
-          <i className="pi pi-spin pi-slack" alt="Logo" style={{ fontSize: '3rem' ,color: 'green'}} />
+        <div className="branding">
+          <i
+            className="pi pi-spin pi-slack"
+            alt="Logo"
+            style={{ fontSize: "3rem", color: "green" }}
+          />
           {/* <h1 >LaFarm</h1> */}
         </div>
         <h1 className="titlelogin">Đăng kí</h1>
@@ -80,6 +83,7 @@ export default function RegisterPage() {
               Email hoặc số điện thoại
             </label>
             <input
+              placeholder="email"
               id="email"
               className="form-control"
               type="text"
@@ -111,10 +115,10 @@ export default function RegisterPage() {
           <button type="submit" className="submit-btn">
             Đăng kí
           </button>
-          
-          <Link to="/login" className="create-account">
+
+          <Link to="/" className="create-account">
             <p>Bạn đã có tài khoản. </p>
-            <span> Đăng nhập?</span>{" "}
+            <span> Đăng nhập?</span>
           </Link>
         </form>
       </div>

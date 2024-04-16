@@ -35,6 +35,12 @@ function Harvest_Create({ reloadData, idherd }) {
     try {
       const res = await axios.get(`/herds`);
       setHerds(res.data.herds);
+      if (idherd) {
+        setProduct((prevProduct) => ({
+          ...prevProduct,
+          herd: idherd,
+        }));
+      }
     } catch (error) {
       console.log(error);
     }
@@ -46,7 +52,6 @@ function Harvest_Create({ reloadData, idherd }) {
       ...product,
       [name]: value,
     });
-    
   };
   const handleUnitChange = (event) => {
     setProduct({

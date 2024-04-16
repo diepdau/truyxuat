@@ -60,7 +60,6 @@
     position: relative;
 }@media screen and (max-width: 450px) {
     .layout-topbar{
-        display: none;
         z-index: 100;
     }
 }

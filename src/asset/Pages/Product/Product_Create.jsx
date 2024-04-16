@@ -58,9 +58,15 @@ function YourComponent(reloadData) {
         "Quantity price must be a non-negative value/ is required";
       isValid = false;
     }
-    if (product.production_date && product.expiration_date && product.production_date > product.expiration_date) {
-      newErrors.production_date = "Production date must be before expiration date.";
-      newErrors.expiration_date = "Expiration date must be after production date.";
+    if (
+      product.production_date &&
+      product.expiration_date &&
+      product.production_date > product.expiration_date
+    ) {
+      newErrors.production_date =
+        "Production date must be before expiration date.";
+      newErrors.expiration_date =
+        "Expiration date must be after production date.";
       isValid = false;
     }
     setErrors(newErrors);
@@ -78,26 +84,24 @@ function YourComponent(reloadData) {
       return;
     }
     try {
-      const a=await axios.post(`/products`, product);
+      const a = await axios.post(`/products`, product);
 
       toast.current.show({
         severity: "success",
         summary: "Thêm hoàn thành",
         life: 3000,
       });
-      reloadData();
-      setProduct(emptyProduct);
-      console.log(product,a)
+      setProduct(emptyProduct);reloadData();
     } catch (error) {
       console.log("Error update:", error);
     }
   };
   return (
     <div>
+      <Toast className="toast" ref={toast} />
       <div style={{ display: "flex", gap: "2rem" }}>
         {/* Cột trái */}
         <div style={{ flex: 1 }}>
-          <Toast className="toast" ref={toast} />
           <h4>Tên sản phẩm</h4>
           <InputTextarea
             name="name"
@@ -154,7 +158,6 @@ function YourComponent(reloadData) {
             onChange={handleChange}
             autoResize
           />
-
           <h4>Ngày sản xuất</h4>
           <Calendar
             inputId="cal_production_date"
@@ -164,8 +167,10 @@ function YourComponent(reloadData) {
             onChange={(e) =>
               setProduct({ ...product, production_date: e.value })
             }
-          />  {errors.production_date && <small className="p-error">{errors.production_date}</small>}
-
+          />{" "}
+          {errors.production_date && (
+            <small className="p-error">{errors.production_date}</small>
+          )}
           <h4>Ngày hết hạn</h4>
           <Calendar
             inputId="cal_expiration_date"
@@ -175,7 +180,10 @@ function YourComponent(reloadData) {
             onChange={(e) =>
               setProduct({ ...product, expiration_date: e.value })
             }
-          />  {errors.expiration_date && <small className="p-error">{errors.expiration_date}</small>}
+          />{" "}
+          {errors.expiration_date && (
+            <small className="p-error">{errors.expiration_date}</small>
+          )}
           <h4>Phương thức lưu trữ</h4>
           <InputTextarea
             name="storage_method"

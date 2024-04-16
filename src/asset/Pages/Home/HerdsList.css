@@ -11,4 +11,8 @@
 }
 .card_herd{
     width: 97%;
-}
+}@media screen and (max-width: 600px) {
+    .p-input-icon-left .p-inputtext {
+      width: 100px; /* Điều chỉnh kích thước của input tại đây */
+    }
+  }

@@ -1,4 +1,4 @@
-import React, {useContext } from "react";
+import React, {useContext,useEffect,useState } from "react";
 import "./App.css";
 
 import { createBrowserRouter, RouterProvider} from "react-router-dom";
@@ -28,6 +28,9 @@ import Distributor  from "./asset/Pages/Distributor/Distributor.jsx";
 import Products  from "./asset/Pages/Product/Product.jsx";
 import Treatments  from "./asset/Pages/Treatments/Treatments.jsx";
 import Main from "./components/Sidebar/Main.jsx";
+import ForgotPasswordPage from "./asset/Pages/Login/ForgotPassword.jsx";
+
+function App() {
 const Layout = () => {
   const { currentUser } = useContext(AuthContext);
   return (
@@ -37,8 +40,9 @@ const Layout = () => {
       <nav className="navbar">
         <Navbar />
       </nav>
-  <Main/>
+          <Main/>
       </>
+      
       )}
     </>
   );
@@ -52,8 +56,13 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+    // element: <ForgotPasswordPage  />,
+
   },
-    
+  {
+    path: "/forgot-password",
+    element: <ForgotPasswordPage  />,
+  },
   {
     path: "/",
     element: <Layout />,
@@ -121,18 +130,19 @@ const router = createBrowserRouter([
         path: "/dieu-tri",
         element: <Treatments  />,
       },
-      
+     
     ],
   },
   
   
 ]);
-function App() {
+
   return (
     <div>
-      <RouterProvider router={router} />
+      <RouterProvider router={router} />  
     </div>
   );
 }
 
 export default App;
+

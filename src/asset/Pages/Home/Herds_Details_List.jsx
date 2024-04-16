@@ -40,8 +40,7 @@ export default function BasicDemo() {
           <CultivationLogs_Herd idherd={herdId} />
         </TabPanel>
         <TabPanel header="Thu hoạch">
-          <Harvest  isherdharvest={herdId}
-          />
+          <Harvest  isherdharvest={herdId}/>
         </TabPanel>
         <TabPanel header="Điều trị">
           <Treatments idherd={herdId} />

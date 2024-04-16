@@ -71,3 +71,7 @@ h4 {
     margin-bottom: 2vh;
 
 }
+.chart-container {
+    display: flex;
+    justify-content: center;
+  }

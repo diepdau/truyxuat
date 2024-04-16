@@ -71,10 +71,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
 
         setProduct({
           ...product,
-          start_date: response.data.start_date
-            ? new Date(response.data.start_date)
-            : null,
-        });
+         });
       } else {
         await axios.post(`/herds`, product);
         toast.current.show({
@@ -179,7 +176,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
             }}
             style={{ width: "100%" }}
           />
-          <h4>Farm</h4>
+          <h4>Trang trại</h4>
           <Dropdown
             placeholder={farmName}
             type="text"

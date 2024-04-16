@@ -241,7 +241,7 @@ function Harvest({ isherdharvest }) {
 
       {!isherdharvest && (
         <>
-          <Chart_Herds />
+          {/* <Chart_Herds /> */}
           <Chart_Products />
         </>
       )}

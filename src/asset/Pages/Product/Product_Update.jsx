@@ -90,9 +90,10 @@ function YourComponent({ data, reloadData }) {
 
   return (
     <div>
+      <Toast className="toast" ref={toast} />
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
-          <Toast className="toast" ref={toast} />
+          
 
           <h4>Tên</h4>
           <InputText

@@ -1,16 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import "./Navbar.css";
 import { Menu } from "primereact/menu";
 import imgadmin from "../../asset/Img/Desktop/adminName.png";
 import { classNames } from "primereact/utils";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../asset/service/user_service.js";
-import Sidebar from "../Sidebar/Sidebar.js"
-export default function Navbar() {
+import Sidebar from "../Sidebar/Sidebar.js";
+export default function Navbar({}) {
   const { currentUser, logout } = useContext(AuthContext);
   const userName = currentUser && currentUser.name ? currentUser.name : "Guest";
   const [visible, setVisible] = useState(false);
-  const [visibleSidebar, setVisibleSidebar] = useState(true);
+  const [isVisibleSidebar, setIsVisibleSidebar] = useState(true);
   const navigate = useNavigate();
 
   const handleUpdateUserName = async (userId) => {
@@ -51,13 +51,36 @@ export default function Navbar() {
     },
   ];
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 450) {
+        setIsVisibleSidebar(false);
+      } else {
+        setIsVisibleSidebar(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <div>
       <div className="layout-topbar">
         <div className="layout-topbar-logo">
-          <i className="pi pi-bars" id="sidebar-close"style={{ cursor: "pointer" }}onClick={() => setVisibleSidebar((prevVisible) => !prevVisible)} ></i>         <h1 style={{color:"green"}}>Farming</h1>
+          <i
+            className="pi pi-bars"
+            id="sidebar-close"
+            style={{ cursor: "pointer" }}
+            onClick={() => setIsVisibleSidebar((prevVisible) => !prevVisible)}
+          ></i>
+          
+          <h1 style={{ color: "green" }}>Farming</h1>
         </div>
-        
+
         <div
           className={classNames("layout-topbar-menu")}
           style={{ cursor: "pointer" }}
@@ -89,12 +112,7 @@ export default function Navbar() {
           />
         </div>
       )}
-      {visibleSidebar&&(
-        <>
-        <Sidebar/>
-        </>
-        
-      )}
+      {isVisibleSidebar && <Sidebar />}
     </div>
   );
 }

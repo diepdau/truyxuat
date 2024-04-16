@@ -56,13 +56,14 @@ const FarmProduct = ({reloadData}) => {
         ) : (
           <>
             <h5>Biểu đồ số lượng</h5>
-            <Chart
+            <div className="chart-container">
+            <Chart 
               type="pie"
               data={chartData}
               options={chartOptions}
               className="w-50% md:w-20rem"
             />
-             
+             </div>
           </>
         )}
       </div>

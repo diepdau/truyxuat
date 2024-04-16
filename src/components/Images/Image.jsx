@@ -63,7 +63,7 @@ const ImageUploader = ({ uploadUrl, images, reloadData }) => {
         encType="multipart/formdata"
         onSubmit={handleSubmit(upLoadImage)}
       >
-        <InputText type="file" multiple {...register("file")} />
+        <InputText className="input_file2"  type="file" multiple {...register("file")} />
         <InputText className="input_file1" type="submit" value="Thêm" />
       </form>
     </div>

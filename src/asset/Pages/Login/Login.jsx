@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 import { AuthContext } from "../../service/user_service.js";
 import { InputText } from "primereact/inputtext";
-
+import axios from "axios";
 const Login = () => {
   const [email, setEmail] = useState(undefined);
   const [password, setPassword] = useState(undefined);
@@ -22,7 +22,11 @@ const Login = () => {
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      await loginApi({ email, password });
+      await axios.post(
+        "/agriculture-traceability.vercel.app/api/v1/auth/login",
+        { email, password }
+      );
+      // alert("ok")
       navigate("/danh-sach-dan");
     } catch (err) {
       const er = err.response.data.msg;
@@ -63,7 +67,7 @@ const Login = () => {
               Password
             </label>
             <div className="password-input-container">
-              <input
+              <InputText
                 id="password"
                 className="form-control"
                 type="password"

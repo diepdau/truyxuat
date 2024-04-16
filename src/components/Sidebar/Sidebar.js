@@ -2,7 +2,7 @@ import React from 'react';
 import {menu} from "./data.ts"
 import { Link } from "react-router-dom";
 import 'primeicons/primeicons.css';
-
+import "./Sidebar.css"
 function Sidebar0() {
   return (
       <div>

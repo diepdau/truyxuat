@@ -9,6 +9,7 @@ import axios from "axios";
 import { Dropdown } from "primereact/dropdown";
 import { Toast } from "primereact/toast";
 import "./HerdsList.css";
+import Record_Create from "./Record_Create.jsx"
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
 import { Paginator } from "primereact/paginator";
@@ -50,7 +51,9 @@ export default function SizeDemo({ herdId }) {
       );
       const data = await response.json();
       data.herd.records.forEach((element) => {
-        element.birth_date = <DateConverter originalDate={element.birth_date} />;
+        element.birth_date = (
+          <DateConverter originalDate={element.birth_date} />
+        );
       });
       setProducts(data.herd.records);
       setTotalPages(data.totalPages);
@@ -82,29 +85,7 @@ export default function SizeDemo({ herdId }) {
       [name]: value,
     });
   };
-  //Hàm tạo đàn bằng tay
-  const handleCreateUser = async (event) => {
-    event.preventDefault();
-    try {
-      const dateString = product.birth_date;
-      await axios.post("/animals", {
-        name: product.name,
-        birth_date: dateString,
-        birth_weight: product.birth_weight,
-        is_harvested: selectedIsHarvested.name,
-        herd: herdId,
-      });
-      setProductDialog(false);
-      toast.current.show({
-        severity: "success",
-        summary: "Tạo đàn",
-        life: 3000,
-      });
-      reloadData();
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  };
+ 
   //Hàm tạo con trong đàn tự động
   const handleCreateNewAuto = async () => {
     try {
@@ -256,6 +237,7 @@ export default function SizeDemo({ herdId }) {
         type="number"
         value={options.value}
         onChange={(e) => options.editorCallback(e.target.value)}
+        style={{ minWidth: "100%" }}
       />
     );
   };
@@ -281,11 +263,17 @@ export default function SizeDemo({ herdId }) {
     let _products = [...products];
     let { newData, index } = e;
     _products[index] = newData;
+    let hasSelectedProduct = false;
+
     for (const selectedProduct of selectedProducts) {
       var Id = selectedProduct._id;
+      hasSelectedProduct = true;
+      break;
     }
-    try {
-      await axios.patch(`/animals/${Id}`, {
+    if (!hasSelectedProduct) {
+      alert("Bạn phải chọn 1 con trong đàn.");
+    }
+    try {await axios.patch(`/animals/${Id}`, {
         name: newData.name,
         birth_date: newData.birth_date,
         birth_weight: newData.birth_weight,
@@ -377,21 +365,21 @@ export default function SizeDemo({ herdId }) {
             header="Ngày sinh"
             value={product.birth_date}
             editor={(options) => Birth_date(options)}
-            style={{ minWidth: "10rem" }}
+            style={{ minWidth: "5rem" }}
           ></Column>
           <Column
             field="birth_weight"
             header="Cân nặng"
             value={product.birth_weight}
             editor={(options) => Birth_weight(options)}
-            style={{ minWidth: "10rem" }}
+            style={{ minWidth: "5rem" }}
           ></Column>
           <Column
             field="is_harvested"
             header="Thu hoạch"
             editor={(options) => IsHarvested(options)}
             value={product.is_harvested}
-            style={{ minWidth: "10rem" }}
+            style={{ minWidth: "5rem" }}
           ></Column>
           <Column
             rowEditor
@@ -411,6 +399,7 @@ export default function SizeDemo({ herdId }) {
           rowsPerPageOptions={[5, 10, 20]}
           onPageChange={onPageChange}
         />
+
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}
@@ -459,72 +448,10 @@ export default function SizeDemo({ herdId }) {
           onHide={() => setProductDialog(false)}
           modal
         >
-          <div>
-            <form className="container_update">
-              <div className="container_update">
-                <div
-                  style={{
-                    flex: 1,
-                    paddingRight: "1rem",
-                    marginBottom: "2vh",
-                    marginTop: "3vh",
-                  }}
-                >
-                  <label>Tên</label>
-                  <InputText
-                    type="text"
-                    name="name"
-                    value={product.name}
-                    onChange={handleChange}
-                    style={{ width: "100%" }}
-                  />
-                  <label>Ngày sinh</label>
-                  <Calendar
-                    inputId="cal_date"
-                    name="date"
-                    style={{ width: "100%" }}
-                    value={product.birth_date}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div style={{ flex: 1, marginBottom: "2vh", marginTop: "3vh" }}>
-                  <label>Cân nặng</label>
-                  <InputText
-                    type="number"
-                    name="birth_weight"
-                    value={product.birth_weight}
-                    onChange={handleChange}
-                    style={{ width: "100%" }}
-                  />
-
-                  <label>Thu hoạch</label>
-                  <Dropdown
-                    type="text"
-                    options={Is_harvested}
-                    optionLabel="name"
-                    value={selectedIsHarvested}
-                    onChange={(e) => setSelectedIsHarvested(e.value)}
-                    style={{ width: "100%" }}
-                  />
-                </div>
-              </div>
-            </form>
-
-            <Button
-              className="button_Dia"
-              label="Lưu"
-              severity="success"
-              onClick={handleCreateUser}
-            />
-            <Button
-              className="button_Dia"
-              label="Hủy"
-              severity="secondary"
-              outlined
-              onClick={() => setProductDialog(false)}
-            />
-          </div>
+         
+           <Record_Create herdId={herdId} reloadData={reloadData} isUpdate={false} />
         </Dialog>
+       
 
         <Dialog
           header="Thêm mới tự động"

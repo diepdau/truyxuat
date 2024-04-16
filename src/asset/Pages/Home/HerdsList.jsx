@@ -129,8 +129,12 @@ export default function SizeDemo() {
   };
   const navigate = useNavigate();
   const onRowDoubleClick = () => {
-    for (const selectedProduct of selectedProducts) {
-      navigate(`/herds/${selectedProduct._id}`);
+    if (!selectedProducts) {
+      toast.current.show({severity:'warn', detail:'Bạn phải chọn 1 đàn', life: 3000});
+    } else {
+      for (const selectedProduct of selectedProducts) {
+        navigate(`/herds/${selectedProduct._id}`);
+      }
     }
   };
 
