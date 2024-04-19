@@ -179,10 +179,9 @@ function YourComponent({ data, reloadData, isUpdate }) {
 
         {/* Cột phải */}
         <div style={{ flex: 1 }}>
-          <h4>Thu hoạch từ đàn</h4>
+          <h4>Thu hoạch sản phẩm</h4>
           <Dropdown
             placeholder={data ? data.harvest.name : ""}
-
             type="text"
             value={selectedHerd}
             options={herds}
@@ -201,65 +200,70 @@ function YourComponent({ data, reloadData, isUpdate }) {
             style={{ width: "100%" }}
           />
           {errors.herd && <small className="p-error">{errors.herd}</small>}
+          {isUpdate && (
+            <>
+              <h4>Tên sản phẩm</h4>
+              <InputText
+                name="harvestName"
+                value={product.harvest.name}
+                style={{ width: "100%" }}
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    harvest: {
+                      ...product.harvest,
+                      name: e.target.value,
+                    },
+                  })
+                }
+              />
+              {errors.harvestName && (
+                <small className="p-error">{errors.harvestName}</small>
+              )}
 
-          <h4>Tên sản phẩm</h4>
-          <InputText
-            name="harvestName"
-            value={product.harvest.name}
-            style={{ width: "100%" }}
-            onChange={(e) =>
-              setProduct({
-                ...product,
-                harvest: {
-                  ...product.harvest,
-                  name: e.target.value,
-                },
-              })
-            }
-          />
-          {errors.harvestName && (
-            <small className="p-error">{errors.harvestName}</small>
-          )}
+              <h4>Số lượng</h4>
+              <InputText
+                disabled
+                type="number"
+                name="quantity"
+                value={product.harvest.quantity}
+                style={{ width: "100%" }}
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    harvest: {
+                      ...product.harvest,
+                      quantity: e.target.value,
+                    },
+                  })
+                }
+              />
+              {errors.quantity && (
+                <small className="p-error">{errors.quantity}</small>
+              )}
 
-          <h4>Số lượng</h4>
-          <InputText
-            type="number"
-            name="quantity"
-            value={product.harvest.quantity}
-            style={{ width: "100%" }}
-            onChange={(e) =>
-              setProduct({
-                ...product,
-                harvest: {
-                  ...product.harvest,
-                  quantity: e.target.value,
-                },
-              })
-            }
-          />
-          {errors.quantity && (
-            <small className="p-error">{errors.quantity}</small>
-          )}
+              <h4>Đơn vị</h4>
+              <Dropdown
+                disabled
+                name="unit"
+                value={product.harvest.unit}
+                options={unitOptions}
+                onChange={handleUnitChange}
+                placeholder={data ? data.harvest.unit : ""}
+                style={{ width: "100%" }}
+              />
+              {errors.unit && <small className="p-error">{errors.unit}</small>}
 
-          <h4>Đơn vị</h4>
-          <Dropdown
-            name="unit"
-            value={product.harvest.unit}
-            options={unitOptions}
-            onChange={handleUnitChange}
-            placeholder={data ? data.harvest.unit : ""}
-            style={{ width: "100%" }}
-          />
-          {errors.unit && <small className="p-error">{errors.unit}</small>}
-
-          <h4>Ngày</h4>
+              {/* <h4>Ngày</h4>
           <Calendar
             inputId="cal_date"
             name="date"
             style={{ width: "100%" }}
             value={product.date}
             onChange={(e) => setProduct({ ...product, date: e.value })}
-          />
+          /> */}
+            </>
+          )}
         </div>
       </div>
       <Button

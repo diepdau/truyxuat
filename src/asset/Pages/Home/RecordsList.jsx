@@ -347,7 +347,7 @@ export default function SizeDemo({ herdId }) {
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey="_id"
           tableStyle={{ minWidth: "68rem" }}
-          header={header}
+          // header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
 
@@ -392,13 +392,13 @@ export default function SizeDemo({ herdId }) {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
-        <Paginator
+        {/* <Paginator
           first={(currentPage - 1) * currentLimit}
           totalRecords={totalPages * currentLimit} // Assuming you set the correct total number of records here
           rows={currentLimit}
           rowsPerPageOptions={[5, 10, 20]}
           onPageChange={onPageChange}
-        />
+        /> */}
 
         <Dialog
           visible={deleteProductsDialog}

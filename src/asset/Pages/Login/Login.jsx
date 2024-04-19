@@ -23,7 +23,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await axios.post(
-        "/agriculture-traceability.vercel.app/api/v1/auth/login",
+        "/auth/login",
         { email, password }
       );
       // alert("ok")

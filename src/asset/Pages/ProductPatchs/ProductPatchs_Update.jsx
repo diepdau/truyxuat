@@ -27,21 +27,13 @@ function YourComponent({ data, reloadData }) {
     });
   };
 
-  const handleCreate = async () => {
+  const handle = async () => {
     if (!validate()) {
       return;
     }
-
     try {
-      const response = await axios.patch(
-        `/product-patchs/${data._id}`,
-        product
-      );
-      toast.current.show({
-        severity: "success",
-        summary: "Sửa hoàn thành",
-        life: 3000,
-      });
+      const response = await axios.patch( `/product-patchs/${data._id}`, product );
+      toast.current.show({severity: "success",summary: "Sửa hoàn thành", life: 3000, });
       reloadData();
       setProduct(response.data);
     } catch (error) {
@@ -70,7 +62,7 @@ function YourComponent({ data, reloadData }) {
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <Toast className="toast" ref={toast} />
-          <h4>Tên</h4>
+          <h4>[Id lô hàng]</h4>
           <InputText
             name="_id"
             value={product._id}
@@ -121,7 +113,7 @@ function YourComponent({ data, reloadData }) {
         id="Save"
         label="Lưu"
         severity="success"
-        onClick={handleCreate}
+        onClick={handle}
       />
     </div>
   );

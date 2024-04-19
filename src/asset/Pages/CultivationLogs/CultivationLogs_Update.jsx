@@ -7,6 +7,7 @@ import { Toast } from "primereact/toast";
 import "./CultivationLogs.css";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
+import DateConverter from "../../../components/Date/Date";
 const emptyProduct = {
   name: "",
   description: "",
@@ -21,6 +22,7 @@ function YourComponent({ reloadData, data }) {
   const handleChange = (event) => {
     const { value, name } = event.target;
     const newValue = name === "date" ? value.toISOString() : value;
+    console.log(event);
     setProduct({
       ...product,
       [name]: newValue,
@@ -75,7 +77,9 @@ function YourComponent({ reloadData, data }) {
     setErrors(newErrors);
     return isValid;
   };
-  const parsedDate = product.date ? new Date(product.date) : null;
+  const parsedDate = product.date
+    ? new Date(product.date)
+    : null;
   return (
     <div>
       <Toast className="toast" ref={toast} />

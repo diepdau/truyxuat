@@ -57,28 +57,16 @@ function YourComponent({ data, reloadData, isUpdate }) {
     if (!validate()) {
       return;
     }
-
     try {
       if (isUpdate) {
-        const response = await axios.patch(`/herds/${data._id}`, product);
-        toast.current.show({
-          severity: "success",
-          summary: "Sửa hoàn thành",
-          life: 3000,
-        });
-        console.log("tc");
-        console.log(response);
-
+        await axios.patch(`/herds/${data._id}`, product);
+        toast.current.show({severity: "success", summary: "Sửa hoàn thành",life: 3000, });
         setProduct({
           ...product,
          });
       } else {
         await axios.post(`/herds`, product);
-        toast.current.show({
-          severity: "success",
-          summary: "Thêm hoàn thành",
-          life: 3000,
-        });
+        toast.current.show({severity: "success",summary: "Thêm hoàn thành", life: 3000,});
         setProduct(emptyProduct);
       }
       reloadData();
@@ -86,6 +74,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
       console.log("Error update:", error);
     }
   };
+ 
 
   const validate = () => {
     let isValid = true;

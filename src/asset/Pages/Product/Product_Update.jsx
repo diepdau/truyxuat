@@ -25,7 +25,7 @@ const unitOptions = [
   { label: "Euro", value: "Euro" },
 ];
 
-function YourComponent({ data, reloadData }) {
+function YourComponent({ data, reloadData, isProductPatchs }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
@@ -79,9 +79,15 @@ function YourComponent({ data, reloadData }) {
         "Quantity price must be a non-negative value/ is required";
       isValid = false;
     }
-    if (product.production_date && product.expiration_date && product.production_date > product.expiration_date) {
-      newErrors.production_date = "Production date must be before expiration date.";
-      newErrors.expiration_date = "Expiration date must be after production date.";
+    if (
+      product.production_date &&
+      product.expiration_date &&
+      product.production_date > product.expiration_date
+    ) {
+      newErrors.production_date =
+        "Production date must be before expiration date.";
+      newErrors.expiration_date =
+        "Expiration date must be after production date.";
       isValid = false;
     }
     setErrors(newErrors);
@@ -93,8 +99,6 @@ function YourComponent({ data, reloadData }) {
       <Toast className="toast" ref={toast} />
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
-          
-
           <h4>Tên</h4>
           <InputText
             name="name"
@@ -123,7 +127,7 @@ function YourComponent({ data, reloadData }) {
           />
           {errors.price && <small className="p-error">{errors.price}</small>}
           <h4>Đơn vị</h4>
-        
+
           <Dropdown
             name="unit"
             value={product.unit}
@@ -144,7 +148,9 @@ function YourComponent({ data, reloadData }) {
             value={new Date(product.production_date)}
             onChange={handleChange}
           />
- {errors.production_date && <small className="p-error">{errors.production_date}</small>}
+          {errors.production_date && (
+            <small className="p-error">{errors.production_date}</small>
+          )}
           <h4>Ngày hết hạn</h4>
           <Calendar
             inputId="cal_expiration_date"
@@ -153,7 +159,9 @@ function YourComponent({ data, reloadData }) {
             value={new Date(product.expiration_date)}
             onChange={handleChange}
           />
- {errors.expiration_date && <small className="p-error">{errors.expiration_date}</small>}
+          {errors.expiration_date && (
+            <small className="p-error">{errors.expiration_date}</small>
+          )}
           <h4>Phương pháp bảo quản</h4>
           <InputTextarea
             name="storage_method"
@@ -173,13 +181,15 @@ function YourComponent({ data, reloadData }) {
           /> */}
         </div>
       </div>
-      <Button
-        className="button_Dia"
-        id="Save"
-        label="Lưu"
-        severity="success"
-        onClick={handleCreate}
-      />
+      {isProductPatchs && (
+        <Button
+          className="button_Dia"
+          id="Save"
+          label="Lưu"
+          severity="success"
+          onClick={handleCreate}
+        />
+      )}
     </div>
   );
 }

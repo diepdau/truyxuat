@@ -204,11 +204,11 @@ export default function SizeDemo() {
           </TabPanel>
           <TabPanel header="Xử lý/đóng gói">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Processors_Update data={data.processor} reloadData={reloadData} />
+            <Processors_Update data={data.processor} reloadData={reloadData} isProductPatchs={false}/>
           </TabPanel>
           <TabPanel header="Sản phẩm">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Product_Update data={data.product} reloadData={reloadData}  />
+            <Product_Update data={data.product} reloadData={reloadData} isProductPatchs={false} />
           </TabPanel>
           <TabPanel header="Hình ảnh">
             <ImageComponent uploadUrl={url} images={data.images} reloadData={reloadData}  />

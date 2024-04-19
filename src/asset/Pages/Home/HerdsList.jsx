@@ -48,10 +48,7 @@ export default function SizeDemo() {
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        `/herds?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
-          value
-        )}`
-      );
+        `/herds?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent( value)}`);
       const data = await response.json();
       data.herds.forEach((element) => {
         element.date = <DateConverter originalDate={element.start_date} />;
@@ -59,7 +56,7 @@ export default function SizeDemo() {
       setProducts(data.herds);
       setTotalPages(data.totalPages);
     } catch (error) {
-      console.error("There was a problem with the fetch operation:", error);
+      console.error("Error", error);
     }
   };
 

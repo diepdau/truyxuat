@@ -3,8 +3,8 @@ import axios from "axios";
 import { Chart } from "primereact/chart";
 import "./Home.css";
 
-const FarmProduct = ({reloadData}) => {
-  const [herds, setHerds] = useState([]); 
+const FarmProduct = ({ reloadData }) => {
+  const [herds, setHerds] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const FarmProduct = ({reloadData}) => {
       }
     };
 
-    fetchHerds(); 
+    fetchHerds();
   }, []);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const FarmProduct = ({reloadData}) => {
           {
             data: herds.map((herd) => herd.member_count),
             backgroundColor: ["#5092de", "#dbc267", "#63c078", "#c07e52"], // Example colors
-            hoverBackgroundColor:  ["#5092de", "#dbc267", "#63c078", "#c07e52"], // Example colors
+            hoverBackgroundColor: ["#5092de", "#dbc267", "#63c078", "#c07e52"], // Example colors
           },
         ],
       };
@@ -57,13 +57,13 @@ const FarmProduct = ({reloadData}) => {
           <>
             <h5>Biểu đồ số lượng</h5>
             <div className="chart-container">
-            <Chart 
-              type="pie"
-              data={chartData}
-              options={chartOptions}
-              className="w-50% md:w-20rem"
-            />
-             </div>
+              <Chart
+                type="pie"
+                data={chartData}
+                options={chartOptions}
+                className="w-50% md:w-20rem"
+              />
+            </div>
           </>
         )}
       </div>

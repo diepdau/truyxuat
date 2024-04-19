@@ -190,7 +190,7 @@ export default function SizeDemo() {
         <TabView>
           <TabPanel header="Thông tin">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Product_Update data={data} reloadData={reloadData} />
+            <Product_Update data={data} reloadData={reloadData} isProductPatchs={true} />
           </TabPanel>
           <TabPanel header="Hình ảnh">
             {/* eslint-disable-next-line react/jsx-pascal-case */}

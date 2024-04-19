@@ -226,7 +226,7 @@ export default function CulivationLogs_Herd({ idherd }) {
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
           tableStyle={{ minWidth: "64rem" }}
-          header={header}
+          // header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
@@ -247,13 +247,13 @@ export default function CulivationLogs_Herd({ idherd }) {
             bodyStyle={{ textAlign: "center" }}
           ></Column>
         </DataTable>
-        <Paginator
+        {/* <Paginator
           first={(currentPage - 1) * currentLimit}
           totalRecords={totalPages * currentLimit} // Assuming you set the correct total number of records here
           rows={currentLimit}
           rowsPerPageOptions={[5, 10, 20]}
           onPageChange={onPageChange}
-        />
+        /> */}
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}

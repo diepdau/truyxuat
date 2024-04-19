@@ -78,3 +78,7 @@ display: none;
 .p-tabview .p-tabview-panels {
   padding: 0px;
 }
+.chart-container .p-chart-label {
+  transform: rotate(-45deg);
+  white-space: nowrap;
+}

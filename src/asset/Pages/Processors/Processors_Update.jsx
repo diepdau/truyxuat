@@ -24,7 +24,7 @@ const unitOptions = [
   { label: "Túi", value: "Túi" },
 ];
 
-function YourComponent({ data, reloadData }) {
+function YourComponent({ data, reloadData, isProductPatchs }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState([]);
@@ -148,7 +148,9 @@ function YourComponent({ data, reloadData }) {
             style={{ width: "100%" }}
             onChange={handleChange}
           />
-          {errors.location && <small className="p-error">{errors.location}</small>}
+          {errors.location && (
+            <small className="p-error">{errors.location}</small>
+          )}
 
           <h4>Ngày</h4>
           <Calendar
@@ -171,11 +173,15 @@ function YourComponent({ data, reloadData }) {
             optionLabel="name"
             onChange={(e) => {
               setSelectedHerd(e.value);
-              handleHarvestChange({ target: { name: "herd", value: e.value._id } });
+              handleHarvestChange({
+                target: { name: "herd", value: e.value._id },
+              });
             }}
             style={{ width: "100%" }}
           />
-          {errors.harvestHerd && <small className="p-error">{errors.harvestHerd}</small>}
+          {errors.harvestHerd && (
+            <small className="p-error">{errors.harvestHerd}</small>
+          )}
 
           {/* <h4>Tên sản phẩm</h4>
           <InputText
@@ -210,13 +216,15 @@ function YourComponent({ data, reloadData }) {
           />
         </div>
       </div>
-      <Button
-        className="button_Dia"
-        id="Save"
-        label="Lưu"
-        severity="success"
-        onClick={handleCreate}
-      />
+      {isProductPatchs && (
+        <Button
+          className="button_Dia"
+          id="Save"
+          label="Lưu"
+          severity="success"
+          onClick={handleCreate}
+        />
+      )}
     </div>
   );
 }
