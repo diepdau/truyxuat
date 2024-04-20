@@ -9,7 +9,7 @@ import axios from "axios";
 import { Dropdown } from "primereact/dropdown";
 import { Toast } from "primereact/toast";
 import "./HerdsList.css";
-import Record_Create from "./Record_Create.jsx"
+import Record_Create from "./Record_Create.jsx";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
 import { Paginator } from "primereact/paginator";
@@ -85,7 +85,7 @@ export default function SizeDemo({ herdId }) {
       [name]: value,
     });
   };
- 
+
   //Hàm tạo con trong đàn tự động
   const handleCreateNewAuto = async () => {
     try {
@@ -217,20 +217,6 @@ export default function SizeDemo({ herdId }) {
 
   //Xử lý thu hoạch chưa
 
-  const Is_harvested = [{ name: "true" }, { name: "false" }];
-  const [selectedIsHarvested, setSelectedIsHarvested] = useState(emptyProduct);
-  const IsHarvested = () => {
-    return (
-      <Dropdown
-        type="text"
-        optionLabel="name"
-        value={selectedIsHarvested}
-        options={Is_harvested}
-        onChange={(e) => setSelectedIsHarvested(e.value)}
-        placeholder="Tình trạng thu hoạch"
-      />
-    );
-  };
   const Birth_weight = (options) => {
     return (
       <InputText
@@ -263,22 +249,33 @@ export default function SizeDemo({ herdId }) {
     let _products = [...products];
     let { newData, index } = e;
     _products[index] = newData;
-    let hasSelectedProduct = false;
-
-    for (const selectedProduct of selectedProducts) {
-      var Id = selectedProduct._id;
-      hasSelectedProduct = true;
-      break;
+    if (selectedProducts.length === 0) {
+      console.log("Vui lòng chọn ít nhất một sản phẩm trước khi tiếp tục.");
+    } else {
+      var hasSelectedProduct = false;
+      for (const selectedProduct of selectedProducts) {
+        var Id = selectedProduct._id;
+        hasSelectedProduct = true;
+        break;
+      }
     }
+
     if (!hasSelectedProduct) {
       alert("Bạn phải chọn 1 con trong đàn.");
     }
-    try {await axios.patch(`/animals/${Id}`, {
+    let formattedDate = "";
+    if (newData.birth_date.props) {
+      formattedDate = newData.birth_date.props.originalDate;
+    } else {
+      formattedDate = newData.birth_date;
+    }
+    console.log("birth_day", formattedDate);
+    try {
+      await axios.patch(`/animals/${Id}`, {
         name: newData.name,
-        birth_date: newData.birth_date,
+        birth_date: formattedDate,
         birth_weight: newData.birth_weight,
         herd: herdId,
-        is_harvested: selectedIsHarvested.name,
       });
       reloadData();
       toast.current.show({
@@ -361,6 +358,7 @@ export default function SizeDemo({ herdId }) {
           ></Column>
 
           <Column
+            sortable
             field="birth_date"
             header="Ngày sinh"
             value={product.birth_date}
@@ -368,6 +366,7 @@ export default function SizeDemo({ herdId }) {
             style={{ minWidth: "5rem" }}
           ></Column>
           <Column
+            sortable
             field="birth_weight"
             header="Cân nặng"
             value={product.birth_weight}
@@ -377,7 +376,6 @@ export default function SizeDemo({ herdId }) {
           <Column
             field="is_harvested"
             header="Thu hoạch"
-            editor={(options) => IsHarvested(options)}
             value={product.is_harvested}
             style={{ minWidth: "5rem" }}
           ></Column>
@@ -448,10 +446,12 @@ export default function SizeDemo({ herdId }) {
           onHide={() => setProductDialog(false)}
           modal
         >
-         
-           <Record_Create herdId={herdId} reloadData={reloadData} isUpdate={false} />
+          <Record_Create
+            herdId={herdId}
+            reloadData={reloadData}
+            isUpdate={false}
+          />
         </Dialog>
-       
 
         <Dialog
           header="Thêm mới tự động"

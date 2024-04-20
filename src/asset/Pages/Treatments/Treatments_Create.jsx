@@ -15,7 +15,7 @@ const emptyProduct = {
   amount: "",
   mode: "",
   description: "",
-  date: null,
+  date: "",
   retreat_date: "",
   site: "",
   technician: "",
@@ -33,6 +33,7 @@ const modeOptions = [
 const siteOptions = ["Mông", "Sườn", "Cổ", "Khác"];
 
 function YourComponent({ data, reloadData, isUpdate }) {
+  console.log(data);
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState({});
@@ -66,10 +67,9 @@ function YourComponent({ data, reloadData, isUpdate }) {
   };
   const handleChange = (event) => {
     const { value, name } = event.target;
-    const newValue = name === "retreat_date" ? value.toISOString() : value;
     setProduct({
       ...product,
-      [name]: newValue,
+      [name]: value,
     });
   };
 
@@ -80,16 +80,19 @@ function YourComponent({ data, reloadData, isUpdate }) {
 
     try {
       if (isUpdate) {
-        const response = await axios.patch(`/treatments/${data._id}`, product);
+        product.date = product.date.props
+          ? product.date.props.originalDate
+          : product.date;
+        product.retreat_date = product.retreat_date.props
+          ? product.retreat_date.props.originalDate
+          : product.retreat_date;
+        await axios.patch(`/treatments/${data._id}`, product);
         toast.current.show({
           severity: "success",
           summary: "Cập nhật hoàn thành",
           life: 3000,
         });
-        setProduct({
-          ...product,
-          date: response.data.date ? new Date(response.data.date) : null,
-        });
+        setProduct(product);
       } else {
         await axios.post(`/treatments`, product);
         toast.current.show({
@@ -109,35 +112,65 @@ function YourComponent({ data, reloadData, isUpdate }) {
     let isValid = true;
     const newErrors = {};
 
-    if (!product.type.trim()) {
+    if (product.type.trim() === "") {
       newErrors.type = "Type is required.";
       isValid = false;
     }
 
-    if (!product.description.trim()) {
+    if (product.description.trim() === "") {
       newErrors.description = "Description is required.";
       isValid = false;
     }
 
-    if (!product.amount.trim()) {
+    if (product.amount.trim() === "") {
       newErrors.amount = "amount is required.";
       isValid = false;
     }
 
-    if (!product.product.trim()) {
+    if (product.product.trim() === "") {
       newErrors.product = "product is required.";
       isValid = false;
     }
+    if ((isValid && dateDate >= retreatDate) || dateDate === retreatDate) {
+      newErrors.date = "Ngày tiến hành phải nhỏ hơn ngày hết hạn";
+      newErrors.retreat_date = "Ngày rút phải lớn hơn ngày sản xuất";
+      isValid = false;
+    }
+    if (product.site.trim() === "") {
+      newErrors.site = "site is required.";
+      isValid = false;
+    }
 
+    if (product.technician.trim() === "") {
+      newErrors.technician = "technician is required.";
+      isValid = false;
+    }
+    if (product.mode.trim() === "") {
+      newErrors.mode = "mode is required.";
+      isValid = false;
+    }
     setErrors(newErrors);
     return isValid;
   };
-
-  const parsedDate = product.retreat_date
-    ? new Date(product.retreat_date)
-    : null;
   const herdName = product.herd && product.herd.name ? product.herd.name : "";
+  let dateDate = ""; // Declare formattedDate variable
 
+  if (product.date && typeof product.date === "object" && product.date.props) {
+    dateDate = product.date.props.originalDate;
+  } else {
+    dateDate = new Date(product.date);
+  }
+  let retreatDate = ""; // Declare formattedDate variable
+
+  if (
+    product.retreat_date &&
+    typeof product.retreat_date === "object" &&
+    product.retreat_date.props
+  ) {
+    retreatDate = product.retreat_date.props.originalDate;
+  } else {
+    retreatDate = new Date(product.retreat_date);
+  }
   return (
     <div>
       <div className="container_update">
@@ -238,14 +271,28 @@ function YourComponent({ data, reloadData, isUpdate }) {
             <small className="p-error">{errors.technician}</small>
           )}
 
-          <h4>Ngày</h4>
+          <h4>Ngày tiến hành</h4>
           <Calendar
-            inputId="cal_date"
-            name="retreat_date"
+            inputId="cal_production_date"
+            name="date"
             style={{ width: "100%" }}
-            value={parsedDate}
+            value={dateDate instanceof Date ? dateDate : new Date(dateDate)}
             onChange={handleChange}
           />
+          {errors.date && <small className="p-error">{errors.date}</small>}
+          <h4>Ngày rút</h4>
+          <Calendar
+            inputId="cal_expiration_date"
+            name="retreat_date"
+            style={{ width: "100%" }}
+            value={
+              retreatDate instanceof Date ? retreatDate : new Date(retreatDate)
+            }
+            onChange={handleChange}
+          />
+          {errors.retreat_date && (
+            <small className="p-error">{errors.retreat_date}</small>
+          )}
         </div>
       </div>
       <Button

@@ -21,11 +21,20 @@ function YourComponent({ reloadData, data }) {
   var url = data ? `/cultivation-logs/upload/${data._id}` : "";
   const handleChange = (event) => {
     const { value, name } = event.target;
-    const newValue = name === "date" ? value.toISOString() : value;
-    console.log(event);
     setProduct({
       ...product,
-      [name]: newValue,
+      [name]: value,
+    });
+  };
+  const handleChangeDate = (event) => {
+    const { value, name } = event.target;
+    let updatedDate = value;
+    if (product.date.props) {
+      updatedDate = product.date.props.originalDate;
+    }
+    setProduct({
+      ...product,
+      [name]: updatedDate,
     });
   };
 
@@ -38,7 +47,7 @@ function YourComponent({ reloadData, data }) {
       const response = await axios.patch(`/cultivation-logs/${data._id}`, {
         name: product.name,
         description: product.description,
-        date: product.date,
+        date: formattedDate,
       });
       console.log(response);
       toast.current.show({
@@ -77,9 +86,12 @@ function YourComponent({ reloadData, data }) {
     setErrors(newErrors);
     return isValid;
   };
-  const parsedDate = product.date
-    ? new Date(product.date)
-    : null;
+  let formattedDate = "";
+  if (product.date && typeof product.date === "object" && product.date.props) {
+    formattedDate = product.date.props.originalDate;
+  } else {
+    formattedDate = new Date(product.date);
+  }
   return (
     <div>
       <Toast className="toast" ref={toast} />
@@ -112,8 +124,12 @@ function YourComponent({ reloadData, data }) {
             inputId="cal_date"
             name="date"
             style={{ width: "100%" }}
-            value={parsedDate}
-            onChange={handleChange}
+            value={
+              formattedDate instanceof Date
+                ? formattedDate
+                : new Date(formattedDate)
+            }
+            onChange={handleChangeDate}
           />
           {errors.date && <small className="p-error">{errors.date}</small>}
           <Button

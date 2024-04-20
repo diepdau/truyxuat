@@ -11,20 +11,9 @@ import { InputText } from "primereact/inputtext";
 const emptyProduct = {
   name: "",
   location: "",
-  date: null,
-  harvest: {
-    _id: "",
-    herd: "",
-    name: "",
-    quantity: "",
-  },
+  date: new Date(),
+  harvest: "",
 };
-const unitOptions = [
-  { label: "Cân", value: "Cân" },
-  { label: "Kg", value: "Kg" },
-  { label: "Túi", value: "Túi" },
-];
-
 function YourComponent({ data, reloadData, isUpdate }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
@@ -40,19 +29,14 @@ function YourComponent({ data, reloadData, isUpdate }) {
         name: data.name,
         location: data.location,
         date: data.date ? new Date(data.date) : null,
-        harvest: {
-          ...emptyProduct.harvest,
-          _id: data.harvest.herd,
-          name: data.harvest.name,
-          quantity: data.harvest.quantity,
-        },
+        harvest: data.harvest,
       });
     }
   }, [data]);
 
   const getHerds = async () => {
     try {
-      const res = await axios.get(`/harvests`);
+      const res = await axios.get(`/harvests?&limit=50`);
       setHerds(res.data.harvests);
     } catch (error) {
       console.log(error);
@@ -61,19 +45,9 @@ function YourComponent({ data, reloadData, isUpdate }) {
 
   const handleChange = (event) => {
     const { value, name } = event.target;
-    const newValue = name === "date" ? value.toISOString() : value;
     setProduct({
       ...product,
-      [name]: newValue,
-    });
-  };
-  const handleUnitChange = (event) => {
-    setProduct({
-      ...product,
-      harvest: {
-        ...product.harvest,
-        unit: event.value,
-      },
+      [name]: value,
     });
   };
 
@@ -81,9 +55,12 @@ function YourComponent({ data, reloadData, isUpdate }) {
     if (!validate()) {
       return;
     }
-
+    console.log(product);
     try {
       if (isUpdate) {
+        product.date = product.date.props
+          ? product.date.props.originalDate
+          : product.date;
         await axios.patch(`/processors/${data._id}`, product);
         toast.current.show({
           severity: "success",
@@ -109,46 +86,31 @@ function YourComponent({ data, reloadData, isUpdate }) {
     let isValid = true;
     const newErrors = {};
 
-    if (!product.name.trim()) {
+    if (!product.name.trim() === "") {
       newErrors.name = "Tên ?";
       isValid = false;
     }
 
-    if (!product.location.trim()) {
+    if (!product.location.trim() === "") {
       newErrors.location = "Vị trí ?.";
       isValid = false;
     }
 
-    if (!product.date) {
-      product.date = new Date();
-      isValid = true;
-    }
-
-    if (!product.harvest.herd) {
+    if (!product.harvest.herd === "") {
       newErrors.herd = "Thu hoạch từ đàn ?";
-      isValid = false;
-    }
-
-    if (!product.harvest.name.trim()) {
-      newErrors.harvestName = "Tên sản phẩm ?";
-      isValid = false;
-    }
-
-    if (!product.harvest.quantity) {
-      newErrors.quantity = "Số lượng ?";
-      isValid = false;
-    } else if (
-      isNaN(product.harvest.quantity) ||
-      parseFloat(product.harvest.quantity) < 0
-    ) {
-      newErrors.quantity = "Số lượng là phải dương ?";
       isValid = false;
     }
 
     setErrors(newErrors);
     return isValid;
   };
+  let formattedDate = ""; // Declare formattedDate variable
 
+  if (product.date && typeof product.date === "object" && product.date.props) {
+    formattedDate = product.date.props.originalDate;
+  } else {
+    formattedDate = new Date(product.date);
+  }
   return (
     <div>
       <div style={{ display: "flex", gap: "2rem" }}>
@@ -175,6 +137,18 @@ function YourComponent({ data, reloadData, isUpdate }) {
           {errors.location && (
             <small className="p-error">{errors.location}</small>
           )}
+          <h4>Ngày</h4>
+          <Calendar
+            inputId="cal_date"
+            name="date"
+            style={{ width: "100%" }}
+            value={
+              formattedDate instanceof Date
+                ? formattedDate
+                : new Date(formattedDate)
+            }
+            onChange={handleChange}
+          />
         </div>
 
         {/* Cột phải */}
@@ -193,7 +167,6 @@ function YourComponent({ data, reloadData, isUpdate }) {
                 harvest: {
                   ...product.harvest,
                   _id: e.value._id,
-                  herd: e.value.herd,
                 },
               });
             }}
@@ -202,25 +175,6 @@ function YourComponent({ data, reloadData, isUpdate }) {
           {errors.herd && <small className="p-error">{errors.herd}</small>}
           {isUpdate && (
             <>
-              <h4>Tên sản phẩm</h4>
-              <InputText
-                name="harvestName"
-                value={product.harvest.name}
-                style={{ width: "100%" }}
-                onChange={(e) =>
-                  setProduct({
-                    ...product,
-                    harvest: {
-                      ...product.harvest,
-                      name: e.target.value,
-                    },
-                  })
-                }
-              />
-              {errors.harvestName && (
-                <small className="p-error">{errors.harvestName}</small>
-              )}
-
               <h4>Số lượng</h4>
               <InputText
                 disabled
@@ -228,40 +182,16 @@ function YourComponent({ data, reloadData, isUpdate }) {
                 name="quantity"
                 value={product.harvest.quantity}
                 style={{ width: "100%" }}
-                onChange={(e) =>
-                  setProduct({
-                    ...product,
-                    harvest: {
-                      ...product.harvest,
-                      quantity: e.target.value,
-                    },
-                  })
-                }
               />
-              {errors.quantity && (
-                <small className="p-error">{errors.quantity}</small>
-              )}
 
               <h4>Đơn vị</h4>
               <Dropdown
                 disabled
                 name="unit"
                 value={product.harvest.unit}
-                options={unitOptions}
-                onChange={handleUnitChange}
                 placeholder={data ? data.harvest.unit : ""}
                 style={{ width: "100%" }}
               />
-              {errors.unit && <small className="p-error">{errors.unit}</small>}
-
-              {/* <h4>Ngày</h4>
-          <Calendar
-            inputId="cal_date"
-            name="date"
-            style={{ width: "100%" }}
-            value={product.date}
-            onChange={(e) => setProduct({ ...product, date: e.value })}
-          /> */}
             </>
           )}
         </div>

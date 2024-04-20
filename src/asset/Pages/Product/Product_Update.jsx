@@ -47,16 +47,23 @@ function YourComponent({ data, reloadData, isProductPatchs }) {
     if (!validate()) {
       return;
     }
-
+    product.production_date = product.production_date.props
+      ? product.production_date.props.originalDate
+      : product.production_date;
+    product.expiration_date = product.expiration_date.props
+      ? product.expiration_date.props.originalDate
+      : product.expiration_date;
     try {
-      const response = await axios.patch(`/products/${data._id}`, product);
+      await axios.patch(`/products/${data._id}`, product);
       toast.current.show({
         severity: "success",
         summary: "Sửa hoàn thành",
         life: 3000,
       });
       reloadData();
-      setProduct(response.data);
+      setProduct({
+        ...product,
+      });
     } catch (error) {
       console.log("Error update:", error);
     }
@@ -65,35 +72,78 @@ function YourComponent({ data, reloadData, isProductPatchs }) {
   const validate = () => {
     let isValid = true;
     const newErrors = {};
-    if (!product.name) {
-      newErrors.name = "Name is required.";
+
+    // Validate name
+    if (!product.name || product.name.trim() === "") {
+      newErrors.name = "Tên không được để trống";
       isValid = false;
     }
-    if (!product.price || product.price < 0) {
-      newErrors.price =
-        "Product price must be a non-negative value/ is required";
+
+    // Validate description
+    if (!product.description || product.description.trim() === "") {
+      newErrors.description = "Mô tả không được để trống";
       isValid = false;
     }
-    if (!product.quantity || product.quantity < 0) {
-      newErrors.quantity =
-        "Quantity price must be a non-negative value/ is required";
+
+    // Validate storage method
+    if (!product.storage_method || product.storage_method.trim() === "") {
+      newErrors.storage_method = "Phương pháp bảo quản không được để trống";
       isValid = false;
     }
+
+    // Validate price
+    if (!product.price || product.price <= 0) {
+      newErrors.price = "Giá phải lớn hơn 0 và không được để trống";
+      isValid = false;
+    }
+
+    // Validate production date and expiration date
+    // const productionDate = new Date(product.production_date);
+    // const expirationDate = new Date(product.expiration_date);
+
+    // if (isNaN(productionDate.getTime())) {
+    //   newErrors.production_date = "Ngày sản xuất không hợp lệ";
+    //   isValid = false;
+    // }
+
+    // if (isNaN(expirationDate.getTime())) {
+    //   newErrors.expiration_date = "Ngày hết hạn không hợp lệ";
+    //   isValid = false;
+    // }
+
     if (
-      product.production_date &&
-      product.expiration_date &&
-      product.production_date > product.expiration_date
+      (isValid && productionDate >= expirationDate) ||
+      productionDate === expirationDate
     ) {
-      newErrors.production_date =
-        "Production date must be before expiration date.";
-      newErrors.expiration_date =
-        "Expiration date must be after production date.";
+      newErrors.production_date = "Ngày sản xuất phải nhỏ hơn ngày hết hạn";
+      newErrors.expiration_date = "Ngày hết hạn phải lớn hơn ngày sản xuất";
       isValid = false;
     }
     setErrors(newErrors);
     return isValid;
   };
+  let productionDate = ""; // Declare formattedDate variable
 
+  if (
+    product.production_date &&
+    typeof product.production_date === "object" &&
+    product.production_date.props
+  ) {
+    productionDate = product.production_date.props.originalDate;
+  } else {
+    productionDate = new Date(product.production_date);
+  }
+  let expirationDate = ""; // Declare formattedDate variable
+
+  if (
+    product.expiration_date &&
+    typeof product.expiration_date === "object" &&
+    product.expiration_date.props
+  ) {
+    expirationDate = product.expiration_date.props.originalDate;
+  } else {
+    expirationDate = new Date(product.expiration_date);
+  }
   return (
     <div>
       <Toast className="toast" ref={toast} />
@@ -116,26 +166,32 @@ function YourComponent({ data, reloadData, isProductPatchs }) {
             style={{ width: "100%" }}
             onChange={handleChange}
           />
+          {errors.description && (
+            <small className="p-error">{errors.description}</small>
+          )}
           <h4>Giá</h4>
           <InputText
             name="price"
             type="number"
             value={product.price}
-            autoResize
             style={{ width: "100%" }}
             onChange={handleChange}
           />
-          {errors.price && <small className="p-error">{errors.price}</small>}
-          <h4>Đơn vị</h4>
 
-          <Dropdown
-            name="unit"
-            value={product.unit}
-            options={unitOptions}
-            onChange={handleUnitChange}
-            placeholder="Select a unit"
-            style={{ width: "100%" }}
-          />
+          {errors.price && <small className="p-error">{errors.price}</small>}
+          {isProductPatchs && (
+            <>
+              <h4>Đơn vị</h4>
+              <Dropdown
+                name="unit"
+                value={product.unit}
+                options={unitOptions}
+                onChange={handleUnitChange}
+                placeholder="Select a unit"
+                style={{ width: "100%" }}
+              />
+            </>
+          )}
         </div>
 
         {/* Cột phải */}
@@ -145,7 +201,11 @@ function YourComponent({ data, reloadData, isProductPatchs }) {
             inputId="cal_production_date"
             name="production_date"
             style={{ width: "100%" }}
-            value={new Date(product.production_date)}
+            value={
+              productionDate instanceof Date
+                ? productionDate
+                : new Date(productionDate)
+            }
             onChange={handleChange}
           />
           {errors.production_date && (
@@ -156,7 +216,11 @@ function YourComponent({ data, reloadData, isProductPatchs }) {
             inputId="cal_expiration_date"
             name="expiration_date"
             style={{ width: "100%" }}
-            value={new Date(product.expiration_date)}
+            value={
+              expirationDate instanceof Date
+                ? expirationDate
+                : new Date(expirationDate)
+            }
             onChange={handleChange}
           />
           {errors.expiration_date && (
@@ -170,15 +234,6 @@ function YourComponent({ data, reloadData, isProductPatchs }) {
             style={{ width: "100%" }}
             onChange={handleChange}
           />
-
-          {/* <h4>Thông tin</h4>
-          <InputText
-            name="info"
-            value={product.info}
-            autoResize
-            style={{ width: "100%" }}
-            onChange={handleChange}
-          /> */}
         </div>
       </div>
       {isProductPatchs && (

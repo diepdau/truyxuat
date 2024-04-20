@@ -19,14 +19,12 @@ const emptyProduct = {
   date: "",
 };
 
-
 const unitOptions = [
   { label: "Cân", value: "Cân" },
   { label: "Kg", value: "Kg" },
   { label: "Túi", value: "Túi" },
 ];
 function YourComponent({ data, reloadData }) {
- 
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState({});
@@ -46,12 +44,23 @@ function YourComponent({ data, reloadData }) {
 
   const handleChange = (event) => {
     const { value, name } = event.target;
-    const newValue = name === "date" ? value.toISOString() : value;
     setProduct({
       ...product,
-      [name]: newValue,
+      [name]: value,
     });
   };
+  // const handleChangeDate = (event) => {
+  //   const { value, name } = event.target;
+  //   let updatedDate = value;
+  //   updatedDate = product.date.props ? product.date.props.originalDate : value;
+
+  //   setProduct({
+  //     ...product,
+  //     [name]: updatedDate,
+  //   });
+  //   console.log(product);
+  // };
+
   const handleUnitChange = (event) => {
     setProduct({
       ...product,
@@ -63,9 +72,11 @@ function YourComponent({ data, reloadData }) {
     if (!validate()) {
       return;
     }
-
+    product.date = product.date.props
+      ? product.date.props.originalDate
+      : product.date;
     try {
-      const response = await axios.patch(`/harvests/${data._id}`, product);
+      await axios.patch(`/harvests/${data._id}`, product);
       toast.current.show({
         severity: "success",
         summary: "Sửa hoàn thành",
@@ -74,11 +85,6 @@ function YourComponent({ data, reloadData }) {
       reloadData();
       setProduct({
         ...product,
-        herd: response.data.herd,
-        name: response.data.name,
-        quantity: response.data.quantity,
-        unit: response.data.unit,
-        date: response.data.date,
       });
     } catch (error) {
       console.log("Error update:", error);
@@ -96,26 +102,29 @@ function YourComponent({ data, reloadData }) {
     // }
 
     // Kiểm tra lỗi cho trường name
-    if (!product.name.trim()) {
+    if (!product.name.trim() === "") {
       newErrors.name = "Name is required.";
       isValid = false;
     }
-    if (!product.description.trim()) {
+    if (!product.description.trim() === "") {
       newErrors.description = "Description is required.";
       isValid = false;
     }
     // Kiểm tra lỗi cho trường quantity
-    if (!product.quantity) {
-      newErrors.quantity = "Quantity is required.";
-      isValid = false;
-    } else if (isNaN(product.quantity)) {
-      newErrors.quantity = "Quantity must be a number.";
+    if (!product.quantity || product.quantity <= 0) {
+      newErrors.quantity = "quantity phải lớn hơn 0 và không được để trống";
       isValid = false;
     }
     setErrors(newErrors);
     return isValid;
   };
-  const parsedDate = product.date ? new Date(product.date) : null;
+  let formattedDate = ""; // Declare formattedDate variable
+
+  if (product.date && typeof product.date === "object" && product.date.props) {
+    formattedDate = product.date.props.originalDate;
+  } else {
+    formattedDate = new Date(product.date);
+  }
   return (
     <div>
       <div className="container_update">
@@ -126,7 +135,7 @@ function YourComponent({ data, reloadData }) {
           <Dropdown
             placeholder={data.herd.name}
             type="text"
-            value={selectedHerd}//
+            value={selectedHerd} //
             options={herds}
             optionLabel="herds.name"
             onChange={(e) => {
@@ -191,7 +200,11 @@ function YourComponent({ data, reloadData }) {
             inputId="cal_date"
             name="date"
             style={{ width: "100%" }}
-            value={parsedDate}
+            value={
+              formattedDate instanceof Date
+                ? formattedDate
+                : new Date(formattedDate)
+            }
             onChange={handleChange}
           />
           {errors.date && <small className="p-error">{errors.date}</small>}
@@ -201,7 +214,6 @@ function YourComponent({ data, reloadData }) {
         className="button_Dia"
         id="Save"
         label="Lưu"
-        
         severity="success"
         onClick={handleCreate}
       />

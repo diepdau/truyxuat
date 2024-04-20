@@ -1,10 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import axios from "axios";
 import { Toast } from "primereact/toast";
 import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
+import { Dropdown } from "primereact/dropdown";
 
 const emptyProduct = {
   warehouse_name: "",
@@ -16,10 +17,12 @@ const emptyProduct = {
 };
 
 function YourComponent({ data, reloadData, isUpdate }) {
+  console.log(data);
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
-
+  const [ProductPatchs, setProductPatchs] = useState({});
+  const [selectedProductPatchs, setSelectedProductPatchs] = useState(null);
   const handleChange = (event) => {
     const { value, name } = event.target;
     const newValue =
@@ -31,7 +34,17 @@ function YourComponent({ data, reloadData, isUpdate }) {
       [name]: newValue,
     });
   };
-
+  useEffect(() => {
+    getProductPatchs();
+  }, []);
+  const getProductPatchs = async () => {
+    try {
+      const res = await axios.get(`/product-patchs?&limit=50`);
+      setProductPatchs(res.data.productPatchs);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleCreate = async () => {
     if (!validate()) {
       return;
@@ -85,16 +98,14 @@ function YourComponent({ data, reloadData, isUpdate }) {
       newErrors.delivery_date = new Date();
     }
     if (
-      product.delivery_date &&
-      product.received_date &&
-      product.received_date < product.delivery_date
+      (isValid && product.delivery_date === product.received_date) ||
+      product.delivery_date >= product.received_date
     ) {
-      newErrors.delivery_date =
-        "delivery_date date must be before received_date date.";
-      newErrors.received_date =
-        "received_date date must be after delivery_date date.";
+      newErrors.delivery_date = "Ngày giao phải nhỏ hơn ngày hết hạn";
+      newErrors.received_date = "Ngày nhận phải lớn hơn ngày sản xuất";
       isValid = false;
     }
+
     setErrors(newErrors);
     return isValid;
   };
@@ -136,13 +147,33 @@ function YourComponent({ data, reloadData, isUpdate }) {
             <small className="p-error">{errors.warehouse_address}</small>
           )}
           <h4>Lô hàng</h4>
-          <InputText
+          {/* <InputText
             name="product_patch"
             value={product.product_patch}
             autoResize
             style={{ width: "100%" }}
             onChange={handleChange}
+          /> */}
+
+          <Dropdown
+            placeholder={data ? data.product_patch : ""}
+            type="text"
+            value={selectedProductPatchs}
+            options={ProductPatchs}
+            optionLabel="_id"
+            onChange={(e) => {
+              setSelectedProductPatchs(e.value);
+              setProduct({
+                ...product,
+                product_patch: {
+                  ...product.product_patch,
+                  _id: e.value._id,
+                },
+              });
+            }}
+            style={{ width: "100%" }}
           />
+
           {errors.product_patch && (
             <small className="p-error">{errors.product_patch}</small>
           )}

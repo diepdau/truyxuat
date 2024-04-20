@@ -13,7 +13,7 @@ const emptyProduct = {
   name: "",
   quantity: "",
   unit: null,
-  date: null,
+  date: new Date(),
 };
 const unitOptions = [
   { label: "Cân", value: "Cân" },
@@ -61,10 +61,11 @@ function Harvest_Create({ reloadData, idherd }) {
   };
 
   const handleCreate = async () => {
+    console.log(product);
     if (!validate()) {
       return;
     }
-
+    console.log("xxxxx", product);
     try {
       await axios.post(`/harvests`, product);
       toast.current.show({
@@ -82,35 +83,27 @@ function Harvest_Create({ reloadData, idherd }) {
   const validate = () => {
     let isValid = true;
     const newErrors = {};
-
+    // Validate herd
     if (!product.herd.trim()) {
       newErrors.herd = "Herd is required.";
       isValid = false;
     }
 
+    // Validate name
     if (!product.name.trim()) {
       newErrors.name = "Name is required.";
       isValid = false;
     }
 
-    if (!product.quantity.trim()) {
-      newErrors.quantity = "Quantity is required.";
-      isValid = false;
-    } else if (isNaN(product.quantity)) {
-      newErrors.quantity = "Quantity must be a number.";
-      isValid = false;
-    } else if (parseFloat(product.quantity) < 0) {
-      newErrors.quantity = "Quantity must be a non-negative number.";
+    // Validate quantity
+    if (!product.quantity || product.quantity <= 0) {
+      newErrors.quantity = "Quantity must be greater than 0 and not empty.";
       isValid = false;
     }
 
+    // Validate unit
     if (!product.unit) {
       newErrors.unit = "Unit is required.";
-      isValid = false;
-    }
-
-    if (!product.date) {
-      newErrors.date = "Date is required.";
       isValid = false;
     }
 
@@ -191,9 +184,8 @@ function Harvest_Create({ reloadData, idherd }) {
             name="date"
             style={{ width: "100%" }}
             value={product.date}
-            onChange={(e) => setProduct({ ...product, date: e.value })}
+            onChange={handleChange}
           />
-          {errors.date && <small className="p-error">{errors.date}</small>}
         </div>
       </div>
       <Button

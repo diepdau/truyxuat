@@ -49,6 +49,9 @@ export default function SizeDemo({ idherd }) {
         const data = await res.json();
         data.treatments.forEach((element) => {
           element.date = <DateConverter originalDate={element.date} />;
+          element.retreat_date = (
+            <DateConverter originalDate={element.retreat_date} />
+          );
         });
         setProducts(data.treatments);
         setTotalPages(data.totalPages);

@@ -3,15 +3,22 @@ const DateConverter = ({ originalDate }) => {
   const dateObject = new Date(originalDate);
 
   // Lấy ngày, tháng, năm từ Date object
-  const year = dateObject.getFullYear();
-  const month = (dateObject.getMonth() + 1).toString().padStart(2, "0"); // Lưu ý: tháng bắt đầu từ 0
   const day = dateObject.getDate().toString().padStart(2, "0");
-  const hours = dateObject.getHours().toString().padStart(2, "0");
-  const minutes = dateObject.getMinutes().toString().padStart(2, "0");
-  const seconds = dateObject.getSeconds().toString().padStart(2, "0");
+  const month = (dateObject.getMonth() + 1).toString().padStart(2, "0"); // Lưu ý: tháng bắt đầu từ 0
+  const year = dateObject.getFullYear();
+
+  // Lấy giờ và phút từ Date object
+  let hour = dateObject.getHours();
+  const minute = dateObject.getMinutes().toString().padStart(2, "0");
+
+  // Định dạng giờ sang 12-giờ và thêm 'AM' hoặc 'PM'
+  const ampm = hour >= 12 ? "PM" : "AM";
+  hour = hour % 12;
+  hour = hour ? hour : 12; // Đổi 0 thành 12 nếu là giờ 0 (12:00 AM)
+  const formattedTime = `${hour}:${minute} ${ampm}`;
 
   // Tạo chuỗi ngày tháng mới
-  const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+  const formattedDate = `${day}/${month}/${year} ${formattedTime}`;
   return formattedDate;
 };
 export default DateConverter;
