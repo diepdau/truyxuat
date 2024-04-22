@@ -6,7 +6,7 @@ import { classNames } from "primereact/utils";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../asset/service/user_service.js";
 import Sidebar from "../Sidebar/Sidebar.js";
-export default function Navbar({}) {
+export default function Navbar() {
   const { currentUser, logout } = useContext(AuthContext);
   const userName = currentUser && currentUser.name ? currentUser.name : "Guest";
   const [visible, setVisible] = useState(false);

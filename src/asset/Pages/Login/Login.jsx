@@ -3,7 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 import { AuthContext } from "../../service/user_service.js";
 import { InputText } from "primereact/inputtext";
+
 import axios from "axios";
+export const validateInput = (str = "") => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(str);
+};
+
 const Login = () => {
   const [email, setEmail] = useState(undefined);
   const [password, setPassword] = useState(undefined);
@@ -13,20 +19,18 @@ const Login = () => {
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
+    // setError(null);
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+    // setError(null);
   };
 
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
-        "/auth/login",
-        { email, password }
-      );
-      // alert("ok")
+      await loginApi({ email, password });
       navigate("/danh-sach-dan");
     } catch (err) {
       const er = err.response.data.msg;
@@ -52,7 +56,7 @@ const Login = () => {
         <form>
           <div className="mb-2">
             <label htmlFor="email" className="form-label">
-              Email hoặc số điện thoại
+              Email
             </label>
             <InputText
               id="email"
@@ -61,6 +65,9 @@ const Login = () => {
               name="email"
               onChange={handleEmailChange}
             />
+            {email && !validateInput(email) ? (
+              <p className="error-feedback">Email không đúng định dạng</p>
+            ) : null}
           </div>
           <div className="mb-2">
             <label htmlFor="password" className="form-label">
@@ -75,6 +82,7 @@ const Login = () => {
                 onChange={handlePasswordChange}
               />
             </div>
+
             {err && <p className="error-feedback">{err}</p>}
             <Link to="/forgot-password" className="forgot-password">
               Quên mật khẩu?

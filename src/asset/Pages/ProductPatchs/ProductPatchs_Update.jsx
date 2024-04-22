@@ -15,7 +15,7 @@ const emptyProduct = {
   release_date: "",
 };
 
-function YourComponent({ data, reloadData }) {
+function YourComponent({ data, reloadData, isUpdate }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const [Processors, setProcessors] = useState({});
@@ -41,7 +41,7 @@ function YourComponent({ data, reloadData }) {
   const getProduct = async () => {
     try {
       const res = await axios.get(`/products?limit=60`);
-      setProduct(res.data.products);
+      setProducts(res.data.products);
     } catch (error) {
       console.log(error);
     }
@@ -58,26 +58,41 @@ function YourComponent({ data, reloadData }) {
     if (!validate()) {
       return;
     }
-
-    console.log(product.production_date.props);
-    product.production_date = product.production_date.props
-      ? product.production_date.props.originalDate
-      : product.production_date;
-    product.release_date = product.release_date.props
-      ? product.release_date.props.originalDate
-      : product.release_date;
-    try {
-      const res = await axios.patch(`/product-patchs/${data._id}`, product);
-      toast.current.show({
-        severity: "success",
-        summary: "Sửa hoàn thành",
-        life: 3000,
-      });
-      console.log(res);
-      reloadData();
-      setProduct(product);
-    } catch (error) {
-      console.log("Error update:", error);
+    if (isUpdate) {
+      console.log(product.production_date.props);
+      product.production_date = product.production_date.props
+        ? product.production_date.props.originalDate
+        : product.production_date;
+      product.release_date = product.release_date.props
+        ? product.release_date.props.originalDate
+        : product.release_date;
+      try {
+        const res = await axios.patch(`/product-patchs/${data._id}`, product);
+        toast.current.show({
+          severity: "success",
+          summary: "Sửa hoàn thành",
+          life: 3000,
+        });
+        console.log(res);
+        reloadData();
+        setProduct(product);
+      } catch (error) {
+        console.log("Error update:", error);
+      }
+    } else {
+      try {
+        const res = await axios.post(`/product-patchs`, product);
+        toast.current.show({
+          severity: "success",
+          summary: "Thêm hoàn thành",
+          life: 3000,
+        });
+        console.log(res);
+        reloadData();
+        setProduct(emptyProduct);
+      } catch (error) {
+        console.log("Error update:", error);
+      }
     }
   };
 
@@ -92,15 +107,18 @@ function YourComponent({ data, reloadData }) {
       newErrors.quantity = "quantity phải lớn hơn 0 và không được để trống";
       isValid = false;
     }
-    if (product.product.trim() === "") {
-      newErrors.product = "product is required.";
-      isValid = false;
+    if (!isUpdate) {
+      if (!selectedProduct) {
+        newErrors.product = "product is required.";
+        isValid = false;
+      }
+
+      if (!selectedProcessors) {
+        newErrors.processor = "processor is required.";
+        isValid = false;
+      }
     }
 
-    if (product.processor.trim() === "") {
-      newErrors.processor = "processor is required.";
-      isValid = false;
-    }
     if (
       (isValid && productionDate >= releaseDate) ||
       productionDate === releaseDate
@@ -144,14 +162,19 @@ function YourComponent({ data, reloadData }) {
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <Toast className="toast" ref={toast} />
-          <h4>[Id lô hàng]</h4>
-          <InputText
-            name="_id"
-            value={product._id}
-            autoResize
-            style={{ width: "100%" }}
-            onChange={handleChange}
-          />
+          {isUpdate && (
+            <>
+              <h4>[Id lô hàng]</h4>
+              <InputText
+                disabled
+                name="_id"
+                value={product._id}
+                autoResize
+                style={{ width: "100%" }}
+                onChange={handleChange}
+              />
+            </>
+          )}
 
           <h4>Mô tả</h4>
           <InputTextarea
@@ -242,7 +265,7 @@ function YourComponent({ data, reloadData }) {
       <Button
         className="button_Dia"
         id="Save"
-        label="Lưu"
+        label={isUpdate ? "Lưu" : "Tạo mới"}
         severity="success"
         onClick={handle}
       />

@@ -200,7 +200,7 @@ export default function SizeDemo() {
         <TabView>
           <TabPanel header="Thông tin">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <ProductPatchs_Update data={data} reloadData={reloadData} />
+            <ProductPatchs_Update data={data} reloadData={reloadData} isUpdate={true} />
           </TabPanel>
           <TabPanel header="Xử lý/đóng gói">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
@@ -343,7 +343,7 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <ProductPatchs_Create reloadData={reloadData}  />
+          <ProductPatchs_Update reloadData={reloadData} isUpdate={false}  />
         </Dialog>
       </div>
     </div>
