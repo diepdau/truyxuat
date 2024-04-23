@@ -173,26 +173,37 @@ function YourComponent({ data, reloadData, isUpdate }) {
             style={{ width: "100%" }}
           />
           {errors.herd && <small className="p-error">{errors.herd}</small>}
+          <h4>Trạng thái</h4>
+          <InputText
+            disabled
+            name="isProcessed"
+            value={product.harvest.isProcessed}
+            style={{ width: "100%" }}
+          />
           {isUpdate && (
-            <>
-              <h4>Số lượng</h4>
-              <InputText
-                disabled
-                type="number"
-                name="quantity"
-                value={product.harvest.quantity}
-                style={{ width: "100%" }}
-              />
-
-              <h4>Đơn vị</h4>
-              <Dropdown
-                disabled
-                name="unit"
-                value={product.harvest.unit}
-                placeholder={data ? data.harvest.unit : ""}
-                style={{ width: "100%" }}
-              />
-            </>
+            <div className="input-container">
+              {/* Các phần tử bạn muốn điều chỉnh */}
+              <div style={{ width: "100%", marginRight: "2vh" }}>
+                <h4>Số lượng</h4>
+                <InputText
+                  disabled
+                  type="number"
+                  name="quantity"
+                  value={product.harvest.quantity}
+                  style={{ width: "100%" }}
+                />
+              </div>
+              <div style={{ width: "100%" }}>
+                <h4>Đơn vị</h4>
+                <InputText
+                  disabled
+                  name="unit"
+                  value={product.harvest.unit}
+                  // placeholder={data ? data.harvest.unit : ""}
+                  style={{ width: "100%" }}
+                />
+              </div>
+            </div>
           )}
         </div>
       </div>

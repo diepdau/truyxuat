@@ -19,6 +19,7 @@ const unitOptions = [
   { label: "Cân", value: "Cân" },
   { label: "Kg", value: "Kg" },
   { label: "Túi", value: "Túi" },
+  { label: "Lít", value: "Lít" },
 ];
 
 function Harvest_Create({ reloadData, idherd }) {

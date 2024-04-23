@@ -84,6 +84,7 @@ export default function User() {
             <h1 className="userTitle">Tài khoản</h1>
 
             <Button
+            disabled
               label="Đổi mật khẩu"
               severity="success"
               onClick={changePassword}
@@ -214,6 +215,7 @@ export default function User() {
                     <input type="file" id="file" style={{ display: "none" }} />
                   </div>
                   <Button
+                  disabled
                     type="submit"
                     className="userUpdateButton"
                     label="Chỉnh sửa"

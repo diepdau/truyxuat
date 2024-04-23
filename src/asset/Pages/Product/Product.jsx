@@ -46,8 +46,12 @@ export default function SizeDemo() {
       );
       const data = await response.json();
       data.products.forEach((element) => {
-        element.production_date = <DateConverter originalDate={element.production_date} />;
-        element.expiration_date = <DateConverter originalDate={element.expiration_date} />;
+        element.production_date = (
+          <DateConverter originalDate={element.production_date} />
+        );
+        element.expiration_date = (
+          <DateConverter originalDate={element.expiration_date} />
+        );
       });
       setProducts(data.products);
       setTotalPages(data.totalPages);
@@ -190,7 +194,11 @@ export default function SizeDemo() {
         <TabView>
           <TabPanel header="Thông tin">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Product_Update data={data} reloadData={reloadData} isProductPatchs={true} />
+            <Product_Update
+              data={data}
+              reloadData={reloadData}
+              isProductPatchs={true}
+            />
           </TabPanel>
           <TabPanel header="Hình ảnh">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
@@ -257,32 +265,32 @@ export default function SizeDemo() {
           ></Column>
           <Column
             field="name"
-            header="Tên gói sản phẩm"
+            header="Tên sản phẩm"
             style={{ minWidth: "200px" }}
           ></Column>
           <Column
             field="price"
             header="Giá"
             value={product.price}
-            style={{ minWidth: "10rem" }}
+            style={{ minWidth: "5rem" }}
           ></Column>
           <Column
             field="unit"
             header="Đơn vị tính"
             value={product.unit}
-            style={{ minWidth: "10rem" }}
+            style={{ minWidth: "5rem" }}
           ></Column>
           <Column
             field="production_date"
-            header="Ngày xuất"
+            header="Ngày sản xuất"
             value={product.production_date}
-            style={{ minWidth: "10rem" }}
+            style={{ minWidth: "14rem" }}
           ></Column>
           <Column
             field="expiration_date"
-            header="Ngày xuất"
+            header="Ngày hết hạn"
             value={product.expiration_date}
-            style={{ minWidth: "10rem" }}
+            style={{ minWidth: "14rem" }}
           ></Column>
 
           <Column

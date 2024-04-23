@@ -65,3 +65,19 @@ h4 {
         justify-content: flex-start;
     }
   }
+
+  @media only screen and (max-width: 600px) {
+    /* Điều chỉnh kiểu hiển thị cho màn hình nhỏ hơn hoặc bằng 600px */
+    .input-container {
+      display: block; /* Hiển thị dọc */
+    }
+  }
+  
+  @media only screen and (min-width: 601px) {
+    /* Điều chỉnh kiểu hiển thị cho màn hình lớn hơn 600px */
+    .input-container {
+      display: flex; /* Hiển thị ngang */
+      flex-direction: row; /* Hiển thị các phần tử con ngang */
+      justify-content: space-between; /* Cách biệt các phần tử con */
+    }
+  }

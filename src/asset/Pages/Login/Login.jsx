@@ -16,19 +16,22 @@ const Login = () => {
   const { loginApi } = useContext(AuthContext);
   const [err, setError] = useState(null);
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
-    // setError(null);
+    setError(null);
+    setLoading(false);
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
-    // setError(null);
+    setError(null);
+    setLoading(false);
   };
 
   const handleClick = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await loginApi({ email, password });
       navigate("/danh-sach-dan");
@@ -55,13 +58,14 @@ const Login = () => {
         <h2 className="titlelogin">Đăng nhập</h2>
         <form>
           <div className="mb-2">
-            <label htmlFor="email" className="form-label">
+            {/* <label htmlFor="email" className="form-label">
               Email
-            </label>
+            </label> */}
             <InputText
+              placeholder="Email"
               id="email"
               className="form-control"
-              type="text"
+              type="email"
               name="email"
               onChange={handleEmailChange}
             />
@@ -70,25 +74,31 @@ const Login = () => {
             ) : null}
           </div>
           <div className="mb-2">
-            <label htmlFor="password" className="form-label">
+            {/* <label htmlFor="password" className="form-label">
               Password
-            </label>
+            </label> */}
             <div className="password-input-container">
               <InputText
                 id="password"
                 className="form-control"
                 type="password"
                 name="password"
+                placeholder="Password"
                 onChange={handlePasswordChange}
               />
             </div>
 
-            {err && <p className="error-feedback">{err}</p>}
+            {err && (
+              <p data-testid="error" className="error-feedback">
+                {err}
+              </p>
+            )}
             <Link to="/forgot-password" className="forgot-password">
               Quên mật khẩu?
             </Link>
           </div>
           <button
+            disabled={!email || !password}
             onClick={handleClick}
             className="submit-btn"
             style={{
@@ -97,7 +107,7 @@ const Login = () => {
               cursor: "pointer",
             }}
           >
-            Đăng nhập
+            {loading ? "Loading" : "Đăng nhập"}
           </button>
           <Link to="/register" className="create-account">
             <p>Bạn chưa có tài khoản. </p>

@@ -49,8 +49,7 @@ function Harvest({ isherdharvest }) {
         //     value
         //   )}`
         // );
-        const response = await fetch(
-            `/harvests/herd/${isherdharvest}`);
+        const response = await fetch(`/harvests/herd/${isherdharvest}`);
         const data = await response.json();
         data.harvests.forEach((element) => {
           element.date = <DateConverter originalDate={element.date} />;
@@ -279,15 +278,16 @@ function Harvest({ isherdharvest }) {
             value={product.quantity}
             style={{ minWidth: "5rem" }}
           ></Column>
+
           <Column
             field="unit"
-            header="Đơn vị tính"
+            header="ĐVT"
             value={product.unit}
             style={{ minWidth: "5rem" }}
           ></Column>
           <Column
             field="herd.name"
-            header="Tên đàn (nguồn gốc) "
+            header="Tên đàn"
             value={product.herd.name}
             style={{ minWidth: "10rem" }}
           ></Column>
@@ -296,6 +296,13 @@ function Harvest({ isherdharvest }) {
             header="Ngày thu hoạch"
             value={product.date}
             style={{ minWidth: "10rem" }}
+          ></Column>
+
+          <Column
+            field="isProcessed"
+            header="Trạng thái"
+            value={product.isProcessed}
+            style={{ minWidth: "5rem" }}
           ></Column>
           <Column
             body={actionBodyTemplate}

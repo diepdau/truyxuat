@@ -14,7 +14,7 @@ const emptyProduct = {
     name: "",
   },
   // name: "",
-  // quantity: "",
+  isProcessed: null,
   unit: null,
   date: "",
 };
@@ -23,6 +23,11 @@ const unitOptions = [
   { label: "Cân", value: "Cân" },
   { label: "Kg", value: "Kg" },
   { label: "Túi", value: "Túi" },
+  { label: "Lít", value: "Lít" },
+];
+const isProcessors = [
+  { label: "false", value: 0 },
+  { label: "true", value: 1 },
 ];
 function YourComponent({ data, reloadData }) {
   const [product, setProduct] = useState(data || emptyProduct);
@@ -65,6 +70,12 @@ function YourComponent({ data, reloadData }) {
     setProduct({
       ...product,
       unit: event.value,
+    });
+  };
+  const handleisProcessorChange = (event) => {
+    setProduct({
+      ...product,
+      isProcessed: event.value,
     });
   };
 
@@ -171,30 +182,49 @@ function YourComponent({ data, reloadData }) {
 
         {/* Cột phải */}
         <div style={{ flex: 1 }}>
-          <h4>Số lượng</h4>
-          <InputText
-            name="quantity"
-            type="number"
-            value={product.quantity}
-            autoResize
-            style={{ width: "100%" }}
-            onChange={handleChange}
-          />
-          {errors.quantity && (
-            <small className="p-error">{errors.quantity}</small>
-          )}
-
-          <h4>Đơn vị</h4>
+          <div className="input-container">
+            <div style={{ width: "100%", marginRight: "2vh" }}>
+              <h4>Số lượng</h4>
+              <InputText
+                name="quantity"
+                type="number"
+                value={product.quantity}
+                autoResize
+                onChange={handleChange}
+              />
+              {errors.quantity && (
+                <small className="p-error">{errors.quantity}</small>
+              )}
+            </div>
+            <div style={{ width: "100%" }}>
+              <h4>Đơn vị</h4>
+              <Dropdown
+                name="unit"
+                value={product.unit}
+                options={unitOptions}
+                optionLabel="label"
+                onChange={handleUnitChange}
+                placeholder="Select a unit"
+                style={{ width: "100%" }}
+              />
+            </div>
+          </div>
+          <h4>Trạng thái</h4>
           <Dropdown
-            name="unit"
-            value={product.unit}
-            options={unitOptions}
-            optionLabel="label"
-            onChange={handleUnitChange}
-            placeholder="Select a unit"
+            name="isProcessed"
+            value={product.isProcessed}
+            options={[
+              { label: "True", value: true },
+              { label: "False", value: false },
+            ]}
+            onChange={handleisProcessorChange}
+            placeholder={data?data.isProcessed:""}
             style={{ width: "100%" }}
           />
 
+          {errors.isProcessed && (
+            <small className="p-error">{errors.isProcessed}</small>
+          )}
           <h4>Ngày</h4>
           <Calendar
             inputId="cal_date"

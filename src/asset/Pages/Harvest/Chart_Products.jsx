@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Chart } from "primereact/chart";
 import axios from "axios";
-import "./Harvest.css"
+import "./Harvest.css";
 export default function BasicDemo() {
   const [chartData, setChartData] = useState({});
   const [chartOptions, setChartOptions] = useState({});

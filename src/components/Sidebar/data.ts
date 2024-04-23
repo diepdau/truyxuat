@@ -1,15 +1,16 @@
 export const menu = [
       {
         id: 1,
-        label: 'Danh sách đàn',
-        icon: 'pi pi-exclamation-circle',
-        url: '/danh-sach-dan', 
-      },
-      {
-        id: 2,
+        
         label: 'Trang trại',
         icon: 'pi pi-map-marker',
         url: '/trang-trai',
+      },
+      {
+        id: 2,
+        label: 'Danh sách đàn',
+        icon: 'pi pi-exclamation-circle',
+        url: '/danh-sach-dan', 
       },
       // {
       //   id: 3,
@@ -17,23 +18,12 @@ export const menu = [
       //   icon: 'fa fa-map-marker',
       //   url: '/nhat-ki-cham-soc',
       // },
-      {
-        id: 4,
-        label: 'Bệnh',
-        icon: 'pi pi-book',
-        url: '/benh',
-      },
-      {
-        id: 5,
-        label: 'Thuốc thú y',
-        icon: 'pi pi-table',
-        url: '/thuoc-thu-y',
-      }, 
+      
       {
         id: 10,
-        label: 'Sản phẩm',
-        icon: 'pi pi-fw pi-home',
-        url: '/san-pham',
+        label: 'Phương pháp điều trị',
+        icon: 'pi pi-shield',
+        url: '/dieu-tri',
       },
       {
         id: 6,
@@ -46,6 +36,12 @@ export const menu = [
         label: 'Xử lý đóng gói',
         icon: 'pi pi-cog',
         url: '/dong-goi',
+      },
+      {
+        id: 11,
+        label: 'Sản phẩm',
+        icon: 'pi pi-fw pi-home',
+        url: '/san-pham',
       }, 
       {
         id: 8,
@@ -58,12 +54,17 @@ export const menu = [
         label: 'Phân phối',
         icon: 'pi pi-truck',
         url: '/phan-phoi',
+      },{
+        id: 4,
+        label: 'Bệnh',
+        icon: 'pi pi-book',
+        url: '/benh',
       },
       {
-        id: 11,
-        label: 'Phương pháp điều trị',
-        icon: 'pi pi-shield',
-        url: '/dieu-tri',
-      },
+        id: 5,
+        label: 'Thuốc thú y',
+        icon: 'pi pi-table',
+        url: '/thuoc-thu-y',
+      }, 
     
 ]

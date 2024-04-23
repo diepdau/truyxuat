@@ -280,9 +280,6 @@ export default function SizeDemo() {
             expandedRows={expandedRows}
             onRowToggle={(e) => setExpandedRows(e.data)}
             rowGroupMode="rowspan"
-            groupRowsBy="name"
-            sortMode="single"
-            sortField="name"
             sortOrder={1}
             tableStyle={{ minWidth: "68rem" }}
           >
@@ -306,12 +303,18 @@ export default function SizeDemo() {
               field="harvest.quantity"
               header="Số lượng"
               value={product.harvest.quantity}
-              style={{ minWidth: "10rem" }}
+              style={{ minWidth: "5rem" }}
             ></Column>
             <Column
               field="harvest.unit"
               header="Đơn vị"
               value={product.harvest.unit}
+              style={{ minWidth: "5rem" }}
+            ></Column>
+
+            <Column
+              field="harvest.isProcessed"
+              header="Trạng thái"
               style={{ minWidth: "10rem" }}
             ></Column>
             <Column

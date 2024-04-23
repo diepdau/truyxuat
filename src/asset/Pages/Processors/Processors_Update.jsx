@@ -61,7 +61,7 @@ function YourComponent({ data, reloadData, isProductPatchs }) {
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <Toast className="toast" ref={toast} />
 
-          <h4>Tên</h4>
+          <h4>Nơi xử lý đóng gói</h4>
           <InputText
             name="name"
             value={product.name}

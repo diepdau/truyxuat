@@ -266,7 +266,7 @@ export default function SizeDemo() {
           ></Column>
           <Column
             field="processor.name"
-            header="Lô hàng"
+            header="Nơi xử lí đóng gói"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
@@ -282,7 +282,7 @@ export default function SizeDemo() {
           <Column
             field="release_date"
             header="Ngày phát hành"
-            style={{ minWidth: "10rem" }}
+            style={{ minWidth: "14rem" }}
           ></Column>
           <Column
             body={actionBodyTemplate}
