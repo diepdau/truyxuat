@@ -195,7 +195,7 @@ export default function SizeDemo() {
   };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Manage Records</h4>
+      <h4 className="m-0">Quản lý phân phối</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -231,21 +231,27 @@ export default function SizeDemo() {
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
+          sortable
+
             field="warehouse_name"
             header="Tên nhà kho"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
+          sortable
             field="warehouse_address"
             header="Địa chỉ kho"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
+          sortable
+
             field="stores"
             header="Cửa hàng"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
+          sortable
             field="product_patch"
             header="Lô hàng"
             style={{ minWidth: "10rem" }}

@@ -33,7 +33,6 @@ export default function CulivationLogs_Herd({ idherd }) {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
 
-  
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
@@ -178,7 +177,7 @@ export default function CulivationLogs_Herd({ idherd }) {
       <>
         <TabView>
           <TabPanel header="Thông tin">
-            <CultivationLogs_Update reloadData={reloadData} data={data}  />
+            <CultivationLogs_Update reloadData={reloadData} data={data} />
           </TabPanel>
         </TabView>
       </>
@@ -195,7 +194,7 @@ export default function CulivationLogs_Herd({ idherd }) {
   };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0"> Quản lý chăm sóc</h4>
+      <h4 className="m-0">Quản lý chăm sóc</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -225,18 +224,21 @@ export default function CulivationLogs_Herd({ idherd }) {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          tableStyle={{ minWidth: "64rem" }}
+          tableStyle={{ minWidth: "60rem" }}
           // header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
+          sortable
             field="name"
             header="Tên hoạt động"
             value={product.name}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
+          sortable
+          
             field="date"
             header="Ngày"
             style={{ minWidth: "10rem" }}

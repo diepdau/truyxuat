@@ -209,7 +209,7 @@ export default function SizeDemo() {
   };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Manage Records</h4>
+      <h4 className="m-0">Quản lý đàn</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -230,58 +230,18 @@ export default function SizeDemo() {
           // right={rightToolbarTemplate}
         ></Toolbar>
 
-        <DataTable
-          value={products}
-          selectionMode={"row"}
-          selection={selectedProducts}
-          onSelectionChange={(e) => setSelectedProducts(e.value)}
-          editMode="row"
-          dataKey="_id"
-          tableStyle={{ minWidth: "68rem" }}
-          header={header}
-        >
+        <DataTable value={products}  selectionMode={"row"} selection={selectedProducts}  onSelectionChange={(e) => setSelectedProducts(e.value)}
+          editMode="row" dataKey="_id" tableStyle={{ minWidth: "68rem" }} header={header}  >
           <Column selectionMode="multiple" exportable={true}></Column>
-          <Column
-            field="name"
-            header="Tên đàn"
-            sortable
-            value={product.name}
-            style={{ minWidth: "10rem" }}
-          ></Column>
-          <Column
-            field="member_count"
-            header="Số lượng"
-            sortable
-            value={product.member_count}
-            style={{ minWidth: "10rem" }}
-          ></Column>
-          <Column
-            field="date"
-            header="Ngày tạo"
-            value={product.start_date}
-            style={{ width: "20%" }}
-          ></Column>
-          <Column
-            header="Nhóm"
-            sortField="category.name"
-            filterField="category"
-            // showFilterMatchModes={false}
-            style={{ minWidth: "14rem" }}
-            body={representativeBodyTemplate}
-            // filter
-            // filterElement={representativeFilterTemplate}
-          />
-          <Column
-            body={actionBodyTemplate}
-            headerStyle={{ width: "10%", minWidth: "4rem" }}
-            bodyStyle={{ left: "0" }}
-          ></Column>
+          <Column field="name"  header="Tên đàn" sortable  value={product.name}  style={{ minWidth: "10rem" }} ></Column>
+          <Column field="member_count"  header="Số lượng" sortable  value={product.member_count} style={{ minWidth: "10rem" }}></Column>
+          <Column field="date" sortable header="Ngày tạo" value={product.start_date}style={{ width: "20%" }}></Column>
+          <Column header="Nhóm" sortable sortField="category.name" filterField="category" style={{ minWidth: "14rem" }} body={representativeBodyTemplate}/>
+          <Column body={actionBodyTemplate} headerStyle={{ width: "10%", minWidth: "4rem" }}  bodyStyle={{ left: "0" }} ></Column>
         </DataTable>
         <Paginator
-          first={(currentPage - 1) * currentLimit}
-          totalRecords={totalPages * currentLimit} // Assuming you set the correct total number of records here
-          rows={currentLimit}
-          rowsPerPageOptions={[5, 10, 20]}
+          first={(currentPage - 1) * currentLimit}  totalRecords={totalPages * currentLimit} 
+          rows={currentLimit}  rowsPerPageOptions={[5, 10, 20]}
           onPageChange={onPageChange}
         />
         <Dialog

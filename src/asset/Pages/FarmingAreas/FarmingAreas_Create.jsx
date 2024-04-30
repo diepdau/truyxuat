@@ -116,7 +116,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           {/* Cột trái */}
 
-          <h4>Trang trại</h4>
+          <h4>Tên cơ sở</h4>
           <InputTextarea
             name="name"
             value={formData.name}

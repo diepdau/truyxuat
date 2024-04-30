@@ -150,11 +150,7 @@ function YourComponent({ data, reloadData, isProductPatchs }) {
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <h4>Tên</h4>
-          <InputText
-            name="name"
-            value={product.name}
-            autoResize
-            style={{ width: "100%" }}
+          <InputText  name="name" value={product.name}  autoResize style={{ width: "100%" }}
             onChange={handleChange}
           />
           {errors.name && <small className="p-error">{errors.name}</small>}

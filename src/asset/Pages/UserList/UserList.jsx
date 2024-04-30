@@ -200,6 +200,7 @@ export default function SizeDemo() {
         >
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
+            sortable
             field="first_name"
             header="Họ"
             value={product.first_name}
@@ -207,6 +208,7 @@ export default function SizeDemo() {
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
+            sortable
             field="last_name"
             header="Tên"
             value={product.last_name}
@@ -214,6 +216,7 @@ export default function SizeDemo() {
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
+            sortable
             field="email"
             header="Email"
             value={product.email}

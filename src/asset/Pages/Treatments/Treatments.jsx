@@ -218,7 +218,7 @@ export default function SizeDemo({ idherd }) {
   };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Manage Records</h4>
+      <h4 className="m-0">Quản lý điều trị</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -254,30 +254,35 @@ export default function SizeDemo({ idherd }) {
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
-            field="herd.name"
+            sortable
+            field="herd"
             header="Đàn"
             value={product.herd?.name}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
+            sortable
             field="type"
             header="Loại"
             value={product.type}
             style={{ minWidth: "5rem" }}
           ></Column>
           <Column
+            sortable
             field="product"
             header="Thuốc sử dụng"
             value={product.product}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
+            sortable
             field="amount"
             header="Liều lượng"
             value={product.amount}
             style={{ minWidth: "5rem" }}
           ></Column>
           <Column
+            sortable
             field="mode"
             header="Hình thức điều trị"
             value={product.mode}

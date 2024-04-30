@@ -189,7 +189,11 @@ export default function FarmmingAreas() {
             />
           </TabPanel>
           <TabPanel header="Hình ảnh">
-            <ImageUploader uploadUrl={url} images={data.images} reloadData={reloadData}/>
+            <ImageUploader
+              uploadUrl={url}
+              images={data.images}
+              reloadData={reloadData}
+            />
           </TabPanel>
         </TabView>
       </>
@@ -205,7 +209,7 @@ export default function FarmmingAreas() {
   };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Manage Records</h4>
+      <h4 className="m-0">Quản lý trang trại</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -241,18 +245,21 @@ export default function FarmmingAreas() {
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
+            sortable
             field="name"
-            header="Tên trang trại"
+            header="Tên cơ sở"
             value={product.name}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
+            sortable
             field="area"
-            header="Vùng"
+            header="Diện tích"
             value={product.area}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
+            sortable
             field="address"
             header="Địa chỉ"
             value={product.address}

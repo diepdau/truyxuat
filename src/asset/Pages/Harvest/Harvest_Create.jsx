@@ -34,7 +34,7 @@ function Harvest_Create({ reloadData, idherd }) {
   }, []);
   const getHerd = async () => {
     try {
-      const res = await axios.get(`/herds`);
+      const res = await axios.get(`/herds?limit=50`);
       setHerds(res.data.herds);
       if (idherd) {
         setProduct((prevProduct) => ({
@@ -86,25 +86,25 @@ function Harvest_Create({ reloadData, idherd }) {
     const newErrors = {};
     // Validate herd
     if (!product.herd.trim()) {
-      newErrors.herd = "Herd is required.";
+      newErrors.herd = "Đàn là bắt buộc.";
       isValid = false;
     }
 
     // Validate name
     if (!product.name.trim()) {
-      newErrors.name = "Name is required.";
+      newErrors.name = "Tên là bắt buộc.";
       isValid = false;
     }
 
     // Validate quantity
     if (!product.quantity || product.quantity <= 0) {
-      newErrors.quantity = "Quantity must be greater than 0 and not empty.";
+      newErrors.quantity = "Số lượng là bắt buộc và lớn hơn 0";
       isValid = false;
     }
 
     // Validate unit
     if (!product.unit) {
-      newErrors.unit = "Unit is required.";
+      newErrors.unit = "Đơn vị tính là bắt buộc.";
       isValid = false;
     }
 
@@ -119,7 +119,7 @@ function Harvest_Create({ reloadData, idherd }) {
         <div style={{ flex: 1 }}>
           <Toast className="toast" ref={toast} />
 
-          <h4>Herds</h4>
+          <h4>Đàn</h4>
           {idherd ? (
             <InputText
               disabled
@@ -144,7 +144,7 @@ function Harvest_Create({ reloadData, idherd }) {
               {errors.herd && <small className="p-error">{errors.herd}</small>}
             </>
           )}
-          <h4>Name</h4>
+          <h4>Tên</h4>
           <InputTextarea
             name="name"
             value={product.name}
@@ -156,7 +156,7 @@ function Harvest_Create({ reloadData, idherd }) {
 
         {/* Cột phải */}
         <div style={{ flex: 1 }}>
-          <h4>Quantity</h4>
+          <h4>Số lượng</h4>
           <InputText
             type="number"
             name="quantity"
@@ -170,7 +170,7 @@ function Harvest_Create({ reloadData, idherd }) {
 
           <h4>Unit</h4>
           <Dropdown
-            name="unit"
+            name="Đơn vị tính"
             value={product.unit}
             options={unitOptions}
             onChange={handleUnitChange}
@@ -179,7 +179,7 @@ function Harvest_Create({ reloadData, idherd }) {
           />
           {errors.unit && <small className="p-error">{errors.unit}</small>}
 
-          <h4>Date</h4>
+          <h4>Ngày</h4>
           <Calendar
             inputId="cal_date"
             name="date"

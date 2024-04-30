@@ -59,9 +59,12 @@ export default function SizeDemo() {
       );
       const data = await response.json();
       data.productPatchs.forEach((element) => {
-        element.production_date = <DateConverter originalDate={element.production_date} />;
-        element.release_date = <DateConverter originalDate={element.release_date} />;
-
+        element.production_date = (
+          <DateConverter originalDate={element.production_date} />
+        );
+        element.release_date = (
+          <DateConverter originalDate={element.release_date} />
+        );
       });
       setProducts(data.productPatchs);
       setTotalPages(data.totalPages);
@@ -80,7 +83,6 @@ export default function SizeDemo() {
   };
   const reloadData = () => {
     fetchData();
-
   };
   const leftToolbarTemplate = () => {
     return (
@@ -170,10 +172,10 @@ export default function SizeDemo() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-          <i
-            className="pi pi-trash"
-            onClick={() => confirmDeleteProduct(rowData)}
-          ></i>
+        <i
+          className="pi pi-trash"
+          onClick={() => confirmDeleteProduct(rowData)}
+        ></i>
       </React.Fragment>
     );
   };
@@ -188,7 +190,12 @@ export default function SizeDemo() {
   };
   const imageBodyTemplate = (rowData) => {
     return (
-      <Image src={rowData.product.qrcode}className="shadow-2 border-round" height="60"preview/>
+      <Image
+        src={rowData.product.qrcode}
+        className="shadow-2 border-round"
+        height="60"
+        preview
+      />
     );
   };
   const [expandedRows, setExpandedRows] = useState(null);
@@ -200,18 +207,34 @@ export default function SizeDemo() {
         <TabView>
           <TabPanel header="Thông tin">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <ProductPatchs_Update data={data} reloadData={reloadData} isUpdate={true} />
+            <ProductPatchs_Update
+              data={data}
+              reloadData={reloadData}
+              isUpdate={true}
+            />
           </TabPanel>
           <TabPanel header="Xử lý/đóng gói">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Processors_Update data={data.processor} reloadData={reloadData} isProductPatchs={false}/>
+            <Processors_Update
+              data={data.processor}
+              reloadData={reloadData}
+              isProductPatchs={false}
+            />
           </TabPanel>
           <TabPanel header="Sản phẩm">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Product_Update data={data.product} reloadData={reloadData} isProductPatchs={false} />
+            <Product_Update
+              data={data.product}
+              reloadData={reloadData}
+              isProductPatchs={false}
+            />
           </TabPanel>
           <TabPanel header="Hình ảnh">
-            <ImageComponent uploadUrl={url} images={data.images} reloadData={reloadData}  />
+            <ImageComponent
+              uploadUrl={url}
+              images={data.images}
+              reloadData={reloadData}
+            />
           </TabPanel>
         </TabView>
       </>
@@ -227,7 +250,7 @@ export default function SizeDemo() {
   };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Manage Records</h4>
+      <h4 className="m-0">Quản lý lô sản phẩm</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -262,19 +285,25 @@ export default function SizeDemo() {
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
-          <Column field="product.qrcode" header="Qrcode" body={imageBodyTemplate}
+          <Column
+            field="product.qrcode"
+            header="Qrcode"
+            body={imageBodyTemplate}
           ></Column>
           <Column
+            sortable
             field="processor.name"
             header="Nơi xử lí đóng gói"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
+            sortable
             field="product.name"
             header="Sản phẩm"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
+            sortable
             field="quantity"
             header="Số lượng"
             style={{ minWidth: "10rem" }}
@@ -343,7 +372,7 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <ProductPatchs_Update reloadData={reloadData} isUpdate={false}  />
+          <ProductPatchs_Update reloadData={reloadData} isUpdate={false} />
         </Dialog>
       </div>
     </div>

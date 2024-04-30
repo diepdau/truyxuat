@@ -241,6 +241,8 @@ export default function SizeDemo() {
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
+          sortable
+
             field="name"
             header="Bệnh"
             value={product.name}

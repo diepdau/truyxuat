@@ -27,17 +27,11 @@ function YourComponent({ data, reloadData, isProductPatchs }) {
   };
 
   const handleCreate = async () => {
-    if (!validate()) {
-      return;
-    }
-
+    if (!validate()) {return; }
+    
     try {
       const response = await axios.patch(`/processors/${data._id}`, product);
-      toast.current.show({
-        severity: "success",
-        summary: "Sửa hoàn thành",
-        life: 3000,
-      });
+      toast.current.show({severity: "success", summary: "Sửa hoàn thành",life: 3000, });
       reloadData();
       setProduct(response.data);
     } catch (error) {

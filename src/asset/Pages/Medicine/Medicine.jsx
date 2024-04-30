@@ -149,7 +149,10 @@ export default function SizeDemo() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-          <i className="pi pi-trash" onClick={() => confirmDeleteProduct(rowData)} ></i>
+        <i
+          className="pi pi-trash"
+          onClick={() => confirmDeleteProduct(rowData)}
+        ></i>
       </React.Fragment>
     );
   };
@@ -178,7 +181,11 @@ export default function SizeDemo() {
           </TabPanel>
           <TabPanel header="Hình ảnh">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Image_Upload uploadUrl={url} images={data.images} reloadData={reloadData}/>
+            <Image_Upload
+              uploadUrl={url}
+              images={data.images}
+              reloadData={reloadData}
+            />
           </TabPanel>
         </TabView>
       </>
@@ -231,6 +238,7 @@ export default function SizeDemo() {
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
+            sortable
             field="name"
             header="Tên thuốc"
             style={{ minWidth: "10rem" }}
@@ -293,7 +301,7 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <Medisease_Create    reloadData={reloadData}  isUpdate={false} />
+          <Medisease_Create reloadData={reloadData} isUpdate={false} />
         </Dialog>
       </div>
     </div>

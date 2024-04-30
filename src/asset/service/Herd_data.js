@@ -21,6 +21,7 @@ const handleCreate = async (data) => {
       console.log("Error:", error);
     }
   };
+  
 const handleDelete = async (product) => {
     try {
       await axios.delete(`/herds/${product._id}`, product);

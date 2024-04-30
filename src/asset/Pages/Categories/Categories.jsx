@@ -199,7 +199,7 @@ export default function FarmmingAreas() {
   };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Manage Records</h4>
+      <h4 className="m-0">Quản lý nhóm</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -235,15 +235,10 @@ export default function FarmmingAreas() {
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
+          sortable
             field="name"
             header="Tên nhóm"
             value={product.name}
-            style={{ minWidth: "10rem" }}
-          ></Column>
-          <Column
-            field="slug"
-            header="Slug"
-            value={product.slug}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column

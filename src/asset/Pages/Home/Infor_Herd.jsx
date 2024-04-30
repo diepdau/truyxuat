@@ -46,7 +46,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
     fetchDataCategory();
   }, []);
   const fetchDataCategory = async () => {
-    const categoryList = await axios.get("/categories");
+    const categoryList = await axios.get("/categories?limit=100");
     setcategories(categoryList.data.categories);
   };
   const fetchDataFarm = async () => {

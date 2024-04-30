@@ -12,6 +12,7 @@ import Processors_Create from "./Processors_Create.jsx";
 import Image_Upload from "../../../components/Images/Image.jsx";
 import "./Processors.css";
 import { Paginator } from "primereact/paginator";
+import { classNames } from "primereact/utils";
 import DateConverter from "../../../components/Date/Date.jsx";
 const emptyProduct = {
   _id: null,
@@ -190,6 +191,16 @@ export default function SizeDemo() {
       console.log("Error update:", error);
     }
   };
+  const isProcessedBodyTemplate = (rowData) => {
+    return (
+      <i
+        className={classNames("pi", {
+          "text-green-500 pi-check-circle": rowData.harvest.isProcessed,
+          "text-red-500 pi-times-circle": !rowData.harvest.isProcessed,
+        })}
+      ></i>
+    );
+  };
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
@@ -227,7 +238,7 @@ export default function SizeDemo() {
   };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Manage Records</h4>
+      <h4 className="m-0">Xử lý đóng gói</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -286,6 +297,7 @@ export default function SizeDemo() {
             <Column expander={allowExpansion} style={{ width: "5rem" }} />
 
             <Column
+              sortable
               field="name"
               editor={(options) => Name(options)}
               header="Tên gói sản phẩm"
@@ -294,30 +306,42 @@ export default function SizeDemo() {
             ></Column>
 
             <Column
+              sortable
               field="harvest.name"
               header="Tên sản phẩm"
               value={product.harvest.name}
               style={{ minWidth: "10rem" }}
             ></Column>
             <Column
+              sortable
               field="harvest.quantity"
               header="Số lượng"
               value={product.harvest.quantity}
               style={{ minWidth: "5rem" }}
             ></Column>
             <Column
+              sortable
               field="harvest.unit"
               header="Đơn vị"
               value={product.harvest.unit}
               style={{ minWidth: "5rem" }}
             ></Column>
-
             <Column
+              field="harvest.isProcessed"
+              header="Trạng thái"
+              dataType="boolean"
+              bodyClassName="text-center"
+              style={{ minWidth: "8rem" }}
+              body={isProcessedBodyTemplate}
+            />
+            <Column
+              sortable
               field="harvest.isProcessed"
               header="Trạng thái"
               style={{ minWidth: "10rem" }}
             ></Column>
             <Column
+              sortable
               field="date"
               header="Ngày xuất"
               value={product.date}

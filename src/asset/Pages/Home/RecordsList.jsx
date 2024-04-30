@@ -14,6 +14,8 @@ import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
 import { Paginator } from "primereact/paginator";
 import DateConverter from "../../../components/Date/Date";
+import DateDifferenceComponent from "./DateBirth.jsx";
+
 const emptyProduct = {
   _id: null,
   name: "",
@@ -216,7 +218,7 @@ export default function SizeDemo({ herdId }) {
   };
 
   //Xử lý thu hoạch chưa
-
+  
   const Birth_weight = (options) => {
     return (
       <InputText
@@ -312,7 +314,7 @@ export default function SizeDemo({ herdId }) {
   };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Manage Records</h4>
+      <h4 className="m-0">Quản lý danh sách con</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -323,6 +325,10 @@ export default function SizeDemo({ herdId }) {
       </span>
     </div>
   );
+  const DateTime = new Date();
+
+  const DateTime1 = <DateConverter originalDate={"2024-04-28T17:00:00.000Z"}/>;
+  console.log("opp", DateTime1.props.originalDate);
   return (
     <div>
       <Toast className="toast" ref={toast} />
@@ -343,13 +349,14 @@ export default function SizeDemo({ herdId }) {
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey="_id"
-          tableStyle={{ minWidth: "68rem" }}
+          tableStyle={{ minWidth: "64rem" }}
           // header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
 
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
+            sortable
             field="name"
             header="Tên"
             value={product.name}
@@ -365,18 +372,20 @@ export default function SizeDemo({ herdId }) {
             editor={(options) => Birth_date(options)}
             style={{ minWidth: "5rem" }}
           ></Column>
+          {/* <Column
+            sortable
+            field="birth_date"
+            header="Tháng tuổi"
+            value={}
+            editor={(options) => Birth_date(options)}
+            style={{ minWidth: "5rem" }}
+          ></Column> */}
           <Column
             sortable
             field="birth_weight"
             header="Cân nặng"
             value={product.birth_weight}
             editor={(options) => Birth_weight(options)}
-            style={{ minWidth: "5rem" }}
-          ></Column>
-          <Column
-            field="is_harvested"
-            header="Thu hoạch"
-            value={product.is_harvested}
             style={{ minWidth: "5rem" }}
           ></Column>
           <Column
@@ -397,7 +406,7 @@ export default function SizeDemo({ herdId }) {
           rowsPerPageOptions={[5, 10, 20]}
           onPageChange={onPageChange}
         /> */}
-
+        
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}

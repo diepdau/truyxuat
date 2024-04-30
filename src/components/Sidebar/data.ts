@@ -2,7 +2,7 @@ export const menu = [
       {
         id: 1,
         
-        label: 'Trang trại',
+        label: 'Danh sách cơ sở',
         icon: 'pi pi-map-marker',
         url: '/trang-trai',
       },
@@ -19,33 +19,28 @@ export const menu = [
       //   url: '/nhat-ki-cham-soc',
       // },
       
-      {
-        id: 10,
-        label: 'Phương pháp điều trị',
-        icon: 'pi pi-shield',
-        url: '/dieu-tri',
-      },
+     
       {
         id: 6,
         label: 'Thu hoạch',
         icon: "pi pi-shopping-cart",
         url: '/thu-hoach',
       }, 
-      {
-        id: 7,
-        label: 'Xử lý đóng gói',
-        icon: 'pi pi-cog',
-        url: '/dong-goi',
-      },
-      {
-        id: 11,
-        label: 'Sản phẩm',
-        icon: 'pi pi-fw pi-home',
-        url: '/san-pham',
-      }, 
+      // {
+      //   id: 7,
+      //   label: 'Xử lý đóng gói',
+      //   icon: 'pi pi-cog',
+      //   url: '/dong-goi',
+      // },
+      // {
+      //   id: 11,
+      //   label: 'Sản phẩm',
+      //   icon: 'pi pi-fw pi-home',
+      //   url: '/san-pham',
+      // }, 
       {
         id: 8,
-        label: 'Lô sản phẩm',
+        label: 'Đóng gói',
         icon: 'pi pi-inbox',
         url: '/lo-san-pham',
       },
@@ -66,5 +61,12 @@ export const menu = [
         icon: 'pi pi-table',
         url: '/thuoc-thu-y',
       }, 
+
+       {
+        id: 10,
+        label: 'Điều trị',
+        icon: 'pi pi-shield',
+        url: '/dieu-tri',
+      },
     
 ]

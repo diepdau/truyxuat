@@ -58,7 +58,6 @@ export default function BasicDemo() {
         console.log("Error fetching data:", error);
       }
     };
-
     // Gọi hàm fetchData để lấy dữ liệu từ server khi component được render
     fetchData();
   }, []);

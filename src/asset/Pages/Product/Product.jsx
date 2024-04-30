@@ -222,7 +222,7 @@ export default function SizeDemo() {
   };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Manage Product</h4>
+      <h4 className="m-0">Quản lý sản phẩm</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -264,17 +264,20 @@ export default function SizeDemo() {
             body={imageBodyTemplate}
           ></Column>
           <Column
+            sortable
             field="name"
             header="Tên sản phẩm"
             style={{ minWidth: "200px" }}
           ></Column>
           <Column
+            sortable
             field="price"
             header="Giá"
             value={product.price}
             style={{ minWidth: "5rem" }}
           ></Column>
           <Column
+            sortable
             field="unit"
             header="Đơn vị tính"
             value={product.unit}

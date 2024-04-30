@@ -8,7 +8,6 @@ import ImageUploader from "../../../components/Images/Image";
 const emptyData = {
   name: "",
   description: "",
-  slug: "",
 };
 
 function YourNewComponent({ reloadData, data, isUpdate }) {
@@ -58,19 +57,16 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
     const newErrors = {};
 
     if (!formData.name) {
-      newErrors.name = "Name is required.";
+      newErrors.name = "Tên nhóm là bắt buộc.";
       isValid = false;
     }
 
     if (!formData.description) {
-      newErrors.description = "Description is required.";
+      newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
     }
 
-    if (!formData.slug) {
-      newErrors.slug = "Slug is required.";
-      isValid = false;
-    } 
+
 
    
     setErrors(newErrors);
@@ -92,14 +88,6 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
             onChange={handleChange}
           />
           {errors.name && <small className="p-error">{errors.name}</small>}
-          <h4>Slug</h4>
-          <InputTextarea
-            name="slug"
-            value={formData.slug}
-            style={{ width: "100%" }}
-            onChange={handleChange}
-          />
-          {errors.slug && <small className="p-error">{errors.slug}</small>}
           <h4>Mô tả</h4>
           <InputTextarea
             name="description"

@@ -73,38 +73,50 @@ function YourComponent({ data, reloadData, isUpdate }) {
     });
   };
 
-  const handleCreate = async () => {
-    if (!validate()) {
-      return;
-    }
+  // const handleCreate = async () => {
+  //   if (!validate()) {
+  //     return;
+  //   }
 
+  //   try {
+  //     if (isUpdate) {
+  //       product.date = product.date.props
+  //         ? product.date.props.originalDate
+  //         : product.date;
+  //       product.retreat_date = product.retreat_date.props
+  //         ? product.retreat_date.props.originalDate
+  //         : product.retreat_date;
+  //       await axios.patch(`/treatments/${data._id}`, product);
+  //       toast.current.show({
+  //         severity: "success",
+  //         summary: "Cập nhật hoàn thành",
+  //         life: 3000,
+  //       });
+  //       setProduct(product);
+  //     } else {
+  //       await axios.post(`/treatments`, product);
+  //       toast.current.show({
+  //         severity: "success",
+  //         summary: "Thêm hoàn thành",
+  //         life: 3000,
+  //       });
+  //       setProduct(emptyProduct);
+  //     }
+  //     reloadData();
+  //   } catch (error) {
+  //     console.log("Error update:", error);
+  //   }
+  // };
+
+  const handleCreate = async () => {
+    if (!validate()) {return;}
     try {
-      if (isUpdate) {
-        product.date = product.date.props
-          ? product.date.props.originalDate
-          : product.date;
-        product.retreat_date = product.retreat_date.props
-          ? product.retreat_date.props.originalDate
-          : product.retreat_date;
-        await axios.patch(`/treatments/${data._id}`, product);
-        toast.current.show({
-          severity: "success",
-          summary: "Cập nhật hoàn thành",
-          life: 3000,
-        });
-        setProduct(product);
-      } else {
-        await axios.post(`/treatments`, product);
-        toast.current.show({
-          severity: "success",
-          summary: "Thêm hoàn thành",
-          life: 3000,
-        });
-        setProduct(emptyProduct);
-      }
+      await axios.post(`/treatments`, product);
+      toast.current.show({severity: "success", summary: "Thêm hoàn thành",life: 3000, });
       reloadData();
+      setProduct(emptyProduct);
     } catch (error) {
-      console.log("Error update:", error);
+      console.log("Error :", error);
     }
   };
 
@@ -178,7 +190,8 @@ function YourComponent({ data, reloadData, isUpdate }) {
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <h4>Đàn</h4>
           <Dropdown
-            placeholder={herdName}
+            // placeholder={herdName}
+            placeholder="CuuKelantan_03032024_3"
             type="text"
             value={selectedHerd}
             options={herds}

@@ -91,7 +91,8 @@ function YourComponent(reloadData) {
         summary: "Thêm hoàn thành",
         life: 3000,
       });
-      setProduct(emptyProduct);reloadData();
+      setProduct(emptyProduct);
+      reloadData();
     } catch (error) {
       console.log("Error update:", error);
     }
