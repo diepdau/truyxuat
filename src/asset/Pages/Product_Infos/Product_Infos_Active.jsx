@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import axios from "axios";
@@ -13,7 +13,13 @@ const emptyProduct = {
   storage_method: "",
 };
 
-function YourComponent({ data, reloadData, isUpdate, isProcessors }) {
+function YourComponent({
+  data,
+  reloadData,
+  isUpdate,
+  isProcessors,
+  id_product_info,
+}) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
@@ -23,6 +29,21 @@ function YourComponent({ data, reloadData, isUpdate, isProcessors }) {
       ...product,
       [name]: value,
     });
+  };
+
+  useEffect(() => {
+    fetchData();
+  });
+
+  const fetchData = async () => {
+    if (id_product_info) {
+      try {
+        const a = await axios.get(`/product-infos/${id_product_info}`);
+        setProduct(a.data.productInfo);
+      } catch (error) {
+        console.error("Error", error);
+      }
+    }
   };
   const handleCreate = async () => {
     if (!validate()) {
@@ -79,7 +100,6 @@ function YourComponent({ data, reloadData, isUpdate, isProcessors }) {
     setErrors(newErrors);
     return isValid;
   };
-
   return (
     <div>
       <Toast className="toast" ref={toast} />
@@ -89,7 +109,6 @@ function YourComponent({ data, reloadData, isUpdate, isProcessors }) {
           <InputText
             name="name"
             value={product.name}
-            autoResize
             style={{ width: "100%" }}
             onChange={handleChange}
           />
@@ -97,9 +116,9 @@ function YourComponent({ data, reloadData, isUpdate, isProcessors }) {
 
           <h4>Phương pháp bảo quản</h4>
           <InputTextarea
+            autoResize
             name="storage_method"
             value={product.storage_method}
-            autoResize
             style={{ width: "100%" }}
             onChange={handleChange}
           />
@@ -119,9 +138,9 @@ function YourComponent({ data, reloadData, isUpdate, isProcessors }) {
         <div style={{ flex: 1 }}>
           <h4>Mô tả</h4>
           <InputTextarea
+            autoResize
             name="description"
             value={product.description}
-            autoResize
             style={{ width: "100%" }}
             onChange={handleChange}
           />

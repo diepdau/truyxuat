@@ -17,7 +17,7 @@ import DateConverter from "../../../components/Date/Date.jsx";
 import Harvest_Update from "../Harvest/Harvest_Update.jsx";
 import ProductPatchs_Create from "./ProductPatchs_Create.jsx";
 import { Image } from "primereact/image";
-import Product_Infos_Actives from "../Product_Infos/Product_Infos_Active.jsx"
+import Product_Infos_Actives from "../Product_Infos/Product_Infos_Active.jsx";
 const emptyProduct = {
   _id: null,
 };
@@ -177,7 +177,7 @@ export default function SizeDemo() {
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
     var url = `/processors/upload/${product._id}`;
-    console.log(data);
+    console.log(data.product_info);
     return (
       <>
         <TabView>
@@ -200,9 +200,10 @@ export default function SizeDemo() {
           <TabPanel header="Thông tin sản phẩm">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
             <Product_Infos_Actives
-              data={data.harvest}
+              // data={data}
               reloadData={reloadData}
               isProcessors={true}
+              id_product_info={data.product_info}
             />
           </TabPanel>
 
@@ -297,7 +298,7 @@ export default function SizeDemo() {
             header="Số lượng"
             style={{ minWidth: "10rem" }}
           ></Column>
-         
+
           <Column
             field="production_date"
             header="Ngày sản xuất"

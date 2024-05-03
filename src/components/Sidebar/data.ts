@@ -21,7 +21,7 @@ export const menu = [
       
      
       {
-        id: 6,
+        id: 3,
         label: 'Thu hoạch',
         icon: "pi pi-shopping-cart",
         url: '/thu-hoach',
@@ -39,31 +39,31 @@ export const menu = [
       //   url: '/san-pham',
       // }, 
       {
-        id: 8,
+        id: 4,
         label: 'Đóng gói',
         icon: 'pi pi-inbox',
         url: '/lo-san-pham',
       },
       {
-        id: 9,
+        id: 5,
         label: 'Phân phối',
         icon: 'pi pi-truck',
         url: '/phan-phoi',
       },{
-        id: 4,
+        id: 6,
         label: 'Bệnh',
         icon: 'pi pi-book',
         url: '/benh',
       },
       {
-        id: 5,
+        id: 7,
         label: 'Thuốc thú y',
         icon: 'pi pi-table',
         url: '/thuoc-thu-y',
       }, 
 
        {
-        id: 10,
+        id: 8,
         label: 'Điều trị',
         icon: 'pi pi-shield',
         url: '/dieu-tri',
