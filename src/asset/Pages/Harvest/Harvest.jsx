@@ -8,7 +8,7 @@ import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
-import { classNames } from 'primereact/utils';
+import { classNames } from "primereact/utils";
 import { TabView, TabPanel } from "primereact/tabview";
 import Harvest_Update from "./Harvest_Update.jsx";
 import Harvest_Create from "./Harvest_Create.jsx";
@@ -16,7 +16,7 @@ import Image from "../../../components/Images/Image.jsx";
 import Chart_Herds from "./Chart_Herds.jsx";
 import Chart_Products from "./Chart_Products.jsx";
 import "./Harvest.css";
-import { TriStateCheckbox } from 'primereact/tristatecheckbox';
+import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Paginator } from "primereact/paginator";
 import DateConverter from "../../../components/Date/Date.jsx";
 const emptyProduct = {
@@ -202,7 +202,12 @@ function Harvest({ isherdharvest }) {
       <>
         <TabView>
           <TabPanel header="Thông tin">
-            <Harvest_Update data={data} reloadData={reloadData} />
+          {/* eslint-disable-next-line react/jsx-pascal-case */}
+            <Harvest_Update
+              data={data}
+              reloadData={reloadData}
+              isProcessors={false}
+            />
           </TabPanel>
           <TabPanel header="Hình ảnh">
             <Image
@@ -224,27 +229,42 @@ function Harvest({ isherdharvest }) {
     fetchData(value);
   };
   const isProcessedBodyTemplate = (rowData) => {
-    return <i className={classNames('pi', { 'text-green-500 pi-check-circle': rowData.isProcessed, 'text-red-500 pi-times-circle': !rowData.isProcessed })}></i>;
-};
-const isProcessedFilterTemplate = (isProcessed) => {
-  return (
+    return (
+      <i
+        className={classNames("pi", {
+          "text-green-500 pi-check-circle": rowData.isProcessed,
+          "text-red-500 pi-times-circle": !rowData.isProcessed,
+        })}
+      ></i>
+    );
+  };
+  const isProcessedFilterTemplate = (isProcessed) => {
+    return (
       <div className="flex align-items-center gap-2">
-          <label htmlFor="verified-filter" className="font-bold">
-              Verified
-          </label>
-          <TriStateCheckbox inputId="verified-filter" value={isProcessed.value} onChange={(e) => isProcessed.filterCallback(e.value)} />
+        <label htmlFor="verified-filter" className="font-bold">
+          Verified
+        </label>
+        <TriStateCheckbox
+          inputId="verified-filter"
+          value={isProcessed.value}
+          onChange={(e) => isProcessed.filterCallback(e.value)}
+        />
       </div>
-  );
-};
-const stockBodyTemplate = (rowData) => {
-  const stockClassName = classNames('border-circle w-2rem h-2rem inline-flex font-bold justify-content-center align-items-center text-sm', {
-      'bg-red-100 text-red-900': rowData.quantity === 0,
-      'bg-blue-100 text-blue-900': rowData.quantity > 0 && rowData.quantity < 10,
-      'bg-teal-100 text-teal-900': rowData.quantity > 10
-  });
+    );
+  };
+  const stockBodyTemplate = (rowData) => {
+    const stockClassName = classNames(
+      "border-circle w-2rem h-2rem inline-flex font-bold justify-content-center align-items-center text-sm",
+      {
+        "bg-red-100 text-red-900": rowData.quantity === 0,
+        "bg-blue-100 text-blue-900":
+          rowData.quantity > 0 && rowData.quantity < 10,
+        "bg-teal-100 text-teal-900": rowData.quantity > 10,
+      }
+    );
 
-  return <div className={stockClassName}>{rowData.quantity}</div>;
-};
+    return <div className={stockClassName}>{rowData.quantity}</div>;
+  };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
       <h4 className="m-0">Quản lý thu hoạch</h4>
@@ -325,7 +345,16 @@ const stockBodyTemplate = (rowData) => {
             value={product.date}
             style={{ minWidth: "8rem" }}
           ></Column>
-           <Column field="isProcessed"  header="Trạng thái" dataType="boolean" bodyClassName="text-center" style={{ minWidth: '5rem' }} body={isProcessedBodyTemplate}filter filterElement={isProcessedFilterTemplate}  />
+          <Column
+            field="isProcessed"
+            header="Trạng thái"
+            dataType="boolean"
+            bodyClassName="text-center"
+            style={{ minWidth: "5rem" }}
+            body={isProcessedBodyTemplate}
+            filter
+            filterElement={isProcessedFilterTemplate}
+          />
           <Column
             body={actionBodyTemplate}
             headerStyle={{ width: "10%", minWidth: "4rem" }}

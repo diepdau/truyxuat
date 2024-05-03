@@ -13,7 +13,7 @@ const emptyProduct = {
   storage_method: "",
 };
 
-function YourComponent({ data, reloadData, isUpdate }) {
+function YourComponent({ data, reloadData, isUpdate, isProcessors }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
@@ -87,7 +87,8 @@ function YourComponent({ data, reloadData, isUpdate }) {
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <h4>Thông tin sản phẩm</h4>
           <InputText
-            name="name" value={product.name}
+            name="name"
+            value={product.name}
             autoResize
             style={{ width: "100%" }}
             onChange={handleChange}
@@ -96,8 +97,8 @@ function YourComponent({ data, reloadData, isUpdate }) {
 
           <h4>Phương pháp bảo quản</h4>
           <InputTextarea
-         
-            name="storage_method" value={product.storage_method}
+            name="storage_method"
+            value={product.storage_method}
             autoResize
             style={{ width: "100%" }}
             onChange={handleChange}
@@ -105,19 +106,21 @@ function YourComponent({ data, reloadData, isUpdate }) {
           {errors.storage_method && (
             <small className="p-error">{errors.storage_method}</small>
           )}
-          <Button
-            className="button_Dia"
-            id="Save"
-            label={isUpdate ? "Cập nhật" : "Lưu"}
-            severity="success"
-            onClick={handleCreate}
-          />
+          {!isProcessors && (
+            <Button
+              className="button_Dia"
+              id="Save"
+              label={isUpdate ? "Cập nhật" : "Lưu"}
+              severity="success"
+              onClick={handleCreate}
+            />
+          )}
         </div>
         <div style={{ flex: 1 }}>
           <h4>Mô tả</h4>
           <InputTextarea
             name="description"
-           value={product.description}
+            value={product.description}
             autoResize
             style={{ width: "100%" }}
             onChange={handleChange}

@@ -136,26 +136,31 @@ function YourComponent({ data, reloadData, isProcessors }) {
   } else {
     formattedDate = new Date(product.date);
   }
+
+  console.log(data);
   return (
     <div>
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <Toast className="toast" ref={toast} />
-
-          <h4>Đàn</h4>
-          <Dropdown
-            placeholder={data.herd.name}
-            type="text"
-            value={selectedHerd} //
-            options={herds}
-            optionLabel="herds.name"
-            onChange={(e) => {
-              setSelectedHerd(e.value);
-              product.herd = e.value._id;
-            }}
-            style={{ width: "100%" }}
-          />
-          {errors.herd && <small className="p-error">{errors.herd}</small>}
+          {isProcessors ? null : (
+            <>
+              <h4>Đàn</h4>
+              <Dropdown
+                placeholder={data.herd.name}
+                type="text"
+                value={selectedHerd}
+                options={herds}
+                optionLabel="herds.name"
+                onChange={(e) => {
+                  setSelectedHerd(e.value);
+                  product.herd = e.value._id;
+                }}
+                style={{ width: "100%" }}
+              />
+              {errors.herd && <small className="p-error">{errors.herd}</small>}
+            </>
+          )}
 
           <h4>Tên sản phẩm</h4>
           <InputText
@@ -209,13 +214,11 @@ function YourComponent({ data, reloadData, isProcessors }) {
                 style={{ width: "100%" }}
               /> */}
               <InputText
-              disabled
+                disabled
                 readOnly
                 name="isProcessed"
                 value={
-                  product.isProcessed === true
-                    ? "Đã đóng gói"
-                    : "Chưa đóng gói"
+                  product.isProcessed === true ? "Đã đóng gói" : "Chưa đóng gói"
                 }
                 className={
                   product.isProcessed === true ? "text-green" : "text-red"

@@ -11,7 +11,8 @@ export const AuthContexProvider = ({ children }) => {
   );
 
   const loginApi = async (inputs) => {
-    const res = await axios.post("/auth/login", inputs);
+    // const res = await axios.post("/auth/login", inputs);
+    const res = await axios.post("https://agriculture-traceability.vercel.app/api/v1/auth/login", inputs);
     const user = res.data.user;
     // setCurrentUser(user);
      setCurrentUser({ ...user, expirationTime: Date.now() + 24 * 60 * 60 * 1000 }); // Thêm thời gian hết hạn 24 giờ
