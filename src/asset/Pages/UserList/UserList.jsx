@@ -61,13 +61,16 @@ export default function SizeDemo() {
   const handleCreateUser = async (event) => {
     event.preventDefault();
     try {
-      await axios.post("https://agriculture-traceability.vercel.app/api/v1/users", {
-        first_name: product.first_name,
-        last_name: product.last_name,
-        email: product.email,
-        role: selectedRole.name,
-        password: product.password,
-      });
+      await axios.post(
+        "https://agriculture-traceability.vercel.app/api/v1/users",
+        {
+          first_name: product.first_name,
+          last_name: product.last_name,
+          email: product.email,
+          role: selectedRole.name,
+          password: product.password,
+        }
+      );
       alert("tạo tài khoản thành công");
     } catch (error) {
       console.log("Error:", error);
@@ -160,7 +163,10 @@ export default function SizeDemo() {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/users/${product._id}`, product);
+      await axios.delete(
+        `https://agriculture-traceability.vercel.app/api/v1/users/${product._id}`,
+        product
+      );
       alert("xóa tài khoản thành công");
     } catch (error) {
       console.log("Error:", error);
@@ -171,9 +177,12 @@ export default function SizeDemo() {
       var userId = selectedProduct._id;
     }
     try {
-      const response = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/users/${userId}`, {
-        role: selectedRole.name,
-      });
+      const response = await axios.patch(
+        `https://agriculture-traceability.vercel.app/api/v1/users/${userId}`,
+        {
+          role: selectedRole.name,
+        }
+      );
       alert("sửa vai trò thành công");
       console.log(response);
     } catch (error) {

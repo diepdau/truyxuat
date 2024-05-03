@@ -72,52 +72,52 @@ function YourComponent({ data, reloadData, isUpdate ,nameherd}) {
     });
   };
 
-  // const handleCreate = async () => {
-  //   if (!validate()) {
-  //     return;
-  //   }
-
-  //   try {
-  //     if (isUpdate) {
-  //       product.date = product.date.props
-  //         ? product.date.props.originalDate
-  //         : product.date;
-  //       product.retreat_date = product.retreat_date.props
-  //         ? product.retreat_date.props.originalDate
-  //         : product.retreat_date;
-  //       await axios.patch(`/treatments/${data._id}`, product);
-  //       toast.current.show({
-  //         severity: "success",
-  //         summary: "Cập nhật hoàn thành",
-  //         life: 3000,
-  //       });
-  //       setProduct(product);
-  //     } else {
-  //       await axios.post(`/treatments`, product);
-  //       toast.current.show({
-  //         severity: "success",
-  //         summary: "Thêm hoàn thành",
-  //         life: 3000,
-  //       });
-  //       setProduct(emptyProduct);
-  //     }
-  //     reloadData();
-  //   } catch (error) {
-  //     console.log("Error update:", error);
-  //   }
-  // };
-
   const handleCreate = async () => {
-    if (!validate()) {return;}
+    if (!validate()) {
+      return;
+    }
+
     try {
-      await axios.post(`https://agriculture-traceability.vercel.app/api/v1/treatments`, product);
-      toast.current.show({severity: "success", summary: "Thêm hoàn thành",life: 3000, });
+      if (isUpdate) {
+        product.date = product.date.props
+          ? product.date.props.originalDate
+          : product.date;
+        product.retreat_date = product.retreat_date.props
+          ? product.retreat_date.props.originalDate
+          : product.retreat_date;
+        await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/treatments/${data._id}`, product);
+        toast.current.show({
+          severity: "success",
+          summary: "Cập nhật hoàn thành",
+          life: 3000,
+        });
+        setProduct(product);
+      } else {
+        await axios.post(`/treatments`, product);
+        toast.current.show({
+          severity: "success",
+          summary: "Thêm hoàn thành",
+          life: 3000,
+        });
+        setProduct(emptyProduct);
+      }
       reloadData();
-      setProduct(emptyProduct);
     } catch (error) {
-      console.log("Error :", error);
+      console.log("Error update:", error);
     }
   };
+
+  // const handleCreate = async () => {
+  //   if (!validate()) {return;}
+  //   try {
+  //     await axios.post(`https://agriculture-traceability.vercel.app/api/v1/treatments`, product);
+  //     toast.current.show({severity: "success", summary: "Thêm hoàn thành",life: 3000, });
+  //     reloadData();
+  //     setProduct(emptyProduct);
+  //   } catch (error) {
+  //     console.log("Error :", error);
+  //   }
+  // };
 
   const validate = () => {
     let isValid = true;
