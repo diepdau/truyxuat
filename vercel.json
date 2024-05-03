@@ -1,8 +1,7 @@
 {
     "rewrites": [
       {
-        "source": "/api/v1/:path*",
-        "destination": "https://truyxuat.vercel.app/:path*"
+        "proxy":"https://agriculture-traceability.vercel.app/api/v1/"
       }
     ]
   }
