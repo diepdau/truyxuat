@@ -41,7 +41,7 @@ export default function SizeDemo() {
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        `/diseases?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+        `https://agriculture-traceability.vercel.app/api/v1/diseases?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
           value
         )}`
       );
