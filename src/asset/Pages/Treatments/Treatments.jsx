@@ -22,7 +22,7 @@ const emptyProduct = {
   unit: "",
   date: "",
 };
-export default function SizeDemo({ idherd }) {
+export default function SizeDemo({ idherd,herdname }) {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
@@ -42,7 +42,7 @@ export default function SizeDemo({ idherd }) {
     if (idherd) {
       try {
         const res = await fetch(
-          `/treatments/herd/${idherd}?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+          `https://agriculture-traceability.vercel.app/api/v1/treatments/herd/${idherd}?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
             value
           )}`
         );
@@ -61,7 +61,7 @@ export default function SizeDemo({ idherd }) {
     } else {
       try {
         const res = await fetch(
-          `/treatments?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+          `https://agriculture-traceability.vercel.app/api/v1/treatments?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
             value
           )}`
         );
@@ -184,7 +184,7 @@ export default function SizeDemo({ idherd }) {
 
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/treatments/${product._id}`, product);
+      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/treatments/${product._id}`, product);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -202,6 +202,7 @@ export default function SizeDemo({ idherd }) {
               data={data}
               reloadData={reloadData}
               isUpdate={true}
+              nameherd={herdname}
             />
           </TabPanel>
         </TabView>
@@ -224,7 +225,7 @@ export default function SizeDemo({ idherd }) {
         <InputText
           value={input}
           onChange={(e) => handleChange(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>
@@ -255,9 +256,8 @@ export default function SizeDemo({ idherd }) {
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
             sortable
-            field="herd"
+            field="herd.name"
             header="Đàn"
-            value={product.herd?.name}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column

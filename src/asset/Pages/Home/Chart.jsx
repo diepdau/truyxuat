@@ -10,7 +10,7 @@ const FarmProduct = ({ reloadData }) => {
   useEffect(() => {
     const fetchHerds = async () => {
       try {
-        const response = await axios.get("/herds?limit=50");
+        const response = await axios.get("https://agriculture-traceability.vercel.app/api/v1/herds?limit=50");
         setHerds(response.data.herds);
         setLoading(false);
       } catch (error) {

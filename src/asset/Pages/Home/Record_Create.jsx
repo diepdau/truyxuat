@@ -40,7 +40,7 @@ function YourComponent({ herdId, data, reloadData, isUpdate }) {
 
     try {
       if (isUpdate) {
-        await axios.patch(`/animals/${data._id}`, product);
+        await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/animals/${data._id}`, product);
         console.log(product);
         toast.current.show({
           severity: "success",
@@ -48,7 +48,7 @@ function YourComponent({ herdId, data, reloadData, isUpdate }) {
           life: 3000,
         });
       } else {
-        await axios.post(`/animals`, {
+        await axios.post(`https://agriculture-traceability.vercel.app/api/v1/animals`, {
           name: product.name,
           birth_date: product.birth_date,
           birth_weight: product.birth_weight,
@@ -73,15 +73,15 @@ function YourComponent({ herdId, data, reloadData, isUpdate }) {
     let isValid = true;
     const newErrors = {};
     if (!product.name.trim()) {
-      newErrors.name = "Name is required.";
+      newErrors.name = "Tên là bắt buộc.";
       isValid = false;
     }
     if (!product.birth_weight.trim()) {
-      newErrors.birth_weight = "Birth_weight is required.";
+      newErrors.birth_weight = "Cân nặng là bắt buộc.";
       isValid = false;
     }
     if (parseFloat(product.birth_weight) <= 0) {
-      newErrors.birth_weight = "birth_weight must be greater than 0.";
+      newErrors.birth_weight = "Cân nặng lớn hơn 0.";
       isValid = false;
     }
 

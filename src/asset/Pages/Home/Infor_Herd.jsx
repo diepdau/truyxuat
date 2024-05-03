@@ -46,11 +46,11 @@ function YourComponent({ data, reloadData, isUpdate }) {
     fetchDataCategory();
   }, []);
   const fetchDataCategory = async () => {
-    const categoryList = await axios.get("/categories?limit=100");
+    const categoryList = await axios.get("https://agriculture-traceability.vercel.app/api/v1/categories?limit=100");
     setcategories(categoryList.data.categories);
   };
   const fetchDataFarm = async () => {
-    const farmList = await axios.get("/farm");
+    const farmList = await axios.get("https://agriculture-traceability.vercel.app/api/v1/farm?limit=60");
     setfarm(farmList.data.farms);
   };
   const onRowEditComplete = async () => {
@@ -59,13 +59,13 @@ function YourComponent({ data, reloadData, isUpdate }) {
     }
     try {
       if (isUpdate) {
-        await axios.patch(`/herds/${data._id}`, product);
+        await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/herds/${data._id}`, product);
         toast.current.show({severity: "success", summary: "Sửa hoàn thành",life: 3000, });
         setProduct({
           ...product,
          });
       } else {
-        await axios.post(`/herds`, product);
+        await axios.post(`https://agriculture-traceability.vercel.app/api/v1/herds`, product);
         toast.current.show({severity: "success",summary: "Thêm hoàn thành", life: 3000,});
         setProduct(emptyProduct);
       }
@@ -82,19 +82,19 @@ function YourComponent({ data, reloadData, isUpdate }) {
 
     // Kiểm tra lỗi cho trường name
     if (!product.name) {
-      newErrors.name = "Name is required.";
+      newErrors.name = "Tên là bắt buộc.";
       isValid = false;
     }
 
     // Kiểm tra lỗi cho trường description
     if (!product.description) {
-      newErrors.description = "Description is required.";
+      newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
     }
 
     // Kiểm tra lỗi cho trường location
     if (!product.location) {
-      newErrors.location = "Location is required.";
+      newErrors.location = "Vị trí là bắt buộc.";
       isValid = false;
     }
 

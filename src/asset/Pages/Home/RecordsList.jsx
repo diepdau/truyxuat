@@ -47,7 +47,7 @@ export default function SizeDemo({ herdId }) {
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        `/herds/${herdId}?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+        `https://agriculture-traceability.vercel.app/api/v1/herds/${herdId}?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
           value
         )}`
       );
@@ -91,7 +91,7 @@ export default function SizeDemo({ herdId }) {
   //Hàm tạo con trong đàn tự động
   const handleCreateNewAuto = async () => {
     try {
-      await axios.post(`/herds/${herdId}/generate-animals`, {
+      await axios.post(`https://agriculture-traceability.vercel.app/api/v1/herds/${herdId}/generate-animals`, {
         quantity: product.quantity,
       });
       setProductDialogNewAuto(false);
@@ -211,7 +211,7 @@ export default function SizeDemo({ herdId }) {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/animals/${product._id}`, product);
+      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/animals/${product._id}`, product);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -273,7 +273,7 @@ export default function SizeDemo({ herdId }) {
     }
     console.log("birth_day", formattedDate);
     try {
-      await axios.patch(`/animals/${Id}`, {
+      await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/animals/${Id}`, {
         name: newData.name,
         birth_date: formattedDate,
         birth_weight: newData.birth_weight,
@@ -292,7 +292,7 @@ export default function SizeDemo({ herdId }) {
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
-    var url = `/animals/upload/${product._id}`;
+    var url = `https://agriculture-traceability.vercel.app/api/v1/animals/upload/${product._id}`;
     return (
       <>
         <h3 style={{ color: "black" }}>Hình</h3>
@@ -320,7 +320,7 @@ export default function SizeDemo({ herdId }) {
         <InputText
           value={input}
           onChange={(e) => handleChangeSearch(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>

@@ -20,7 +20,7 @@ export const AuthContexProvider = ({ children }) => {
   };
 
   const logout = async (inputs) => {
-    await axios.get("/auth/logout",inputs);
+    await axios.get("https://agriculture-traceability.vercel.app/api/v1/auth/logout",inputs);
     setCurrentUser(null);
   };
 
@@ -28,7 +28,7 @@ export const AuthContexProvider = ({ children }) => {
 
 const getuserList = async () => {
     try {
-        const res = await axios.get("/users?limit=50");
+        const res = await axios.get("https://agriculture-traceability.vercel.app/api/v1/users?limit=50");
         return res.data.users;
     } catch (error) {
         console.log(error)
@@ -37,7 +37,7 @@ const getuserList = async () => {
 
 const createUserList = async () => {
     try {
-        const res = await axios.post("/users");
+        const res = await axios.post("https://agriculture-traceability.vercel.app/api/v1/users");
         console.log("Tạo user thanh cong");
         return res.data.users;
     } catch (error) {
@@ -46,7 +46,7 @@ const createUserList = async () => {
 };
 const getUser = async (userId) => {
     try {
-        const res = await axios.get(`/users/${userId}`);
+        const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/users/${userId}`);
         console.log("lấy 1 user thanh cong");
         return res.data;
     } catch (error) {
@@ -55,7 +55,7 @@ const getUser = async (userId) => {
 };
 const updateUserInfo = async (data) => {
   try {
-      const res = await axios.patch(`/users/update-user`,data);
+      const res = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/users/update-user`,data);
       console.log("Sửa user thanh cong");
       return res.data.users;
   } catch (error) {
@@ -64,7 +64,7 @@ const updateUserInfo = async (data) => {
 };
 const changeUserPassword = async (data) => {
   try {
-      const res = await axios.patch(`/users/change-password`,data);
+      const res = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/users/change-password`,data);
       console.log("Sửa password thanh cong");
       return res.data.users;
   } catch (error) {

@@ -39,7 +39,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
   }, []);
   const getProductPatchs = async () => {
     try {
-      const res = await axios.get(`/product-patchs?&limit=50`);
+      const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/product-patchs?&limit=50`);
       setProductPatchs(res.data.productPatchs);
     } catch (error) {
       console.log(error);
@@ -52,7 +52,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
 
     try {
       if (isUpdate) {
-        await axios.patch(`/distributors/${data._id}`, product);
+        await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/distributors/${data._id}`, product);
         toast.current.show({
           severity: "success",
           summary: "Sửa hoàn thành",

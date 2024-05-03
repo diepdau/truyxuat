@@ -44,7 +44,7 @@ export default function CulivationLogs_Herd({ idherd }) {
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        `/cultivation-logs/herd/${idherd}?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+        `https://agriculture-traceability.vercel.app/api/v1/cultivation-logs/herd/${idherd}?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
           value
         )}`
       );
@@ -164,7 +164,7 @@ export default function CulivationLogs_Herd({ idherd }) {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/cultivation-logs/${product._id}`, product);
+      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/cultivation-logs/${product._id}`, product);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -200,7 +200,7 @@ export default function CulivationLogs_Herd({ idherd }) {
         <InputText
           value={input}
           onChange={(e) => handleChange(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>

@@ -30,7 +30,7 @@ function YourComponent({ data, reloadData, isProductPatchs }) {
     if (!validate()) {return; }
     
     try {
-      const response = await axios.patch(`/processors/${data._id}`, product);
+      const response = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/processors/${data._id}`, product);
       toast.current.show({severity: "success", summary: "Sửa hoàn thành",life: 3000, });
       reloadData();
       setProduct(response.data);

@@ -40,7 +40,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
     );
     try {
       if (data) {
-        const res = await axios.patch(`/farm/${data._id}`, formData);
+        const res = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/farm/${data._id}`, formData);
         toast.current.show({
           severity: "success",
           summary: "Sửa hoàn thành",
@@ -49,7 +49,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
 
         setFormData(res.data);
       } else {
-        await axios.post(`/farm`, formData);
+        await axios.post(`https://agriculture-traceability.vercel.app/api/v1/farm`, formData);
         toast.current.show({
           severity: "success",
           summary: "Thêm hoàn thành",
@@ -68,30 +68,30 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
     const newErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = "Name is required.";
+      newErrors.name = "Tên là bắt buộc.";
       isValid = false;
     }
 
     if (!formData.description.trim()) {
-      newErrors.description = "Description is required.";
+      newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
     }
 
     if (!formData.area) {
-      newErrors.area = "Area is required.";
+      newErrors.area = "Diện tích là bắt buộc.";
       isValid = false;
     } else if (parseFloat(formData.area) < 0) {
-      newErrors.area = "Area must be a positive number.";
+      newErrors.area = "Diện tích không âm.";
       isValid = false;
     }
 
     if (!formData.address.trim()) {
-      newErrors.address = "Address is required.";
+      newErrors.address = "Địa chỉ là bắt buộc.";
       isValid = false;
     }
 
     if (!formData.coordinates) {
-      newErrors.coordinates = "Coordinates are required.";
+      newErrors.coordinates = "Tọa độ là bắt buộc.";
       isValid = false;
     } else {
       const coordinatesArray = formData.coordinates.split(",").map(Number);
@@ -101,7 +101,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
         coordinatesArray.some((coord) => coord <= 0)
       ) {
         newErrors.coordinates =
-          "Invalid coordinates format or coordinates must be positive and non-zero.";
+          "Tọa độ chưa đúng định dạng và phải lớn hơn hoặc khác không.";
         isValid = false;
       }
     }

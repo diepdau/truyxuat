@@ -39,7 +39,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
     try {
       let response;
       if (data) {
-        response = await axios.patch(`/medicines/${data._id}`, product);
+        response = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/medicines/${data._id}`, product);
         toast.current.show({
           severity: "success",
           summary: "Sửa hoàn thành",
@@ -47,7 +47,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
         });
         setProduct(response.data);
       } else {
-        response = await axios.post(`/medicines/`, product);
+        response = await axios.post(`https://agriculture-traceability.vercel.app/api/v1/medicines/`, product);
         toast.current.show({
           severity: "success",
           summary: "Thêm hoàn thành",
@@ -66,39 +66,39 @@ function YourComponent({ data, reloadData, isUpdate }) {
     const newErrors = {};
 
     if (!product.name) {
-      newErrors.name = "Name is required.";
+      newErrors.name = "Tên là bắt buộc.";
       isValid = false;
     }
     if (!product.description) {
-      newErrors.description = "Description is required.";
+      newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
     }
     if (!product.ingredients) {
-      newErrors.ingredients = "Ingredients is required.";
+      newErrors.ingredients = "Thành phần là băt buộc.";
       isValid = false;
     }
     if (!product.usage_instruction) {
-      newErrors.usage_instruction = "Usage_instruction is required.";
+      newErrors.usage_instruction = "Hướng dẫn sử dụng là bắt buộc.";
       isValid = false;
     }
     if (!product.toxicity) {
-      newErrors.toxicity = "Toxicity is required.";
+      newErrors.toxicity = "Độ độc là bắt buộc.";
       isValid = false;
     }
     if (!product.dosage) {
-      newErrors.dosage = "Dosage is required.";
+      newErrors.dosage = "Liều lượng là bắt buộc.";
       isValid = false;
     }
     if (!product.isolation) {
-      newErrors.isolation = "isolation is required.";
+      newErrors.isolation = "Cách ly là bắt buộc.";
       isValid = false;
     }
     if (!product.recommendation) {
-      newErrors.recommendation = "recommendation is required.";
+      newErrors.recommendation = "Khuyến nghị là bắt buộc.";
       isValid = false;
     }
     if (!product.certificate) {
-      newErrors.certificate = "certificate is required.";
+      newErrors.certificate = "Giấy phép là bắt buộc.";
       isValid = false;
     }
     setErrors(newErrors);

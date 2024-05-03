@@ -39,7 +39,7 @@ export default function FarmmingAreas() {
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        `/farm?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+        `https://agriculture-traceability.vercel.app/api/v1/farm?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
           value
         )}`
       );
@@ -55,7 +55,6 @@ export default function FarmmingAreas() {
   const onPageChange = (event) => {
     setCurrentPage(+event.page + 1);
     setCurrentLimit(event.rows);
-    console.log("ffffffffff", event);
   };
   const openNew = () => {
     setProductDialog(true);
@@ -167,7 +166,7 @@ export default function FarmmingAreas() {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/farm/${product._id}`, product);
+      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/farm/${product._id}`, product);
       // reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -177,11 +176,12 @@ export default function FarmmingAreas() {
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
-    var url = `/farm/upload/${product._id}`;
+    var url = `https://agriculture-traceability.vercel.app/api/v1/farm/upload/${product._id}`;
     return (
       <>
         <TabView>
           <TabPanel header="Thông tin">
+             {/* eslint-disable-next-line react/jsx-pascal-case */}
             <FarmingAreas_Create
               data={data}
               isUpdate={true}
@@ -215,7 +215,7 @@ export default function FarmmingAreas() {
         <InputText
           value={input}
           onChange={(e) => handleChange(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>

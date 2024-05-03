@@ -9,7 +9,7 @@ export default function BasicDemo() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/harvests?limit=100");
+        const response = await axios.get("https://agriculture-traceability.vercel.app/api/v1/harvests?limit=100");
         const harvests = response.data.harvests;
 
         // Tính tổng số lượng sản phẩm theo tên

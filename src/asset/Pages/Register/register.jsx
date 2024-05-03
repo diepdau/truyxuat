@@ -27,7 +27,7 @@ export default function RegisterPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post("/auth/register", {
+      await axios.post("https://agriculture-traceability.vercel.app/api/v1/auth/register", {
         first_name: formValue.first_name,
         last_name: formValue.last_name,
         email: formValue.email,

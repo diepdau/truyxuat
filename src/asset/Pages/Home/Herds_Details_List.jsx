@@ -15,8 +15,9 @@ export default function BasicDemo() {
   const herdId = location.pathname.split("/")[2];
   const getHerd = async () => {
     try {
-      const res = await axios.get(`/herds/${herdId}`);
+      const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/herds/${herdId}`);
       setFormData(res.data.herd);
+      
     } catch (error) {
       console.log(error);
     }
@@ -43,7 +44,7 @@ export default function BasicDemo() {
           <Harvest  isherdharvest={herdId}/>
         </TabPanel>
         <TabPanel header="Điều trị">
-          <Treatments idherd={herdId} />
+          <Treatments idherd={herdId} herdname={formData.name} />
         </TabPanel>
       </TabView>
     </div>

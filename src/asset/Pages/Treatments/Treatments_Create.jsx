@@ -15,7 +15,7 @@ const emptyProduct = {
   amount: "",
   mode: "",
   description: "",
-  date: "",
+  date: new Date(),
   retreat_date: "",
   site: "",
   technician: "",
@@ -32,8 +32,7 @@ const modeOptions = [
 ];
 const siteOptions = ["Mông", "Sườn", "Cổ", "Khác"];
 
-function YourComponent({ data, reloadData, isUpdate }) {
-  console.log(data);
+function YourComponent({ data, reloadData, isUpdate ,nameherd}) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState({});
@@ -46,7 +45,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
 
   const getHerd = async () => {
     try {
-      const res = await axios.get(`/herds`);
+      const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/herds?limit=60`);
       setHerds(res.data.herds);
     } catch (error) {
       console.log(error);
@@ -111,7 +110,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
   const handleCreate = async () => {
     if (!validate()) {return;}
     try {
-      await axios.post(`/treatments`, product);
+      await axios.post(`https://agriculture-traceability.vercel.app/api/v1/treatments`, product);
       toast.current.show({severity: "success", summary: "Thêm hoàn thành",life: 3000, });
       reloadData();
       setProduct(emptyProduct);
@@ -125,22 +124,22 @@ function YourComponent({ data, reloadData, isUpdate }) {
     const newErrors = {};
 
     if (product.type.trim() === "") {
-      newErrors.type = "Type is required.";
+      newErrors.type = "Loại là bắt buộc.";
       isValid = false;
     }
 
     if (product.description.trim() === "") {
-      newErrors.description = "Description is required.";
+      newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
     }
 
     if (product.amount.trim() === "") {
-      newErrors.amount = "amount is required.";
+      newErrors.amount = "Liều lượng là bắt buộc.";
       isValid = false;
     }
 
     if (product.product.trim() === "") {
-      newErrors.product = "product is required.";
+      newErrors.product = "Thuốc là bắt buộc.";
       isValid = false;
     }
     if ((isValid && dateDate >= retreatDate) || dateDate === retreatDate) {
@@ -149,22 +148,22 @@ function YourComponent({ data, reloadData, isUpdate }) {
       isValid = false;
     }
     if (product.site.trim() === "") {
-      newErrors.site = "site is required.";
+      newErrors.site = "Vị trí là bắt buộc.";
       isValid = false;
     }
 
     if (product.technician.trim() === "") {
-      newErrors.technician = "technician is required.";
+      newErrors.technician = "Kĩ thuật là bắt buộc.";
       isValid = false;
     }
     if (product.mode.trim() === "") {
-      newErrors.mode = "mode is required.";
+      newErrors.mode = "Hình thức điều trị là bắt buộc.";
       isValid = false;
     }
     setErrors(newErrors);
     return isValid;
   };
-  const herdName = product.herd && product.herd.name ? product.herd.name : "";
+  const herdName = product.herd && product.herd.name ? product.herd.name :nameherd;
   let dateDate = ""; // Declare formattedDate variable
 
   if (product.date && typeof product.date === "object" && product.date.props) {
@@ -190,8 +189,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <h4>Đàn</h4>
           <Dropdown
-            // placeholder={herdName}
-            placeholder="CuuKelantan_03032024_3"
+            placeholder={herdName}
             type="text"
             value={selectedHerd}
             options={herds}

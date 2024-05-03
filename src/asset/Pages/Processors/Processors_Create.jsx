@@ -36,7 +36,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
 
   const getHerds = async () => {
     try {
-      const res = await axios.get(`/harvests?&limit=50`);
+      const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/harvests?&limit=50`);
       setHerds(res.data.harvests);
     } catch (error) {
       console.log(error);
@@ -61,14 +61,14 @@ function YourComponent({ data, reloadData, isUpdate }) {
         product.date = product.date.props
           ? product.date.props.originalDate
           : product.date;
-        await axios.patch(`/processors/${data._id}`, product);
+        await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/processors/${data._id}`, product);
         toast.current.show({
           severity: "success",
           summary: "Sửa hoàn thành",
           life: 3000,
         });
       } else {
-        await axios.post(`/processors`, product);
+        await axios.post(`https://agriculture-traceability.vercel.app/api/v1/processors`, product);
         toast.current.show({
           severity: "success",
           summary: "Thêm hoàn thành",

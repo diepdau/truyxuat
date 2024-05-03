@@ -51,7 +51,7 @@ function Harvest({ isherdharvest }) {
         //     value
         //   )}`
         // );
-        const response = await fetch(`/harvests/herd/${isherdharvest}`);
+        const response = await fetch(`https://agriculture-traceability.vercel.app/api/v1/harvests/herd/${isherdharvest}`);
         const data = await response.json();
         data.harvests.forEach((element) => {
           element.date = <DateConverter originalDate={element.date} />;
@@ -64,7 +64,7 @@ function Harvest({ isherdharvest }) {
     } else {
       try {
         const response = await fetch(
-          `/harvests?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+          `https://agriculture-traceability.vercel.app/api/v1/harvests?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
             value
           )}`
         );
@@ -188,7 +188,7 @@ function Harvest({ isherdharvest }) {
 
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/harvests/${product._id}`, product);
+      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/harvests/${product._id}`, product);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -197,7 +197,7 @@ function Harvest({ isherdharvest }) {
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
-    var url = `/harvests/upload/${product._id}`;
+    var url = `https://agriculture-traceability.vercel.app/api/v1/harvests/upload/${product._id}`;
     return (
       <>
         <TabView>

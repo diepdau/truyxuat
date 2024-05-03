@@ -9,7 +9,7 @@ export default function StackedBarDemo() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/harvests?limit=200");
+        const response = await axios.get("https://agriculture-traceability.vercel.app/api/v1/harvests?limit=200");
         const harvests = response.data.harvests;
 
         const datasets = {};

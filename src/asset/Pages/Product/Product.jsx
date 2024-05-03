@@ -40,7 +40,7 @@ export default function SizeDemo() {
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        `/products?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+        `https://agriculture-traceability.vercel.app/api/v1/products?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
           value
         )}`
       );
@@ -169,7 +169,7 @@ export default function SizeDemo() {
 
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/products/${product._id}`, product);
+      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/products/${product._id}`, product);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -188,7 +188,7 @@ export default function SizeDemo() {
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
-    var url = `/products/upload/${product._id}`;
+    var url = `https://agriculture-traceability.vercel.app/api/v1/products/upload/${product._id}`;
     return (
       <>
         <TabView>

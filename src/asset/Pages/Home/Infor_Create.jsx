@@ -51,7 +51,7 @@ function Infor_Herd({ isUpdate, reloadData }) {
       return;
     }
     try {
-      await axios.post(`/herds/`, formData);
+      await axios.post(`https://agriculture-traceability.vercel.app/api/v1/herds/`, formData);
       toast.current.show({
         severity: "success",
         summary: "Thêm hoàn thành",
@@ -69,23 +69,23 @@ function Infor_Herd({ isUpdate, reloadData }) {
 
     // Kiểm tra lỗi cho trường description
     if (!formData.description) {
-      newErrors.description = "Description is required.";
+      newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
     } else if (formData.description.trim().length < 20) {
       newErrors.description =
-        "Description must be at least 20 characters long.";
+        "Mô tả ít nhất là 20 kí tự.";
       isValid = false;
     }
 
     // Kiểm tra lỗi cho trường name
     if (!formData.name) {
-      newErrors.name = "Name is required.";
+      newErrors.name = "Tên là bắt buộc.";
       isValid = false;
     }
 
     // Kiểm tra lỗi cho trường location
     if (!formData.location) {
-      newErrors.location = "Location is required.";
+      newErrors.location = "Vị trí là bắt buộc.";
       isValid = false;
     }
 

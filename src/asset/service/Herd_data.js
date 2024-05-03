@@ -7,7 +7,7 @@ export const HerdsContextProvider = ({ children }) => {
 
 const handleGet = async (name) => {
     try {
-      const response = await axios.get(`/herds?sort=${name}`);
+      const response = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/herds?sort=${name}`);
       return response.data.herds;
     } catch (error) {
       console.log("Error: ", error);
@@ -15,7 +15,7 @@ const handleGet = async (name) => {
   };
 const handleCreate = async (data) => {
     try {
-      await axios.post("/herds",data);
+      await axios.post("https://agriculture-traceability.vercel.app/api/v1/herds",data);
       alert("Create Success");
     } catch (error) {
       console.log("Error:", error);
@@ -24,7 +24,7 @@ const handleCreate = async (data) => {
   
 const handleDelete = async (product) => {
     try {
-      await axios.delete(`/herds/${product._id}`, product);
+      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/herds/${product._id}`, product);
       alert("xóa thành công");
     } catch (error) {
       console.log("Error:", error);
@@ -34,7 +34,7 @@ const handleDelete = async (product) => {
 
   const handleGetCategory = async () => {
     try {
-      const response = await axios.get("/categories?limit=50");
+      const response = await axios.get("https://agriculture-traceability.vercel.app/api/v1/categories?limit=50");
       return response.data.categories;
     } catch (error) {
       console.log("Error: ", error);
@@ -42,7 +42,7 @@ const handleDelete = async (product) => {
   };
   const handleGetFarm = async () => {
     try {
-      const response = await axios.get("/farm?limit=50");
+      const response = await axios.get("https://agriculture-traceability.vercel.app/api/v1/farm?limit=50");
       return response.data.farms;
     } catch (error) {
       console.log("Error: ", error);
@@ -50,7 +50,7 @@ const handleDelete = async (product) => {
   };
   const fetchAllHerds = async (limit,page) => {
     try {
-      const response = await axios.get(`/herds?limit=${limit}&page=${page}`);
+      const response = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/herds?limit=${limit}&page=${page}`);
       return response.data.herds;
     } catch (error) {
       console.log("Error: ", error);

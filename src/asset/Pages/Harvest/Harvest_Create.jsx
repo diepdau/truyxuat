@@ -68,7 +68,7 @@ function Harvest_Create({ reloadData, idherd }) {
       return;
     }
     try {
-      await axios.post(`/harvests`, product);
+      await axios.post(`https://agriculture-traceability.vercel.app/api/v1/harvests`, product);
       toast.current.show({
         severity: "success",
         summary: "Thêm hoàn thành",

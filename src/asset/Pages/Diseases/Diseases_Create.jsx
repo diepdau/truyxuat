@@ -30,7 +30,7 @@ function YourComponent() {
     }
 
     try {
-      await axios.post(`/diseases/`, {
+      await axios.post(`https://agriculture-traceability.vercel.app/api/v1/diseases/`, {
         name: product.name,
         description: product.description,
         symptoms: product.symptoms,

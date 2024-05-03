@@ -18,7 +18,7 @@ function YourComponent({ reloadData, data }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
-  var url = data ? `/cultivation-logs/upload/${data._id}` : "";
+  var url = data ? `https://agriculture-traceability.vercel.app/api/v1/cultivation-logs/upload/${data._id}` : "";
   const handleChange = (event) => {
     const { value, name } = event.target;
     setProduct({
@@ -44,7 +44,7 @@ function YourComponent({ reloadData, data }) {
     }
 
     try {
-      const response = await axios.patch(`/cultivation-logs/${data._id}`, {
+      const response = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/cultivation-logs/${data._id}`, {
         name: product.name,
         description: product.description,
         date: formattedDate,

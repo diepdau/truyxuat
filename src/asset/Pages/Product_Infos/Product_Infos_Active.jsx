@@ -38,7 +38,7 @@ function YourComponent({
   const fetchData = async () => {
     if (id_product_info) {
       try {
-        const a = await axios.get(`/product-infos/${id_product_info}`);
+        const a = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/product-infos/${id_product_info}`);
         setProduct(a.data.productInfo);
       } catch (error) {
         console.log("Error", error);
@@ -52,7 +52,7 @@ function YourComponent({
 
     try {
       if (data) {
-        await axios.patch(`/product-infos/${data._id}`, product);
+        await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/product-infos/${data._id}`, product);
         toast.current.show({
           severity: "success",
           summary: "Sửa hoàn thành",
@@ -62,7 +62,7 @@ function YourComponent({
           ...product,
         });
       } else {
-        await axios.post(`/product-infos`, product);
+        await axios.post(`https://agriculture-traceability.vercel.app/api/v1/product-infos`, product);
         toast.current.show({
           severity: "success",
           summary: "Thêm hoàn thành",

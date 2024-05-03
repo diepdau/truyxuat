@@ -35,7 +35,7 @@ export default function ProductInfos() {
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        `/product-infos?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+        `https://agriculture-traceability.vercel.app/api/v1/product-infos?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
           value
         )}`
       );
@@ -156,7 +156,7 @@ export default function ProductInfos() {
 
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/product-infos/${product._id}`, product);
+      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/product-infos/${product._id}`, product);
       reloadData();
     } catch (error) {
       console.log("Error:", error);

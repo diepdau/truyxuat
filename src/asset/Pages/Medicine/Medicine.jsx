@@ -36,7 +36,7 @@ export default function SizeDemo() {
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        `/medicines?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+        `https://agriculture-traceability.vercel.app/api/v1/medicines?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
           value
         )}`
       );
@@ -158,7 +158,7 @@ export default function SizeDemo() {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/medicines/${product._id}`, product);
+      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/medicines/${product._id}`, product);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -167,7 +167,7 @@ export default function SizeDemo() {
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
-    var url = `/medicines/upload/${product._id}`;
+    var url = `https://agriculture-traceability.vercel.app/api/v1/medicines/upload/${product._id}`;
     return (
       <>
         <TabView>
@@ -208,7 +208,7 @@ export default function SizeDemo() {
         <InputText
           value={input}
           onChange={(e) => handleChange(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>

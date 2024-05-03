@@ -54,7 +54,7 @@ function YourComponent({ data, reloadData, isProductPatchs }) {
       ? product.expiration_date.props.originalDate
       : product.expiration_date;
     try {
-      await axios.patch(`/products/${data._id}`, product);
+      await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/products/${data._id}`, product);
       toast.current.show({
         severity: "success",
         summary: "Sửa hoàn thành",

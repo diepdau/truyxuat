@@ -33,7 +33,7 @@ function YourComponent({ reloadData,herd_id }) {
 
     try {
       const dateString = product.date; // Giữ nguyên giá trị ngày
-      await axios.post(`/cultivation-logs/`, {
+      await axios.post(`https://agriculture-traceability.vercel.app/api/v1/cultivation-logs/`, {
         name: product.name,
         description: product.description,
         date: dateString,

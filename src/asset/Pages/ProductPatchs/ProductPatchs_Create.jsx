@@ -49,7 +49,7 @@ function YourComponent({ reloadData, isUpdate }) {
 
   const getProductInfos = async () => {
     try {
-      const res = await axios.get(`/product-infos?limit=60`);
+      const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/product-infos?limit=60`);
       setProductInfos(res.data.products);
     } catch (error) {
       console.log(error);
@@ -58,7 +58,7 @@ function YourComponent({ reloadData, isUpdate }) {
 
   const getProduct = async () => {
     try {
-      const res = await axios.get(`/harvests?limit=60`);
+      const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/harvests?limit=60`);
       setProducts(res.data.harvests);
     } catch (error) {
       console.log(error);
@@ -66,7 +66,7 @@ function YourComponent({ reloadData, isUpdate }) {
   };
   const getFarm = async () => {
     try {
-      const res = await axios.get(`/farm?limit=80&searchQuery=Nhà`);
+      const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/farm?limit=80&searchQuery=Nhà`);
       setFarms(res.data.farms);
     } catch (error) {
       console.log(error);
@@ -96,7 +96,7 @@ function YourComponent({ reloadData, isUpdate }) {
     }
 
     try {
-      const res = await axios.post(`/processors`, product);
+      const res = await axios.post(`https://agriculture-traceability.vercel.app/api/v1/processors`, product);
       toast.current.show({
         severity: "success",
         summary: "Thêm hoàn thành",

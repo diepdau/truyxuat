@@ -48,7 +48,7 @@ export default function SizeDemo() {
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        `/herds?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent( value)}`);
+        `https://agriculture-traceability.vercel.app/api/v1/herds?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent( value)}`);
       const data = await response.json();
       data.herds.forEach((element) => {
         element.date = <DateConverter originalDate={element.start_date} />;
@@ -185,7 +185,7 @@ export default function SizeDemo() {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/herds/${product._id}`, product);
+      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/herds/${product._id}`, product);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -215,7 +215,7 @@ export default function SizeDemo() {
         <InputText
           value={input}
           onChange={(e) => handleChange(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>

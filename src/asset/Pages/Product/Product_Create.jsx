@@ -45,17 +45,17 @@ function YourComponent(reloadData) {
     const newErrors = {};
 
     if (!product.name) {
-      newErrors.name = "Name is required.";
+      newErrors.name = "Tên là bắt buộc.";
       isValid = false;
     }
     if (!product.price || product.price < 0) {
       newErrors.name =
-        "Product price must be a non-negative value/ is required";
+        "Giá sản phẩm bắt buộc/lớn hơn 0";
       isValid = false;
     }
     if (!product.quantity || product.quantity < 0) {
       newErrors.quantity =
-        "Quantity price must be a non-negative value/ is required";
+        "Số lượng sản phẩm bắt buộc/lớn hơn 0";
       isValid = false;
     }
     if (
@@ -64,9 +64,9 @@ function YourComponent(reloadData) {
       product.production_date > product.expiration_date
     ) {
       newErrors.production_date =
-        "Production date must be before expiration date.";
+        "Ngày sản xuất trước ngày hết hạn.";
       newErrors.expiration_date =
-        "Expiration date must be after production date.";
+        "Ngày hết hạn sau ngày sản xuất.";
       isValid = false;
     }
     setErrors(newErrors);
@@ -83,9 +83,7 @@ function YourComponent(reloadData) {
     if (!validate()) {
       return;
     }
-    try {
-      const a = await axios.post(`/products`, product);
-
+    try {await axios.post(`https://agriculture-traceability.vercel.app/api/v1/products`, product);
       toast.current.show({
         severity: "success",
         summary: "Thêm hoàn thành",
@@ -168,7 +166,7 @@ function YourComponent(reloadData) {
             onChange={(e) =>
               setProduct({ ...product, production_date: e.value })
             }
-          />{" "}
+          />
           {errors.production_date && (
             <small className="p-error">{errors.production_date}</small>
           )}

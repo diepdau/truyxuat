@@ -31,7 +31,7 @@ function YourComponent({ data, reloadData }) {
     }
 
     try {
-      const response = await axios.patch(`/diseases/${data._id}`, {
+      const response = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/diseases/${data._id}`, {
         name: product.name,
         description: product.description,
         symptoms: product.symptoms,

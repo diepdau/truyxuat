@@ -38,7 +38,7 @@ export default function FarmmingAreas() {
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        `/categories?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+        `https://agriculture-traceability.vercel.app/api/v1/categories?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
           value
         )}`
       );

@@ -45,7 +45,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
 
   const getProductInfos = async () => {
     try {
-      const res = await axios.get(`/product-infos?limit=60`);
+      const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/product-infos?limit=60`);
       setProductInfos(res.data.products);
     } catch (error) {
       console.log(error);
@@ -54,7 +54,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
 
   const getFarm = async () => {
     try {
-      const res = await axios.get(`/farm?limit=80&searchQuery=Nhà`);
+      const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/farm?limit=80&searchQuery=Nhà`);
       setFarms(res.data.farms);
     } catch (error) {
       console.log(error);
@@ -87,7 +87,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
       ? product.production_date.props.originalDate
       : product.production_date;
     try {
-      const res = await axios.patch(`/processors/${data._id}`, product);
+      const res = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/processors/${data._id}`, product);
       toast.current.show({
         severity: "success",
         summary: "Sửa hoàn thành",
