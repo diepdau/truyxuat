@@ -181,7 +181,7 @@ export default function SizeDemo() {
     return (
       <>
         <TabView>
-          <TabPanel header="Thông tin">
+          <TabPanel header="Thông tin đóng gói">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
             <ProductPatchs_Update
               data={data}
@@ -189,21 +189,12 @@ export default function SizeDemo() {
               isUpdate={true}
             />
           </TabPanel>
-          <TabPanel header="Thu hoạch sản phẩm">
+          <TabPanel header="Chi tiết tổng sản phẩm">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
             <Harvest_Update
               data={data.harvest}
               reloadData={reloadData}
               isProcessors={true}
-            />
-          </TabPanel>
-          <TabPanel header="Thông tin sản phẩm">
-            {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Product_Infos_Actives
-              // data={data}
-              reloadData={reloadData}
-              isProcessors={true}
-              id_product_info={data.product_info}
             />
           </TabPanel>
 

@@ -38,7 +38,9 @@ function YourComponent({
   const fetchData = async () => {
     if (id_product_info) {
       try {
-        const a = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/product-infos/${id_product_info}`);
+        const a = await axios.get(
+          `https://agriculture-traceability.vercel.app/api/v1/product-infos/${id_product_info}`
+        );
         setProduct(a.data.productInfo);
       } catch (error) {
         console.log("Error", error);
@@ -52,7 +54,10 @@ function YourComponent({
 
     try {
       if (data) {
-        await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/product-infos/${data._id}`, product);
+        await axios.patch(
+          `https://agriculture-traceability.vercel.app/api/v1/product-infos/${data._id}`,
+          product
+        );
         toast.current.show({
           severity: "success",
           summary: "Sửa hoàn thành",
@@ -62,7 +67,10 @@ function YourComponent({
           ...product,
         });
       } else {
-        await axios.post(`https://agriculture-traceability.vercel.app/api/v1/product-infos`, product);
+        await axios.post(
+          `https://agriculture-traceability.vercel.app/api/v1/product-infos`,
+          product
+        );
         toast.current.show({
           severity: "success",
           summary: "Thêm hoàn thành",
@@ -105,12 +113,13 @@ function YourComponent({
       <Toast className="toast" ref={toast} />
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
-          <h4>Thông tin sản phẩm</h4>
+          <h4>Loại sản phẩm</h4>
           <InputText
             name="name"
             value={product.name}
             style={{ width: "100%" }}
             onChange={handleChange}
+            readOnly={isProcessors}
           />
           {errors.name && <small className="p-error">{errors.name}</small>}
 
@@ -121,34 +130,50 @@ function YourComponent({
             value={product.storage_method}
             style={{ width: "100%" }}
             onChange={handleChange}
+            disabled={isProcessors}
           />
           {errors.storage_method && (
             <small className="p-error">{errors.storage_method}</small>
           )}
-          {!isProcessors && (
-            <Button
-              className="button_Dia"
-              id="Save"
-              label={isUpdate ? "Cập nhật" : "Lưu"}
-              severity="success"
-              onClick={handleCreate}
+          {isProcessors && (
+            <>
+              <h4>Mô tả</h4>
+              <InputTextarea
+                autoResize
+                name="description"
+                value={product.description}
+                style={{ width: "100%" }}
+                onChange={handleChange}
+                disabled={isProcessors}
+              />
+            </>
+          )}
+        </div>
+        {!isProcessors && (
+          <div style={{ flex: 1 }}>
+            <h4>Mô tả</h4>
+            <InputTextarea
+              autoResize
+              name="description"
+              value={product.description}
+              style={{ width: "100%" }}
+              onChange={handleChange}
             />
-          )}
-        </div>
-        <div style={{ flex: 1 }}>
-          <h4>Mô tả</h4>
-          <InputTextarea
-            autoResize
-            name="description"
-            value={product.description}
-            style={{ width: "100%" }}
-            onChange={handleChange}
-          />
-          {errors.description && (
-            <small className="p-error">{errors.description}</small>
-          )}
-        </div>
+            {errors.description && (
+              <small className="p-error">{errors.description}</small>
+            )}
+          </div>
+        )}
       </div>
+      {!isProcessors && (
+        <Button
+          className="button_Dia"
+          id="Save"
+          label={isUpdate ? "Cập nhật" : "Lưu"}
+          severity="success"
+          onClick={handleCreate}
+        />
+      )}
     </div>
   );
 }

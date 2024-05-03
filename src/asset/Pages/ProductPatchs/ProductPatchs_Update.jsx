@@ -8,7 +8,7 @@ import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import Harvest_Update from "../Harvest/Harvest_Update.jsx";
-import Product_Infos_Actives from "../Product_Infos/Product_Infos_Active.jsx"
+import Product_Infos_Actives from "../Product_Infos/Product_Infos_Active.jsx";
 
 const emptyProduct = {
   name: "",
@@ -33,7 +33,6 @@ function YourComponent({ data, reloadData, isUpdate }) {
   const [selectedProductInfos, setSelectedProductInfos] = useState(null);
   const [productDescription, setProductDescription] = useState("");
 
-
   const [Farms, setFarms] = useState({});
   const [selectedFarm, setSelectedFarm] = useState(null);
   const toast = useRef(null);
@@ -45,7 +44,9 @@ function YourComponent({ data, reloadData, isUpdate }) {
 
   const getProductInfos = async () => {
     try {
-      const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/product-infos?limit=60`);
+      const res = await axios.get(
+        `https://agriculture-traceability.vercel.app/api/v1/product-infos?limit=60`
+      );
       setProductInfos(res.data.products);
     } catch (error) {
       console.log(error);
@@ -54,7 +55,9 @@ function YourComponent({ data, reloadData, isUpdate }) {
 
   const getFarm = async () => {
     try {
-      const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/farm?limit=80&searchQuery=Nhà`);
+      const res = await axios.get(
+        `https://agriculture-traceability.vercel.app/api/v1/farm?limit=80&searchQuery=Nhà`
+      );
       setFarms(res.data.farms);
     } catch (error) {
       console.log(error);
@@ -87,7 +90,10 @@ function YourComponent({ data, reloadData, isUpdate }) {
       ? product.production_date.props.originalDate
       : product.production_date;
     try {
-      const res = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/processors/${data._id}`, product);
+      const res = await axios.patch(
+        `https://agriculture-traceability.vercel.app/api/v1/processors/${data._id}`,
+        product
+      );
       toast.current.show({
         severity: "success",
         summary: "Sửa hoàn thành",
@@ -142,68 +148,92 @@ function YourComponent({ data, reloadData, isUpdate }) {
   } else {
     productionDate = new Date(product.production_date);
   }
-  const ProductInfosName =
-    product.product_info && product.product_info
-      ? product.product_info
-      : "";
-  const FarmName =
-    product.location && product.location ? product.location : "";
+  let releaseDate = ""; // Declare formattedDate variable
+
+  if (
+    product.release_date &&
+    typeof product.release_date === "object" &&
+    product.release_date.props
+  ) {
+    releaseDate = product.release_date.props.originalDate;
+  } else {
+    releaseDate = new Date(product.release_date);
+  }
+  const FarmName = product.location && product.location ? product.location : "";
   return (
     <div>
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <Toast className="toast" ref={toast} />
-          {/* <h4>Tên</h4>
+          <h4>Tên sản phẩm</h4>
           <InputText
+            disabled
             name="name"
-            value={product.name}
+            value={product.harvest.name}
             style={{ width: "100%" }}
             onChange={handleChange}
           />
-          {errors.name && <small className="p-error">{errors.name}</small>} */}
-          <h4>Giá</h4>
-          <InputText
-            name="price"
-            type="number"
-            value={product.price}
-            autoResize
-            style={{ width: "100%" }}
-            onChange={handleChange}
-          />
-          {errors.price && <small className="p-error">{errors.price}</small>}
-          <h4>Khối lượng tịnh</h4>
-          <InputText
-            name="net_weight"
-            type="number"
-            value={product.net_weight}
-            autoResize
-            style={{ width: "100%" }}
-            onChange={handleChange}
-          />
-          {errors.net_weight && (
-            <small className="p-error">{errors.net_weight}</small>
-          )}
-           {/* <h4>Đơn vị giá</h4>
-          <InputText
-            name="VND"
-            value={product.current_unit}
-            style={{ width: "100%" }}
-            onChange={handleChange}
-          />
-          {errors.current_unit && (
-            <small className="p-error">{errors.current_unit}</small>
-          )} */}
-          <h4>ĐVT</h4>
-          <Dropdown
-            name="Đơn vị tính"
-            value={product.unit}
-            options={unitOptions}
-            onChange={handleUnitChange}
-            placeholder="Chọn đơn vị tính"
-            style={{ width: "100%" }}
-          />
-          {errors.unit && <small className="p-error">{errors.unit}</small>}
-          <h4>Vị trí</h4>
+          {errors.name && <small className="p-error">{errors.name}</small>}
+          <div className="input-container">
+            <div style={{ width: "100%", marginRight: "2vh" }}>
+              <h4>Giá</h4>
+              <InputText
+                name="price"
+                type="number"
+                value={product.price}
+                autoResize
+                style={{ width: "100%" }}
+                onChange={handleChange}
+              />
+              {errors.price && (
+                <small className="p-error">{errors.price}</small>
+              )}
+            </div>
+            <div style={{ width: "100%" }}>
+              <h4>ĐVT</h4>
+              <Dropdown
+                name="Đơn vị tính"
+                value={product.unit}
+                options={unitOptions}
+                onChange={handleUnitChange}
+                placeholder="Chọn đơn vị tính"
+                style={{ width: "100%" }}
+              />
+              {errors.unit && <small className="p-error">{errors.unit}</small>}
+            </div>
+          </div>
+
+          <div className="input-container">
+            <div style={{ width: "100%", marginRight: "2vh" }}>
+              <h4>Số lượng</h4>
+              <InputText
+                type="number"
+                name="quantity"
+                value={product.quantity}
+                style={{ width: "100%" }}
+                onChange={handleChange}
+              />
+              {errors.quantity && (
+                <small className="p-error">{errors.quantity}</small>
+              )}
+            </div>
+            <div style={{ width: "100%" }}>
+              <h4>Khối lượng tịnh</h4>
+              <InputText
+                name="net_weight"
+                type="number"
+                value={product.net_weight}
+                autoResize
+                style={{ width: "100%" }}
+                onChange={handleChange}
+              />
+              {errors.net_weight && (
+                <small className="p-error">{errors.net_weight}</small>
+              )}
+            </div>
+          </div>
+
+          <h4>Nơi đóng gói</h4>
           <Dropdown
             placeholder={FarmName}
             type="text"
@@ -220,56 +250,44 @@ function YourComponent({ data, reloadData, isUpdate }) {
           {errors.location && (
             <small className="p-error">{errors.location}</small>
           )}
-          
-          {/* <h4>Thông tin</h4>
-          <Dropdown
-            placeholder={ProductInfosName}
-            type="text"
-            value={selectedProductInfos}
-            options={ProductInfos}
-            optionLabel="name"
-            onChange={handleProductChange}
-            style={{ width: "100%" }}
-          />
-          {errors.productInfos && (
-            <small className="p-error">{errors.productInfos}</small>
-          )}
-          <h4>Mô tả</h4>
-          <InputTextarea
-            readOnly
-            autoResize
-            value={productDescription}
-            style={{ width: "100%" }}
-          />
-          {errors.product && (
-            <small className="p-error">{errors.product}</small>
-          )} */}
-          <h4>Số lượng</h4>
-          <InputText
-            type="number"
-            name="quantity"
-            value={product.quantity}
-            style={{ width: "100%" }}
-            onChange={handleChange}
-          />
-          {errors.quantity && (
-            <small className="p-error">{errors.quantity}</small>
-          )}
-          {/* <h4>Ngày sản xuất</h4>
-          <Calendar
-            inputId="cal_date"
-            name="production_date"
-            style={{ width: "100%" }}
-            value={
-              productionDate instanceof Date
-                ? productionDate
-                : new Date(productionDate)
-            }
-            onChange={handleChange}
-          />
-          {errors.production_date && (
-            <small className="p-error">{errors.production_date}</small>
-          )} */}
+        </div>
+        <div style={{ flex: 1 }}>
+          <div className="input-container">
+            <div style={{ width: "100%", marginRight: "2vh" }}>
+              <h4>Ngày sản xuất</h4>
+              <Calendar
+                name="production_date"
+                style={{ width: "100%" }}
+                value={
+                  productionDate instanceof Date
+                    ? productionDate
+                    : new Date(productionDate)
+                }
+                onChange={handleChange}
+              />
+
+              {errors.production_date && (
+                <small className="p-error">{errors.production_date}</small>
+              )}
+            </div>
+            <div style={{ width: "100%" }}>
+              <h4>Ngày hết hạn</h4>
+              <Calendar
+                inputId="cal_date"
+                name="release_date"
+                style={{ width: "100%" }}
+                value={
+                  releaseDate instanceof Date
+                    ? releaseDate
+                    : new Date(releaseDate)
+                }
+                onChange={handleChange}
+              />
+              {errors.release_date && (
+                <small className="p-error">{errors.release_date}</small>
+              )}
+            </div>
+          </div>
           <h4>Hạn sử dụng</h4>
           <InputTextarea
             type="number"
@@ -279,6 +297,15 @@ function YourComponent({ data, reloadData, isUpdate }) {
             onChange={handleChange}
           />
           {errors.dte && <small className="p-error">{errors.dte}</small>}
+
+          <div className="Product_info">
+            {/* eslint-disable-next-line react/jsx-pascal-case */}
+            <Product_Infos_Actives
+              reloadData={reloadData}
+              isProcessors={true}
+              id_product_info={data.product_info}
+            />
+          </div>
         </div>
       </div>
       <Button
