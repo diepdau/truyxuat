@@ -22,7 +22,7 @@ const FarmProduct = ({ reloadData }) => {
   }, []);
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && herds) {
       const data = {
         labels: herds.map((herd) => herd.name),
         datasets: [

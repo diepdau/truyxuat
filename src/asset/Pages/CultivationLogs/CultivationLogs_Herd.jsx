@@ -55,7 +55,7 @@ export default function CulivationLogs_Herd({ idherd }) {
       setProducts(data.cultivationLogs);
       setTotalPages(data.totalPages);
     } catch (error) {
-      console.error("There was a problem with the fetch operation:", error);
+      console.log("There was a problem with the fetch operation:", error);
     }
   };
 

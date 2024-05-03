@@ -56,7 +56,7 @@ export default function SizeDemo() {
       setProducts(data.herds);
       setTotalPages(data.totalPages);
     } catch (error) {
-      console.error("Error", error);
+      console.log("Error", error);
     }
   };
 

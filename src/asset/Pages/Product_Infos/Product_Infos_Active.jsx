@@ -41,7 +41,7 @@ function YourComponent({
         const a = await axios.get(`/product-infos/${id_product_info}`);
         setProduct(a.data.productInfo);
       } catch (error) {
-        console.error("Error", error);
+        console.log("Error", error);
       }
     }
   };

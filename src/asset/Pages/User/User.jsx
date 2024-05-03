@@ -33,7 +33,7 @@ export default function User() {
           console.log(user);
         }
       } catch (error) {
-        console.error("Error fetching user details:", error);
+        console.log("Error fetching user details:", error);
       }
     };
     fetchUserDetails();

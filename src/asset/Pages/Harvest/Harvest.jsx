@@ -59,7 +59,7 @@ function Harvest({ isherdharvest }) {
         setHarvests(data.harvests);
         // setTotalPages(data.totalPages);
       } catch (error) {
-        console.error("There was a problem with the fetch operation:", error);
+        console.log("There was a problem with the fetch operation:", error);
       }
     } else {
       try {
@@ -75,7 +75,7 @@ function Harvest({ isherdharvest }) {
         setHarvests(data.harvests);
         setTotalPages(data.totalPages);
       } catch (error) {
-        console.error("There was a problem with the fetch operation:", error);
+        console.log("There was a problem with the fetch operation:", error);
       }
     }
   };
