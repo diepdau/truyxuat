@@ -1,8 +1,0 @@
-{
-    "rewrites": [
-      {
-        "proxy":"https://agriculture-traceability.vercel.app/api/v1/"
-      }
-    ]
-  }
-  
