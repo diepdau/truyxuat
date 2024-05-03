@@ -10,29 +10,16 @@ import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
 import ProductPatchs_Update from "./ProductPatchs_Update.jsx";
-import ProductPatchs_Create from "./ProductPatchs_Create.jsx";
-import Processors_Update from "../Processors/Processors_Update.jsx";
-import { Image } from "primereact/image";
 import ImageComponent from "../../../components/Images/Image.jsx";
-import Product_Update from "../Product/Product_Update.jsx";
 import "./ProductPatchs.css";
 import { Paginator } from "primereact/paginator";
 import DateConverter from "../../../components/Date/Date.jsx";
-
+import Harvest_Update from "../Harvest/Harvest_Update.jsx";
+import ProductPatchs_Create from "./ProductPatchs_Create.jsx";
+import { Image } from "primereact/image";
+import Product_Infos_Actives from "../Product_Infos/Product_Infos_Active.jsx"
 const emptyProduct = {
   _id: null,
-  processor: {
-    _id: "",
-    name: "",
-  },
-  product: {
-    _id: "",
-    name: "",
-  },
-  quantity: "",
-  description: "",
-  production_date: null,
-  release_date: null,
 };
 export default function SizeDemo() {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -53,20 +40,17 @@ export default function SizeDemo() {
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        `/product-patchs?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+        `/processors?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
           value
         )}`
       );
       const data = await response.json();
-      data.productPatchs.forEach((element) => {
+      data.processor.forEach((element) => {
         element.production_date = (
           <DateConverter originalDate={element.production_date} />
         );
-        element.release_date = (
-          <DateConverter originalDate={element.release_date} />
-        );
       });
-      setProducts(data.productPatchs);
+      setProducts(data.processor);
       setTotalPages(data.totalPages);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
@@ -182,26 +166,18 @@ export default function SizeDemo() {
 
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/product-patchs/${product._id}`, product);
+      await axios.delete(`/processors/${product._id}`, product);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
     }
   };
-  const imageBodyTemplate = (rowData) => {
-    return (
-      <Image
-        src={rowData.product.qrcode}
-        className="shadow-2 border-round"
-        height="60"
-        preview
-      />
-    );
-  };
+
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
-    var url = `/product-patchs/upload/${product._id}`;
+    var url = `/processors/upload/${product._id}`;
+    console.log(data);
     return (
       <>
         <TabView>
@@ -213,22 +189,23 @@ export default function SizeDemo() {
               isUpdate={true}
             />
           </TabPanel>
-          <TabPanel header="Xử lý/đóng gói">
+          <TabPanel header="Thu hoạch sản phẩm">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Processors_Update
-              data={data.processor}
+            <Harvest_Update
+              data={data.harvest}
               reloadData={reloadData}
-              isProductPatchs={false}
+              isProcessors={true}
             />
           </TabPanel>
-          <TabPanel header="Sản phẩm">
+          <TabPanel header="Thông tin sản phẩm">
             {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Product_Update
-              data={data.product}
+            <Product_Infos_Actives
+              data={data.harvest}
               reloadData={reloadData}
-              isProductPatchs={false}
+              isProcessors={true}
             />
           </TabPanel>
+
           <TabPanel header="Hình ảnh">
             <ImageComponent
               uploadUrl={url}
@@ -237,6 +214,18 @@ export default function SizeDemo() {
             />
           </TabPanel>
         </TabView>
+      </>
+    );
+  };
+  const imageBodyTemplate = (rowData) => {
+    return (
+      <>
+        <Image
+          src={rowData.qr_code}
+          className="shadow-2 border-round"
+          height="80"
+          preview
+        />
       </>
     );
   };
@@ -250,13 +239,13 @@ export default function SizeDemo() {
   };
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Quản lý lô sản phẩm</h4>
+      <h4 className="m-0">Quản lý đóng gói</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
           value={input}
           onChange={(e) => handleChange(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>
@@ -290,15 +279,15 @@ export default function SizeDemo() {
             header="Qrcode"
             body={imageBodyTemplate}
           ></Column>
-          <Column
+          {/* <Column
             sortable
-            field="processor.name"
+            field="name"
             header="Nơi xử lí đóng gói"
             style={{ minWidth: "10rem" }}
-          ></Column>
+          ></Column> */}
           <Column
             sortable
-            field="product.name"
+            field="harvest.name"
             header="Sản phẩm"
             style={{ minWidth: "10rem" }}
           ></Column>
@@ -308,9 +297,10 @@ export default function SizeDemo() {
             header="Số lượng"
             style={{ minWidth: "10rem" }}
           ></Column>
+         
           <Column
-            field="release_date"
-            header="Ngày phát hành"
+            field="production_date"
+            header="Ngày sản xuất"
             style={{ minWidth: "14rem" }}
           ></Column>
           <Column
@@ -340,7 +330,7 @@ export default function SizeDemo() {
               className="pi pi-exclamation-triangle mr-3"
               style={{ fontSize: "2rem" }}
             />
-            {product && <span>Bạn có chắc chắn xóa những đàn này?</span>}
+            {product && <span>Bạn có chắc chắn xóa những đóng gói này?</span>}
           </div>
         </Dialog>
         <Dialog
@@ -372,7 +362,7 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <ProductPatchs_Update reloadData={reloadData} isUpdate={false} />
+          <ProductPatchs_Create reloadData={reloadData} isUpdate={false} />
         </Dialog>
       </div>
     </div>

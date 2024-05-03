@@ -33,8 +33,6 @@
     padding: 6px;
     color: rgb(77, 75, 75);
 }
-#Create{
-}
 #Luu{
     margin-top: 10px;
 }
@@ -52,3 +50,13 @@ h4 {
   .p-tabview .p-tabview-nav li .p-tabview-nav-link {
     border: solid #ffffff;
 }
+.p-image-preview-enter-done{
+    width: 300px;
+}
+.Product_info {
+    border: 2px solid hsl(0, 0%, 91%); /* Màu và độ dày của border */
+    border-radius: 10px; /* Độ cong của góc */
+    padding: 1.5vh; /* Khoảng cách giữa border và nội dung */
+    margin-top: 2vh;
+  }
+  

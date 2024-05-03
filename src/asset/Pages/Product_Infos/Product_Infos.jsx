@@ -7,34 +7,23 @@ import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import { Toast } from "primereact/toast";
-import "../Home/HerdsList.css";
-import { classNames } from 'primereact/utils';
 import { TabView, TabPanel } from "primereact/tabview";
-import Harvest_Update from "./Harvest_Update.jsx";
-import Harvest_Create from "./Harvest_Create.jsx";
-import Image from "../../../components/Images/Image.jsx";
-import Chart_Herds from "./Chart_Herds.jsx";
-import Chart_Products from "./Chart_Products.jsx";
-import "./Harvest.css";
-import { TriStateCheckbox } from 'primereact/tristatecheckbox';
+import Product_Infos_Active from "./Product_Infos_Active.jsx";
 import { Paginator } from "primereact/paginator";
-import DateConverter from "../../../components/Date/Date.jsx";
+import "./Product_Infos.css";
 const emptyProduct = {
   _id: null,
   name: "",
-  herd: "",
-  quantity: "",
-  unit: "",
-  date: "",
 };
-function Harvest({ isherdharvest }) {
+export default function ProductInfos() {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-  const [harvests, setHarvests] = useState([]);
+  const [products, setProducts] = useState([]);
   const [product, setProduct] = useState(emptyProduct);
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
@@ -44,45 +33,25 @@ function Harvest({ isherdharvest }) {
   }, [currentPage, currentLimit]);
 
   const fetchData = async (value = "") => {
-    if (isherdharvest) {
-      try {
-        // const response = await fetch(
-        //   `/harvests/herd/${isherdharvest}&limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
-        //     value
-        //   )}`
-        // );
-        const response = await fetch(`/harvests/herd/${isherdharvest}`);
-        const data = await response.json();
-        data.harvests.forEach((element) => {
-          element.date = <DateConverter originalDate={element.date} />;
-        });
-        setHarvests(data.harvests);
-        // setTotalPages(data.totalPages);
-      } catch (error) {
-        console.error("There was a problem with the fetch operation:", error);
-      }
-    } else {
-      try {
-        const response = await fetch(
-          `/harvests?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
-            value
-          )}`
-        );
-        const data = await response.json();
-        data.harvests.forEach((element) => {
-          element.date = <DateConverter originalDate={element.date} />;
-        });
-        setHarvests(data.harvests);
-        setTotalPages(data.totalPages);
-      } catch (error) {
-        console.error("There was a problem with the fetch operation:", error);
-      }
+    try {
+      const response = await fetch(
+        `/product-infos?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+          value
+        )}`
+      );
+      const data = await response.json();
+      setProducts(data.products);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
     }
   };
+
   const onPageChange = (event) => {
     setCurrentPage(+event.page + 1);
     setCurrentLimit(event.rows);
   };
+
   const openNew = () => {
     setProductDialog(true);
   };
@@ -125,7 +94,7 @@ function Harvest({ isherdharvest }) {
     }
   };
   const deleteProduct = () => {
-    let _products = harvests.filter((val) => val._id === product._id);
+    let _products = products.filter((val) => val._id === product._id);
     const firstObject = _products[0];
     handleDeleteUser(firstObject);
     setDeleteProductDialog(false);
@@ -134,7 +103,6 @@ function Harvest({ isherdharvest }) {
       summary: "Đã xóa",
       life: 3000,
     });
-    reloadData();
   };
 
   const deleteProductDialogFooter = (
@@ -188,7 +156,7 @@ function Harvest({ isherdharvest }) {
 
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/harvests/${product._id}`, product);
+      await axios.delete(`/product-infos/${product._id}`, product);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -197,18 +165,15 @@ function Harvest({ isherdharvest }) {
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
-    var url = `/harvests/upload/${product._id}`;
     return (
       <>
         <TabView>
           <TabPanel header="Thông tin">
-            <Harvest_Update data={data} reloadData={reloadData} />
-          </TabPanel>
-          <TabPanel header="Hình ảnh">
-            <Image
-              uploadUrl={url}
-              images={data.images}
+            {/* eslint-disable-next-line react/jsx-pascal-case */}
+            <Product_Infos_Active
+              data={data}
               reloadData={reloadData}
+              isUpdate={true}
             />
           </TabPanel>
         </TabView>
@@ -223,31 +188,9 @@ function Harvest({ isherdharvest }) {
     setInput(value);
     fetchData(value);
   };
-  const isProcessedBodyTemplate = (rowData) => {
-    return <i className={classNames('pi', { 'text-green-500 pi-check-circle': rowData.isProcessed, 'text-red-500 pi-times-circle': !rowData.isProcessed })}></i>;
-};
-const isProcessedFilterTemplate = (isProcessed) => {
-  return (
-      <div className="flex align-items-center gap-2">
-          <label htmlFor="verified-filter" className="font-bold">
-              Verified
-          </label>
-          <TriStateCheckbox inputId="verified-filter" value={isProcessed.value} onChange={(e) => isProcessed.filterCallback(e.value)} />
-      </div>
-  );
-};
-const stockBodyTemplate = (rowData) => {
-  const stockClassName = classNames('border-circle w-2rem h-2rem inline-flex font-bold justify-content-center align-items-center text-sm', {
-      'bg-red-100 text-red-900': rowData.quantity === 0,
-      'bg-blue-100 text-blue-900': rowData.quantity > 0 && rowData.quantity < 10,
-      'bg-teal-100 text-teal-900': rowData.quantity > 10
-  });
-
-  return <div className={stockClassName}>{rowData.quantity}</div>;
-};
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Quản lý thu hoạch</h4>
+      <h4 className="m-0">Quản lý mô tả sản phẩm</h4>
       <span className="p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -258,17 +201,10 @@ const stockBodyTemplate = (rowData) => {
       </span>
     </div>
   );
+
   return (
     <div>
       <Toast className="toast" ref={toast} />
-
-      {!isherdharvest && (
-        <>
-          {/* <Chart_Herds /> */}
-          <Chart_Products reloadData={reloadData} />
-        </>
-      )}
-
       <div className="card">
         <Toolbar
           className="mb-4"
@@ -276,8 +212,7 @@ const stockBodyTemplate = (rowData) => {
           // right={rightToolbarTemplate}
         ></Toolbar>
         <DataTable
-          header={header}
-          value={harvests}
+          value={products}
           selectionMode={"row"}
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
@@ -287,6 +222,7 @@ const stockBodyTemplate = (rowData) => {
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
           tableStyle={{ minWidth: "68rem" }}
+          header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
@@ -294,38 +230,8 @@ const stockBodyTemplate = (rowData) => {
             sortable
             field="name"
             header="Tên sản phẩm"
-            value={product.name}
-            style={{ minWidth: "10rem" }}
+            style={{ minWidth: "200px" }}
           ></Column>
-          <Column
-            sortable
-            field="quantity"
-            header="Số lượng"
-            // body={stockBodyTemplate}
-            style={{ minWidth: "5rem" }}
-          ></Column>
-          <Column
-            sortable
-            field="unit"
-            header="ĐVT"
-            value={product.unit}
-            style={{ minWidth: "5rem" }}
-          ></Column>
-          <Column
-            sortable
-            field="herd.name"
-            header="Tên đàn"
-            value={product.herd.name}
-            style={{ minWidth: "10rem" }}
-          ></Column>
-          <Column
-            sortable
-            field="date"
-            header="Ngày thu hoạch"
-            value={product.date}
-            style={{ minWidth: "8rem" }}
-          ></Column>
-           <Column field="isProcessed"  header="Trạng thái" dataType="boolean" bodyClassName="text-center" style={{ minWidth: '5rem' }} body={isProcessedBodyTemplate}filter filterElement={isProcessedFilterTemplate}  />
           <Column
             body={actionBodyTemplate}
             headerStyle={{ width: "10%", minWidth: "4rem" }}
@@ -353,7 +259,7 @@ const stockBodyTemplate = (rowData) => {
               className="pi pi-exclamation-triangle mr-3"
               style={{ fontSize: "2rem" }}
             />
-            {product && <span>Bạn có chắc chắn xóa những đàn này?</span>}
+            {product && <span>Bạn có chắc chắn xóa những thông tin này?</span>}
           </div>
         </Dialog>
         <Dialog
@@ -384,10 +290,10 @@ const stockBodyTemplate = (rowData) => {
           visible={productDialog}
           onHide={() => setProductDialog(false)}
         >
-          <Harvest_Create reloadData={reloadData} idherd={isherdharvest} />
+          {/* eslint-disable-next-line react/jsx-pascal-case */}
+          <Product_Infos_Active reloadData={reloadData} />
         </Dialog>
       </div>
     </div>
   );
 }
-export default Harvest;

@@ -7,41 +7,55 @@ import "./ProductPatchs.css";
 import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
+import Harvest_Update from "../Harvest/Harvest_Update.jsx";
+import Product_Infos_Actives from "../Product_Infos/Product_Infos_Active.jsx"
 
 const emptyProduct = {
+  name: "",
+  price: "",
+  net_weight: "",
+  unit: "",
+  dte: "",
+  location: "",
   quantity: "",
-  description: "",
-  production_date: "",
-  release_date: "",
+  harvest: "",
+  product_info: new Date(),
+  // production_date: "",
 };
-
+const unitOptions = [
+  { label: "Đồng", value: "Đồng" },
+  { label: "VND", value: "VND" },
+];
 function YourComponent({ data, reloadData, isUpdate }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
-  const [Processors, setProcessors] = useState({});
-  const [selectedProcessors, setSelectedProcessors] = useState(null);
-  const [Products, setProducts] = useState({});
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [ProductInfos, setProductInfos] = useState({});
+  const [selectedProductInfos, setSelectedProductInfos] = useState(null);
+  const [productDescription, setProductDescription] = useState("");
+
+
+  const [Farms, setFarms] = useState({});
+  const [selectedFarm, setSelectedFarm] = useState(null);
   const toast = useRef(null);
 
   useEffect(() => {
-    getProcessors();
-    getProduct();
+    getProductInfos();
+    getFarm();
   }, []);
 
-  const getProcessors = async () => {
+  const getProductInfos = async () => {
     try {
-      const res = await axios.get(`/processors?limit=60`);
-      setProcessors(res.data.processor);
+      const res = await axios.get(`/product-infos?limit=60`);
+      setProductInfos(res.data.products);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const getProduct = async () => {
+  const getFarm = async () => {
     try {
-      const res = await axios.get(`/products?limit=60`);
-      setProducts(res.data.products);
+      const res = await axios.get(`/farm?limit=80&searchQuery=Nhà`);
+      setFarms(res.data.farms);
     } catch (error) {
       console.log(error);
     }
@@ -53,80 +67,66 @@ function YourComponent({ data, reloadData, isUpdate }) {
       [name]: value,
     });
   };
-
+  const handleUnitChange = (event) => {
+    setProduct({
+      ...product,
+      unit: event.value,
+    });
+  };
+  const handleProductChange = (e) => {
+    setSelectedProductInfos(e.value);
+    product.product_info = e.value._id;
+    setProductDescription(e.value.description); // Cập nhật mô tả khi chọn sản phẩm
+  };
   const handle = async () => {
     if (!validate()) {
       return;
     }
-    if (isUpdate) {
-      console.log(product.production_date.props);
-      product.production_date = product.production_date.props
-        ? product.production_date.props.originalDate
-        : product.production_date;
-      product.release_date = product.release_date.props
-        ? product.release_date.props.originalDate
-        : product.release_date;
-      try {
-        const res = await axios.patch(`/product-patchs/${data._id}`, product);
-        toast.current.show({
-          severity: "success",
-          summary: "Sửa hoàn thành",
-          life: 3000,
-        });
-        console.log(res);
-        reloadData();
-        setProduct(product);
-      } catch (error) {
-        console.log("Error update:", error);
-      }
-    } else {
-      try {
-        const res = await axios.post(`/product-patchs`, product);
-        toast.current.show({
-          severity: "success",
-          summary: "Thêm hoàn thành",
-          life: 3000,
-        });
-        console.log(res);
-        reloadData();
-        setProduct(emptyProduct);
-      } catch (error) {
-        console.log("Error update:", error);
-      }
+    console.log(product.production_date.props);
+    product.production_date = product.production_date.props
+      ? product.production_date.props.originalDate
+      : product.production_date;
+    try {
+      const res = await axios.patch(`/processors/${data._id}`, product);
+      toast.current.show({
+        severity: "success",
+        summary: "Sửa hoàn thành",
+        life: 3000,
+      });
+      console.log(res);
+      reloadData();
+      setProduct(product);
+    } catch (error) {
+      console.log("Error update:", error);
     }
   };
 
   const validate = () => {
     let isValid = true;
     const newErrors = {};
-    if (!product.description || product.description.trim() === "") {
-      newErrors.description = "Mô tả không được để trống";
+    if (!product.price || product.price <= 0) {
+      newErrors.price = "giá phải lớn hơn 0 và không được để trống";
       isValid = false;
     }
     if (!product.quantity || product.quantity <= 0) {
-      newErrors.quantity = "quantity phải lớn hơn 0 và không được để trống";
+      newErrors.quantity = "Số lượng phải lớn hơn 0 và không được để trống";
+      isValid = false;
+    }
+    if (!product.net_weight || product.net_weight <= 0) {
+      newErrors.quantity = "Số lượng phải lớn hơn 0 và không được để trống";
       isValid = false;
     }
     if (!isUpdate) {
-      if (!selectedProduct) {
-        newErrors.product = "product is required.";
+      if (!selectedFarm) {
+        newErrors.location = "location is required.";
         isValid = false;
       }
-
-      if (!selectedProcessors) {
-        newErrors.processor = "processor is required.";
+      if (!selectedProductInfos) {
+        newErrors.processor = "ProductInfos is required.";
         isValid = false;
       }
     }
 
-    if (
-      (isValid && productionDate >= releaseDate) ||
-      productionDate === releaseDate
-    ) {
-      newErrors.production_date = "Ngày sản xuất phải nhỏ hơn ngày hết hạn";
-      newErrors.release_date = "Ngày hết hạn phải lớn hơn ngày sản xuất";
-      isValid = false;
-    }
     setErrors(newErrors);
     return isValid;
   };
@@ -142,85 +142,108 @@ function YourComponent({ data, reloadData, isUpdate }) {
   } else {
     productionDate = new Date(product.production_date);
   }
-  let releaseDate = ""; // Declare formattedDate variable
-
-  if (
-    product.release_date &&
-    typeof product.release_date === "object" &&
-    product.release_date.props
-  ) {
-    releaseDate = product.release_date.props.originalDate;
-  } else {
-    releaseDate = new Date(product.release_date);
-  }
-  const ProductName =
-    product.product && product.product.name ? product.product.name : "";
-  const ProcessorsName =
-    product.processor && product.processor.name ? product.processor.name : "";
+  const ProductInfosName =
+    product.product_info && product.product_info
+      ? product.product_info
+      : "";
+  const FarmName =
+    product.location && product.location ? product.location : "";
   return (
     <div>
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <Toast className="toast" ref={toast} />
-          {isUpdate && (
-            <>
-              <h4>[Id lô hàng]</h4>
-              <InputText
-                disabled
-                name="_id"
-                value={product._id}
-                autoResize
-                style={{ width: "100%" }}
-                onChange={handleChange}
-              />
-            </>
-          )}
-
-          <h4>Mô tả</h4>
-          <InputTextarea
-            name="description"
-            value={product.description}
+          {/* <h4>Tên</h4>
+          <InputText
+            name="name"
+            value={product.name}
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.name && <small className="p-error">{errors.name}</small>} */}
+          <h4>Giá</h4>
+          <InputText
+            name="price"
+            type="number"
+            value={product.price}
             autoResize
             style={{ width: "100%" }}
             onChange={handleChange}
           />
-          {errors.description && (
-            <small className="p-error">{errors.description}</small>
+          {errors.price && <small className="p-error">{errors.price}</small>}
+          <h4>Khối lượng tịnh</h4>
+          <InputText
+            name="net_weight"
+            type="number"
+            value={product.net_weight}
+            autoResize
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.net_weight && (
+            <small className="p-error">{errors.net_weight}</small>
           )}
-          <h4>Xử lý đóng gói</h4>
+           {/* <h4>Đơn vị giá</h4>
+          <InputText
+            name="VND"
+            value={product.current_unit}
+            style={{ width: "100%" }}
+            onChange={handleChange}
+          />
+          {errors.current_unit && (
+            <small className="p-error">{errors.current_unit}</small>
+          )} */}
+          <h4>ĐVT</h4>
           <Dropdown
-            placeholder={ProcessorsName}
+            name="Đơn vị tính"
+            value={product.unit}
+            options={unitOptions}
+            onChange={handleUnitChange}
+            placeholder="Chọn đơn vị tính"
+            style={{ width: "100%" }}
+          />
+          {errors.unit && <small className="p-error">{errors.unit}</small>}
+          <h4>Vị trí</h4>
+          <Dropdown
+            placeholder={FarmName}
             type="text"
-            value={selectedProcessors}
-            options={Processors}
+            value={selectedFarm}
+            options={Farms}
             optionLabel="name"
             onChange={(e) => {
-              setSelectedProcessors(e.value);
-              product.processor = e.value._id;
+              setSelectedFarm(e.value);
+              product.location = e.value._id;
             }}
             style={{ width: "100%" }}
           />
-          {errors.processor && (
-            <small className="p-error">{errors.processor}</small>
+
+          {errors.location && (
+            <small className="p-error">{errors.location}</small>
           )}
-          <h4>Sản phẩm</h4>
+          
+          {/* <h4>Thông tin</h4>
           <Dropdown
-            placeholder={ProductName}
+            placeholder={ProductInfosName}
             type="text"
-            value={selectedProduct}
-            options={Products}
+            value={selectedProductInfos}
+            options={ProductInfos}
             optionLabel="name"
-            onChange={(e) => {
-              setSelectedProduct(e.value);
-              product.product = e.value._id;
-            }}
+            onChange={handleProductChange}
+            style={{ width: "100%" }}
+          />
+          {errors.productInfos && (
+            <small className="p-error">{errors.productInfos}</small>
+          )}
+          <h4>Mô tả</h4>
+          <InputTextarea
+            readOnly
+            autoResize
+            value={productDescription}
             style={{ width: "100%" }}
           />
           {errors.product && (
             <small className="p-error">{errors.product}</small>
-          )}
-        </div>
-        <div style={{ flex: 1 }}>
+          )} */}
           <h4>Số lượng</h4>
           <InputText
             type="number"
@@ -232,7 +255,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
           {errors.quantity && (
             <small className="p-error">{errors.quantity}</small>
           )}
-          <h4>Ngày sản xuất</h4>
+          {/* <h4>Ngày sản xuất</h4>
           <Calendar
             inputId="cal_date"
             name="production_date"
@@ -246,20 +269,16 @@ function YourComponent({ data, reloadData, isUpdate }) {
           />
           {errors.production_date && (
             <small className="p-error">{errors.production_date}</small>
-          )}
-          <h4>Ngày phát hành</h4>
-          <Calendar
-            inputId="cal_date"
-            name="release_date"
+          )} */}
+          <h4>Hạn sử dụng</h4>
+          <InputTextarea
+            type="number"
+            name="dte"
+            value={product.dte}
             style={{ width: "100%" }}
-            value={
-              releaseDate instanceof Date ? releaseDate : new Date(releaseDate)
-            }
             onChange={handleChange}
           />
-          {errors.release_date && (
-            <small className="p-error">{errors.release_date}</small>
-          )}
+          {errors.dte && <small className="p-error">{errors.dte}</small>}
         </div>
       </div>
       <Button

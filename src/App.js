@@ -29,7 +29,7 @@ import Products  from "./asset/Pages/Product/Product.jsx";
 import Treatments  from "./asset/Pages/Treatments/Treatments.jsx";
 import Main from "./components/Sidebar/Main.jsx";
 import ForgotPasswordPage from "./asset/Pages/Login/ForgotPassword.jsx";
-
+import ProductInfos from "./asset/Pages/Product_Infos/Product_Infos.jsx";
 function App() {
 const Layout = () => {
   const { currentUser } = useContext(AuthContext);
@@ -129,6 +129,10 @@ const router = createBrowserRouter([
       {
         path: "/dieu-tri",
         element: <Treatments  />,
+      },
+      {
+        path: "/thong-tin",
+        element: <ProductInfos  />,
       },
      
     ],

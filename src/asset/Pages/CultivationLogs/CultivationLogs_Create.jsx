@@ -9,7 +9,7 @@ import { Calendar } from "primereact/calendar";
 const emptyProduct = {
   name: "",
   description: "",
-  date: new Date().toISOString().slice(0, 10), // Lấy ngày hiện tại dưới dạng chuỗi
+  date: new Date(), // Lấy ngày hiện tại dưới dạng chuỗi
 };
 
 function YourComponent({ reloadData,herd_id }) {

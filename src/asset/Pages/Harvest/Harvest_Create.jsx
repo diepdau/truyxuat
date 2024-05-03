@@ -14,6 +14,7 @@ const emptyProduct = {
   quantity: "",
   unit: null,
   date: new Date(),
+  description:"",
 };
 const unitOptions = [
   { label: "Cân", value: "Cân" },
@@ -66,7 +67,6 @@ function Harvest_Create({ reloadData, idherd }) {
     if (!validate()) {
       return;
     }
-    console.log("xxxxx", product);
     try {
       await axios.post(`/harvests`, product);
       toast.current.show({
@@ -152,32 +152,48 @@ function Harvest_Create({ reloadData, idherd }) {
             onChange={handleChange}
           />
           {errors.name && <small className="p-error">{errors.name}</small>}
+          <div className="input-container">
+            <div style={{ width: "100%", marginRight: "2vh" }}>
+              <h4>Số lượng</h4>
+              <InputText
+                type="number"
+                name="quantity"
+                value={product.quantity}
+                style={{ width: "100%" }}
+                onChange={handleChange}
+              />
+              {errors.quantity && (
+                <small className="p-error">{errors.quantity}</small>
+              )}
+            </div>
+            <div style={{ width: "100%" }}>
+              <h4>ĐVT</h4>
+              <Dropdown
+                name="Đơn vị tính"
+                value={product.unit}
+                options={unitOptions}
+                onChange={handleUnitChange}
+                placeholder="Chọn đơn vị tính"
+                style={{ width: "100%" }}
+              />
+              {errors.unit && <small className="p-error">{errors.unit}</small>}
+            </div>
+          </div>
         </div>
 
         {/* Cột phải */}
         <div style={{ flex: 1 }}>
-          <h4>Số lượng</h4>
-          <InputText
-            type="number"
-            name="quantity"
-            value={product.quantity}
+        <h4>Mô tả</h4>
+          <InputTextarea
+            name="description"
+            value={product.description}
+            autoResize
             style={{ width: "100%" }}
             onChange={handleChange}
           />
-          {errors.quantity && (
-            <small className="p-error">{errors.quantity}</small>
-          )}
-
-          <h4>Unit</h4>
-          <Dropdown
-            name="Đơn vị tính"
-            value={product.unit}
-            options={unitOptions}
-            onChange={handleUnitChange}
-            placeholder="Select a unit"
-            style={{ width: "100%" }}
-          />
-          {errors.unit && <small className="p-error">{errors.unit}</small>}
+          {/* {errors.description && (
+            <small className="p-error">{errors.description}</small>
+          )} */}
 
           <h4>Ngày</h4>
           <Calendar

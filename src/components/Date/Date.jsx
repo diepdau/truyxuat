@@ -18,7 +18,7 @@ const DateConverter = ({ originalDate }) => {
   // const formattedTime = `${hour}:${minute} ${ampm}`;
 
   // Tạo chuỗi ngày tháng mới
-  const formattedDate = `${day}/${month}/${year}`;
+  const formattedDate = `${month}/${day}/${year}`;
   return formattedDate;
 };
 export default DateConverter;

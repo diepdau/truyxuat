@@ -29,7 +29,7 @@ const isProcessors = [
   { label: "false", value: 0 },
   { label: "true", value: 1 },
 ];
-function YourComponent({ data, reloadData }) {
+function YourComponent({ data, reloadData, isProcessors }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState({});
@@ -114,16 +114,16 @@ function YourComponent({ data, reloadData }) {
 
     // Kiểm tra lỗi cho trường name
     if (!product.name.trim() === "") {
-      newErrors.name = "Name is required.";
+      newErrors.name = "Tên là bắt buộc.";
       isValid = false;
     }
-    if (!product.description.trim() === "") {
-      newErrors.description = "Description is required.";
-      isValid = false;
-    }
+    // if (!product.description.trim() === "") {
+    //   newErrors.description = "Description is required.";
+    //   isValid = false;
+    // }
     // Kiểm tra lỗi cho trường quantity
     if (!product.quantity || product.quantity <= 0) {
-      newErrors.quantity = "quantity phải lớn hơn 0 và không được để trống";
+      newErrors.quantity = "Số lượng phải lớn hơn 0 và không được để trống";
       isValid = false;
     }
     setErrors(newErrors);
@@ -166,22 +166,6 @@ function YourComponent({ data, reloadData }) {
             onChange={handleChange}
           />
           {errors.name && <small className="p-error">{errors.name}</small>}
-
-          <h4>Mô tả</h4>
-          <InputTextarea
-            name="description"
-            value={product.description}
-            autoResize
-            style={{ width: "100%" }}
-            onChange={handleChange}
-          />
-          {errors.description && (
-            <small className="p-error">{errors.description}</small>
-          )}
-        </div>
-
-        {/* Cột phải */}
-        <div style={{ flex: 1 }}>
           <div className="input-container">
             <div style={{ width: "100%", marginRight: "2vh" }}>
               <h4>Số lượng</h4>
@@ -189,8 +173,8 @@ function YourComponent({ data, reloadData }) {
                 name="quantity"
                 type="number"
                 value={product.quantity}
-                autoResize
                 onChange={handleChange}
+                style={{ width: "100%" }}
               />
               {errors.quantity && (
                 <small className="p-error">{errors.quantity}</small>
@@ -204,49 +188,83 @@ function YourComponent({ data, reloadData }) {
                 options={unitOptions}
                 optionLabel="label"
                 onChange={handleUnitChange}
-                placeholder="Select a unit"
                 style={{ width: "100%" }}
               />
             </div>
           </div>
-          <h4>Trạng thái</h4>
-          <Dropdown
-            name="isProcessed"
-            value={product.isProcessed}
-            options={[
-              { label: "True", value: true },
-              { label: "False", value: false },
-            ]}
-            onChange={handleisProcessorChange}
-            placeholder={data?data.isProcessed:""}
-            style={{ width: "100%" }}
-          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div className="input-container">
+            <div style={{ width: "100%", marginRight: "2vh" }}>
+              <h4>Trạng thái</h4>
+              {/* <Dropdown
+                name="isProcessed"
+                value={product.isProcessed}
+                options={[
+                  { label: "True", value: true },
+                  { label: "False", value: false },
+                ]}
+                onChange={handleisProcessorChange}
+                placeholder={data ? data.isProcessed : ""}
+                style={{ width: "100%" }}
+              /> */}
+              <InputText
+              disabled
+                readOnly
+                name="isProcessed"
+                value={
+                  product.isProcessed === true
+                    ? "Đã đóng gói"
+                    : "Chưa đóng gói"
+                }
+                className={
+                  product.isProcessed === true ? "text-green" : "text-red"
+                }
+                style={{ width: "100%" }}
+              />
 
-          {errors.isProcessed && (
-            <small className="p-error">{errors.isProcessed}</small>
-          )}
-          <h4>Ngày</h4>
-          <Calendar
-            inputId="cal_date"
-            name="date"
+              {errors.isProcessed && (
+                <small className="p-error">{errors.isProcessed}</small>
+              )}
+            </div>
+            <div style={{ width: "100%" }}>
+              <h4>Ngày</h4>
+              <Calendar
+                inputId="cal_date"
+                name="date"
+                style={{ width: "100%" }}
+                value={
+                  formattedDate instanceof Date
+                    ? formattedDate
+                    : new Date(formattedDate)
+                }
+                onChange={handleChange}
+              />
+              {errors.date && <small className="p-error">{errors.date}</small>}
+            </div>
+          </div>
+          <h4>Mô tả</h4>
+          <InputTextarea
+            name="description"
+            value={product.description}
+            autoResize
             style={{ width: "100%" }}
-            value={
-              formattedDate instanceof Date
-                ? formattedDate
-                : new Date(formattedDate)
-            }
             onChange={handleChange}
           />
-          {errors.date && <small className="p-error">{errors.date}</small>}
+          {/* {errors.description && (
+            <small className="p-error">{errors.description}</small>
+          )} */}
         </div>
       </div>
-      <Button
-        className="button_Dia"
-        id="Save"
-        label="Lưu"
-        severity="success"
-        onClick={handleCreate}
-      />
+      {isProcessors ? null : (
+        <Button
+          className="button_Dia"
+          id="Save"
+          label="Lưu"
+          severity="success"
+          onClick={handleCreate}
+        />
+      )}
     </div>
   );
 }

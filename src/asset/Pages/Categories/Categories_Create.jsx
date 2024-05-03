@@ -15,7 +15,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
   const images = isUpdate ? data.images : [];
-  var url = isUpdate ? `/categories/upload/${data._id}`: "";
+  var url = isUpdate ? `/categories/upload/${data._id}` : "";
   const handleChange = (event) => {
     const { value, name } = event.target;
     setFormData({
@@ -66,9 +66,6 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
       isValid = false;
     }
 
-
-
-   
     setErrors(newErrors);
     return isValid;
   };
@@ -99,23 +96,30 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
           {errors.description && (
             <small className="p-error">{errors.description}</small>
           )}
-           <Button
-        className="button_Dia"
-        id="Save"
-        label={isUpdate ? "Cập nhật" : "Lưu"}
-        severity="success"
-        onClick={handleCreate}
-      />
+          <Button
+            className="button_Dia"
+            id="Save"
+            label={isUpdate ? "Cập nhật" : "Lưu"}
+            severity="success"
+            onClick={handleCreate}
+          />
         </div>
-       
-        {isUpdate ?
-        <>
-        <div style={{ flex: 1 }}>
-        <h4 style={{fontWeight:"bold"}}>Hình ảnh</h4>
-           <ImageUploader uploadUrl={url} images={images} reloadData={reloadData} /> 
-        </div></>: ""}
+
+        {isUpdate ? (
+          <>
+            <div style={{ flex: 1 }}>
+              <h4 style={{ fontWeight: "bold" }}>Hình ảnh</h4>
+              <ImageUploader
+                uploadUrl={url}
+                images={images}
+                reloadData={reloadData}
+              />
+            </div>
+          </>
+        ) : (
+          ""
+        )}
       </div>
-      
     </div>
   );
 }
