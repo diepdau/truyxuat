@@ -42,7 +42,6 @@ function YourComponent({ data, reloadData, isProcessors }) {
     try {
       const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/herds?limit=60`);
       setHerds(res.data.herds);
-      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -190,6 +189,7 @@ function YourComponent({ data, reloadData, isProcessors }) {
               <h4>Đơn vị</h4>
               <Dropdown
                 name="unit"
+                placeholder={product.unit}
                 value={product.unit}
                 options={unitOptions}
                 optionLabel="label"

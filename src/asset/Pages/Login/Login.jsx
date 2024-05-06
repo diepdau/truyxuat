@@ -3,8 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 import { AuthContext } from "../../service/user_service.js";
 import { InputText } from "primereact/inputtext";
-
-import axios from "axios";
 export const validateInput = (str = "") => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(str);
@@ -89,10 +87,12 @@ const Login = () => {
             </div>
 
             {err && (
-              <p data-testid="error" className="error-feedback">
+              <p data-testid="error"  className="error-feedback">
                 {err}
               </p>
             )}
+
+          
             <Link to="/forgot-password" className="forgot-password">
               Quên mật khẩu?
             </Link>

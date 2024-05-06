@@ -71,3 +71,4 @@ const ImageUploader = ({ uploadUrl, images, reloadData }) => {
 };
 
 export default ImageUploader;
+

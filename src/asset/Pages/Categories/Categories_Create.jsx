@@ -15,7 +15,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
   const images = isUpdate ? data.images : [];
-  var url = isUpdate ? `/categories/upload/${data._id}` : "";
+  var url = isUpdate ? `https://agriculture-traceability.vercel.app/api/v1/categories/upload/${data._id}` : "";
   const handleChange = (event) => {
     const { value, name } = event.target;
     setFormData({

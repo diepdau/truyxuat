@@ -11,6 +11,8 @@ import "../Home/HerdsList.css";
 import Categories_Create from "./Categories_Create.jsx"
 import { TabPanel, TabView } from "primereact/tabview";
 import { Paginator } from "primereact/paginator";
+export const todoUrl = "https://agriculture-traceability.vercel.app/api/v1/categories";
+
 const emptyProduct = {
   _id: null,
   name: "",
@@ -37,12 +39,13 @@ export default function FarmmingAreas() {
 
   const fetchData = async (value = "") => {
     try {
-      const response = await fetch(
-        `https://agriculture-traceability.vercel.app/api/v1/categories?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
-          value
-        )}`
+      const response = await fetch(todoUrl
+        // `https://agriculture-traceability.vercel.app/api/v1/categories?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+        //   value
+        // )}`
       );
       const data = await response.json();
+      
       console.log(data.categories);
       setProducts(data.categories);
       setTotalPages(data.totalPages);
@@ -205,7 +208,7 @@ export default function FarmmingAreas() {
         <InputText
           value={input}
           onChange={(e) => handleChange(e.target.value)}
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </span>
     </div>

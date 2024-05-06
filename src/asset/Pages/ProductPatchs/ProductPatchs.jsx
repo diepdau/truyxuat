@@ -177,7 +177,6 @@ export default function SizeDemo() {
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
     var url = `https://agriculture-traceability.vercel.app/api/v1/processors/upload/${product._id}`;
-    console.log(data.product_info);
     return (
       <>
         <TabView>
