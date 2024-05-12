@@ -17,6 +17,7 @@ export const AuthContexProvider = ({ children }) => {
       setCurrentUser({ ...user, expirationTime: Date.now() + 24 * 60 * 60 * 1000 });
       setToken(accountToken);
       localStorage.setItem("userToken", accountToken);
+      localStorage.setItem("user", user);
     } catch (error) {
       console.log(error);
     }
