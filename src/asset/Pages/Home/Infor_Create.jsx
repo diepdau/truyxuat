@@ -32,11 +32,11 @@ function Infor_Herd({ isUpdate, reloadData }) {
   }, []);
 
   const fetchDataCategory = async () => {
-    const categoryList = await handleGetCategory(token);
+    const categoryList =  await handleGetCategory(token);
     setcategories(categoryList);
   };
   const fetchDataFarm = async () => {
-    const farmList = await handleGetFarm(token);
+    const farmList =await  handleGetFarm(token);
     setfarm(farmList);
   };
   const handleChange = (event) => {
@@ -51,7 +51,7 @@ function Infor_Herd({ isUpdate, reloadData }) {
       return;
     }
     try {
-      await handleCreate(formData,token);
+       handleCreate(formData,token);
       toast.current.show({
         severity: "success",
         summary: "Thêm hoàn thành",

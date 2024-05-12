@@ -1,18 +1,18 @@
-import React, { useState, useEffect,  useRef } from "react";
+import React, { useState, useEffect,  useRef,useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
-import axios from "axios";
 import Infor_Create from "./Infor_Create.jsx";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import "./HerdsList.css";
 import { Paginator } from "primereact/paginator";
 import DateConverter from "../../../components/Date/Date.jsx";
-
+import { AuthContext } from "../../service/user_service.js";
+import {handleDelete } from "../../service/Herd_data.js";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -36,7 +36,7 @@ export default function SizeDemo() {
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
-
+  const { token } = useContext(AuthContext);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
@@ -185,7 +185,7 @@ export default function SizeDemo() {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/herds/${product._id}`, product);
+      await handleDelete(product,token);
       reloadData();
     } catch (error) {
       console.log("Error:", error);

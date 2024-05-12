@@ -1,15 +1,14 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect,useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import "./ProductPatchs.css";
 import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
-import Harvest_Update from "../Harvest/Harvest_Update.jsx";
 import Product_Infos_Actives from "../Product_Infos/Product_Infos_Active.jsx";
-
+import { handleUpdate,getProductInfos,getFarm} from "../../service/productPatchs_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   name: "",
   price: "",
@@ -32,37 +31,20 @@ function YourComponent({ data, reloadData, isUpdate }) {
   const [ProductInfos, setProductInfos] = useState({});
   const [selectedProductInfos, setSelectedProductInfos] = useState(null);
   const [productDescription, setProductDescription] = useState("");
-
+  const { token } = useContext(AuthContext);
   const [Farms, setFarms] = useState({});
   const [selectedFarm, setSelectedFarm] = useState(null);
   const toast = useRef(null);
 
   useEffect(() => {
-    getProductInfos();
-    getFarm();
+    getAllData();
   }, []);
 
-  const getProductInfos = async () => {
-    try {
-      const res = await axios.get(
-        `https://agriculture-traceability.vercel.app/api/v1/product-infos?limit=60`
-      );
-      setProductInfos(res.data.products);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const getAllData = async () => {
+    setProductInfos(await getProductInfos());
+    setFarms(await getFarm());
+};
 
-  const getFarm = async () => {
-    try {
-      const res = await axios.get(
-        `https://agriculture-traceability.vercel.app/api/v1/farm?limit=80&searchQuery=Nhà`
-      );
-      setFarms(res.data.farms);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const handleChange = (event) => {
     const { name, value } = event.target;
     setProduct({
@@ -90,10 +72,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
       ? product.production_date.props.originalDate
       : product.production_date;
     try {
-      const res = await axios.patch(
-        `https://agriculture-traceability.vercel.app/api/v1/processors/${data._id}`,
-        product
-      );
+      const res = handleUpdate(data._id, product,token  );
       toast.current.show({
         severity: "success",
         summary: "Sửa hoàn thành",
@@ -124,11 +103,11 @@ function YourComponent({ data, reloadData, isUpdate }) {
     }
     if (!isUpdate) {
       if (!selectedFarm) {
-        newErrors.location = "location is required.";
+        newErrors.location = "Nơi xử lý đóng gói là bắt buộc.";
         isValid = false;
       }
       if (!selectedProductInfos) {
-        newErrors.processor = "ProductInfos is required.";
+        newErrors.processor = "Thông tin loại sản phẩm là bắt buộc.";
         isValid = false;
       }
     }
@@ -160,6 +139,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
     releaseDate = new Date(product.release_date);
   }
   const FarmName = product.location && product.location ? product.location : "";
+
   return (
     <div>
       <div className="container_update">
@@ -271,9 +251,8 @@ function YourComponent({ data, reloadData, isUpdate }) {
               )}
             </div>
             <div style={{ width: "100%" }}>
-              <h4>Ngày hết hạn</h4>
+              {/* <h4>Ngày hết hạn</h4>
               <Calendar
-                inputId="cal_date"
                 name="release_date"
                 style={{ width: "100%" }}
                 value={
@@ -285,7 +264,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
               />
               {errors.release_date && (
                 <small className="p-error">{errors.release_date}</small>
-              )}
+              )} */}
             </div>
           </div>
           <h4>Hạn sử dụng</h4>

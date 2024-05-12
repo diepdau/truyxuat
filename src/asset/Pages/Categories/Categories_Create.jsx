@@ -1,21 +1,24 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import ImageUploader from "../../../components/Images/Image";
-
+import { handleCreate, handleUpdate } from "../../service/categories_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyData = {
   name: "",
   description: "",
 };
 
 function YourNewComponent({ reloadData, data, isUpdate }) {
+  const { token } = useContext(AuthContext);
   const [formData, setFormData] = useState(data || emptyData);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
   const images = isUpdate ? data.images : [];
-  var url = isUpdate ? `https://agriculture-traceability.vercel.app/api/v1/categories/upload/${data._id}` : "";
+  var url = isUpdate
+    ? `https://agriculture-traceability.vercel.app/api/v1/categories/upload/${data._id}`
+    : "";
   const handleChange = (event) => {
     const { value, name } = event.target;
     setFormData({
@@ -23,22 +26,21 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
       [name]: value,
     });
   };
-  const handleCreate = async () => {
+  const handle = async () => {
     if (!validate()) {
       return;
     }
     try {
       if (data) {
-        const res = await axios.patch(`/categories/${data._id}`, formData);
+        const res = handleUpdate(data._id, formData, token);
         toast.current.show({
           severity: "success",
           summary: "Sửa hoàn thành",
           life: 3000,
         });
-
         setFormData(res.data);
       } else {
-        await axios.post(`/categories`, formData);
+        handleCreate(formData, token);
         toast.current.show({
           severity: "success",
           summary: "Thêm hoàn thành",
@@ -101,7 +103,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
             id="Save"
             label={isUpdate ? "Cập nhật" : "Lưu"}
             severity="success"
-            onClick={handleCreate}
+            onClick={handle}
           />
         </div>
 

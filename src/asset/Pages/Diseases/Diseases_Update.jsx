@@ -1,9 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef,useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
-import axios from "axios";
 import { Toast } from "primereact/toast";
-
+import { handleUpdate} from "../../service/disease_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   name: "",
   description: "",
@@ -15,6 +15,7 @@ function YourComponent({ data, reloadData }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
+  const { token } = useContext(AuthContext);
 
   const handleChange = (event) => {
     const { value, name } = event.target;
@@ -31,13 +32,13 @@ function YourComponent({ data, reloadData }) {
     }
 
     try {
-      const response = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/diseases/${data._id}`, {
+      const dataUpdate= {
         name: product.name,
         description: product.description,
         symptoms: product.symptoms,
         preventive_measures: product.preventive_measures,
-      });
-
+      };
+     const response= handleUpdate(data._id,dataUpdate,token)
       toast.current.show({
         severity: "success",
         summary: "Sửa hoàn thành",
@@ -60,37 +61,33 @@ function YourComponent({ data, reloadData }) {
     let isValid = true;
     const newErrors = {};
     if (!product.name.trim()) {
-      newErrors.name = "name is required.";
+      newErrors.name = "Tên là bắt buộc.";
       isValid = false;
     }
     // Kiểm tra lỗi cho trường description
     if (!product.description.trim()) {
-      newErrors.description = "Description is required.";
+      newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
     } else if (product.description.trim().length < 20) {
       newErrors.description =
-        "Description must be at least 20 characters long.";
+        "Mô tả hơn 20 kí tự.";
       isValid = false;
     }
 
     // Kiểm tra lỗi cho trường symptoms
     if (!product.symptoms.trim()) {
-      newErrors.symptoms = "Symptoms is required.";
+      newErrors.symptoms = "Triệu chứng là bắt buộc.";
       isValid = false;
     } else if (product.symptoms.trim().length < 20) {
-      newErrors.symptoms = "Symptoms must be at least 20 characters long.";
+      newErrors.symptoms = "Triệu chứng hơn 20 kí tự.";
       isValid = false;
     }
 
     // Kiểm tra lỗi cho trường preventive_measures
     if (!product.preventive_measures.trim()) {
-      newErrors.preventive_measures = "Preventive measures is required.";
+      newErrors.preventive_measures = "Biện pháp phòng ngừa.";
       isValid = false;
-    } else if (product.preventive_measures.trim().length < 20) {
-      newErrors.preventive_measures =
-        "Preventive measures must be at least 20 characters long.";
-      isValid = false;
-    }
+    } 
 
     setErrors(newErrors);
     return isValid;

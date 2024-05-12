@@ -111,14 +111,16 @@ const router = createBrowserRouter([
         path: "/harvests/:id",
         element: <Harvest_Update />,
       }, 
-      {
-        path: "/dong-goi",
-        element: <Processors />,
-      },
+     
       {
         path: "/lo-san-pham",
         element: <ProductPatch />,
-      },{
+      },
+      // {
+      //   path: "/dong-goi",
+      //   element: <Processors />,
+      // },
+      {
         path: "/phan-phoi",
         element: <Distributor  />,
       },

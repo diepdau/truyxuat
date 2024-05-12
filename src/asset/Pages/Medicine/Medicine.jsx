@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef ,useContext} from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -12,6 +12,8 @@ import { TabView, TabPanel } from "primereact/tabview";
 import Image_Upload from "../../../components/Images/Image.jsx";
 import Medisease_Create from "./Medicine_Create.jsx";
 import { Paginator } from "primereact/paginator";
+import { handleDelete} from "../../service/medicine_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -24,7 +26,7 @@ export default function SizeDemo() {
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
-
+  const { token } = useContext(AuthContext);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
@@ -158,7 +160,7 @@ export default function SizeDemo() {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/medicines/${product._id}`, product);
+      await handleDelete(product._id,token);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -270,7 +272,7 @@ export default function SizeDemo() {
               className="pi pi-exclamation-triangle mr-3"
               style={{ fontSize: "2rem" }}
             />
-            {product && <span>Bạn có chắc chắn xóa những đàn này?</span>}
+            {product && <span>Bạn có chắc chắn xóa những loại thuốc này?</span>}
           </div>
         </Dialog>
         <Dialog

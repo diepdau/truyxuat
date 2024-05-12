@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
 import axios from "axios";
@@ -7,14 +7,15 @@ import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import "./Harvest.css";
 import { InputText } from "primereact/inputtext";
-
+import { handleCreate, getHerd } from "../../service/harvest_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   herd: "",
   name: "",
   quantity: "",
   unit: null,
   date: new Date(),
-  description:"",
+  description: "",
 };
 const unitOptions = [
   { label: "Cân", value: "Cân" },
@@ -28,15 +29,15 @@ function Harvest_Create({ reloadData, idherd }) {
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState({});
   const [selectedHerd, setSelectedHerd] = useState(null);
-
+  const { token } = useContext(AuthContext);
   const toast = useRef(null);
   useEffect(() => {
-    getHerd();
+    getHerdData();
   }, []);
-  const getHerd = async () => {
+  const getHerdData = async () => {
     try {
-      const res = await axios.get(`/herds?limit=50`);
-      setHerds(res.data.herds);
+      const a=await getHerd();
+      setHerds(a.data.herds);
       if (idherd) {
         setProduct((prevProduct) => ({
           ...prevProduct,
@@ -62,13 +63,12 @@ function Harvest_Create({ reloadData, idherd }) {
     });
   };
 
-  const handleCreate = async () => {
-    console.log(product);
+  const handle = async () => {
     if (!validate()) {
       return;
     }
     try {
-      await axios.post(`https://agriculture-traceability.vercel.app/api/v1/harvests`, product);
+      await handleCreate(product, token);
       toast.current.show({
         severity: "success",
         summary: "Thêm hoàn thành",
@@ -183,7 +183,7 @@ function Harvest_Create({ reloadData, idherd }) {
 
         {/* Cột phải */}
         <div style={{ flex: 1 }}>
-        <h4>Mô tả</h4>
+          <h4>Mô tả</h4>
           <InputTextarea
             name="description"
             value={product.description}
@@ -210,7 +210,7 @@ function Harvest_Create({ reloadData, idherd }) {
         id="Luu"
         label="Lưu"
         severity="success"
-        onClick={handleCreate}
+        onClick={handle}
       />
     </div>
   );

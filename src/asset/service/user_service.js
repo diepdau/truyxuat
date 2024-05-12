@@ -5,23 +5,22 @@ export const AuthContext = createContext("");
 
 export const AuthContexProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(localStorage.getItem("userToken") || null);
 
   const loginApi = async (inputs) => {
     try {
       const res = await axios.post("https://agriculture-traceability.vercel.app/api/v1/auth/login", inputs);
       const user = res.data.user;
-      const accounttoken = res.data.token;
+      const accountToken = res.data.token;
 
-      // Lưu user và token vào state
+      // Lưu user và token vào state và localStorage
       setCurrentUser({ ...user, expirationTime: Date.now() + 24 * 60 * 60 * 1000 });
-      setToken(accounttoken);
-      document.cookie = accounttoken;
+      setToken(accountToken);
+      localStorage.setItem("userToken", accountToken);
     } catch (error) {
       console.log(error);
     }
   };
-
   const logout = async (inputs) => {
     await axios.get("https://agriculture-traceability.vercel.app/api/v1/auth/logout", inputs);
     setCurrentUser(null);
@@ -31,51 +30,6 @@ export const AuthContexProvider = ({ children }) => {
   };
 
 
-const getuserList = async () => {
-    try {
-        const res = await axios.get("https://agriculture-traceability.vercel.app/api/v1/users?limit=50");
-        return res.data.users;
-    } catch (error) {
-        console.log(error)
-    }
-};
-
-const createUserList = async () => {
-    try {
-        const res = await axios.post("https://agriculture-traceability.vercel.app/api/v1/users");
-        console.log("Tạo user thanh cong");
-        return res.data.users;
-    } catch (error) {
-        console.log(error)
-    }
-};
-const getUser = async (userId) => {
-    try {
-        const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/users/${userId}`);
-        console.log("lấy 1 user thanh cong");
-        return res.data;
-    } catch (error) {
-        console.log(error)
-    }
-};
-const updateUserInfo = async (data) => {
-  try {
-      const res = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/users/update-user`,data);
-      console.log("Sửa user thanh cong");
-      return res.data.users;
-  } catch (error) {
-      console.log(error)
-  }
-};
-const changeUserPassword = async (data) => {
-  try {
-      const res = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/users/change-password`,data);
-      console.log("Sửa password thanh cong");
-      return res.data.users;
-  } catch (error) {
-      console.log(error)
-  }
-};
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(currentUser));
   }, [currentUser]);
@@ -92,7 +46,7 @@ const changeUserPassword = async (data) => {
   }, [currentUser, logout]);
 
   return (
-    <AuthContext.Provider value={{ currentUser, token, loginApi, logout, getuserList, createUserList, getUser, updateUserInfo, changeUserPassword }}>
+    <AuthContext.Provider value={{ currentUser, token, loginApi, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,19 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef,useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
-import axios from "axios";
-import { createNewAutoHerd } from '../../service/Herd_data.js';
+import { handleUpdateAnimal,createNewAutoHerd, handleDeleteAnimal } from '../../service/Herd_data.js';
 import { Toast } from "primereact/toast";
 import "./HerdsList.css";
 import Record_Create from "./Record_Create.jsx";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
 import DateConverter from "../../../components/Date/Date";
-
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -33,6 +32,7 @@ export default function SizeDemo({ herdId }) {
   const [productDialogNewAuto, setProductDialogNewAuto] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
+  const { token } = useContext(AuthContext);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
@@ -89,10 +89,7 @@ export default function SizeDemo({ herdId }) {
   //Hàm tạo con trong đàn tự động
   const handleCreateNewAuto = async () => {
     try {
-      // await axios.post(`https://agriculture-traceability.vercel.app/api/v1/herds/${herdId}/generate-animals`, {
-      //   quantity: product.quantity,
-      // });
-      await createNewAutoHerd(herdId,product.quantity);
+      await createNewAutoHerd(herdId,product.quantity,token);
       setProductDialogNewAuto(false);
       reloadData();
       toast.current.show({
@@ -210,7 +207,7 @@ export default function SizeDemo({ herdId }) {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/animals/${product._id}`, product);
+      await handleDeleteAnimal(product._id,token);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -272,12 +269,12 @@ export default function SizeDemo({ herdId }) {
     }
     console.log("birth_day", formattedDate);
     try {
-      await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/animals/${Id}`, {
-        name: newData.name,
-        birth_date: formattedDate,
-        birth_weight: newData.birth_weight,
-        herd: herdId,
-      });
+       await handleUpdateAnimal(Id, {  
+       name: newData.name,
+      birth_date: formattedDate,
+      birth_weight: newData.birth_weight,
+      herd: herdId,
+    },token);
       reloadData();
       toast.current.show({
         severity: "success",
@@ -416,7 +413,7 @@ export default function SizeDemo({ herdId }) {
               className="pi pi-exclamation-triangle mr-3"
               style={{ fontSize: "2rem" }}
             />
-            {product && <span>Bạn có chắc chắn xóa những đàn này?</span>}
+            {product && <span>Bạn có chắc chắn xóa những con này?</span>}
           </div>
         </Dialog>
         <Dialog

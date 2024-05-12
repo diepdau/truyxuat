@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef,useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -18,6 +18,8 @@ import Harvest_Update from "../Harvest/Harvest_Update.jsx";
 import ProductPatchs_Create from "./ProductPatchs_Create.jsx";
 import { Image } from "primereact/image";
 import Product_Infos_Actives from "../Product_Infos/Product_Infos_Active.jsx";
+import { handleDelete} from "../../service/productPatchs_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   _id: null,
 };
@@ -32,7 +34,7 @@ export default function SizeDemo() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
-
+  const { token } = useContext(AuthContext);
   useEffect(() => {
     fetchData();
   }, [currentPage, currentLimit]);
@@ -166,7 +168,7 @@ export default function SizeDemo() {
 
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/processors/${product._id}`, product);
+      handleDelete(product._id,token);
       reloadData();
     } catch (error) {
       console.log("Error:", error);

@@ -1,13 +1,14 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect,useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import "./Treatments.css";
 import typeOptions from "./Type.jsx";
-
+import { handleCreate,handleUpdate} from "../../service/treatment_data.js";
+import { getHerd} from "../../service/harvest_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   herd: "",
   type: "",
@@ -38,19 +39,13 @@ function YourComponent({ data, reloadData, isUpdate ,nameherd}) {
   const [herds, setHerds] = useState({});
   const [selectedHerd, setSelectedHerd] = useState(null);
   const toast = useRef(null);
-
+  const { token } = useContext(AuthContext);
   useEffect(() => {
-    getHerd();
+    getAllHerd();
   }, []);
 
-  const getHerd = async () => {
-    try {
-      const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/herds?limit=60`);
-      setHerds(res.data.herds);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const getAllHerd = async () => { const a =await getHerd();
+     setHerds(a.data.herds); };
 
   const handleTypeChange = (event) => {
     setProduct({
@@ -72,7 +67,7 @@ function YourComponent({ data, reloadData, isUpdate ,nameherd}) {
     });
   };
 
-  const handleCreate = async () => {
+  const handle = async () => {
     if (!validate()) {
       return;
     }
@@ -85,7 +80,7 @@ function YourComponent({ data, reloadData, isUpdate ,nameherd}) {
         product.retreat_date = product.retreat_date.props
           ? product.retreat_date.props.originalDate
           : product.retreat_date;
-        await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/treatments/${data._id}`, product);
+        await handleUpdate(data._id,product, token);
         toast.current.show({
           severity: "success",
           summary: "Cập nhật hoàn thành",
@@ -93,7 +88,7 @@ function YourComponent({ data, reloadData, isUpdate ,nameherd}) {
         });
         setProduct(product);
       } else {
-        await axios.post(`/treatments`, product);
+        await handleCreate(product, token);
         toast.current.show({
           severity: "success",
           summary: "Thêm hoàn thành",
@@ -311,7 +306,7 @@ function YourComponent({ data, reloadData, isUpdate ,nameherd}) {
         id="Luu"
         label={isUpdate ? "Cập nhật" : "Lưu"}
         severity="success"
-        onClick={handleCreate}
+        onClick={handle}
       />
     </div>
   );

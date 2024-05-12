@@ -1,12 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef,useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import { Calendar } from "primereact/calendar";
-import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
-
+import { handleCreateAnimal, handleUpdateAnimal} from "../../service/Herd_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -22,6 +21,7 @@ function YourComponent({ herdId, data, reloadData, isUpdate }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
+  const { token } = useContext(AuthContext);
   const Is_harvested = [{ name: "true" }, { name: "false" }];
   const [selectedIsHarvested, setSelectedIsHarvested] = useState(emptyProduct);
   const handleChange = (event) => {
@@ -40,7 +40,7 @@ function YourComponent({ herdId, data, reloadData, isUpdate }) {
 
     try {
       if (isUpdate) {
-        await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/animals/${data._id}`, product);
+        await handleUpdateAnimal(data._id,product,token);
         console.log(product);
         toast.current.show({
           severity: "success",
@@ -48,13 +48,13 @@ function YourComponent({ herdId, data, reloadData, isUpdate }) {
           life: 3000,
         });
       } else {
-        await axios.post(`https://agriculture-traceability.vercel.app/api/v1/animals`, {
+        await handleCreateAnimal( {
           name: product.name,
           birth_date: product.birth_date,
           birth_weight: product.birth_weight,
           is_harvested: selectedIsHarvested.name,
           herd: herdId,
-        });
+        },token);
         
         toast.current.show({
           severity: "success",

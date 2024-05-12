@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -14,6 +14,8 @@ import Diseases_Create from "./Diseases_Create.jsx";
 import Image from "../../../components/Images/Image.jsx";
 import "./Diseases.css";
 import { Paginator } from "primereact/paginator";
+import { handleDelete } from "../../service/disease_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -32,7 +34,7 @@ export default function SizeDemo() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
-
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
     fetchData();
@@ -93,9 +95,6 @@ export default function SizeDemo() {
     for (const selectedProduct of selectedProducts) {
       handleDeleteUser(selectedProduct);
       setDeleteProductsDialog(false);
-      try {
-        reloadData();
-      } catch {}
       toast.current.show({
         severity: "success",
         summary: "Đã xóa",
@@ -107,9 +106,6 @@ export default function SizeDemo() {
     let _products = products.filter((val) => val._id === product._id);
     const firstObject = _products[0];
     handleDeleteUser(firstObject);
-    try {
-      reloadData();
-    } catch {}
     setDeleteProductDialog(false);
     toast.current.show({
       severity: "success",
@@ -171,8 +167,8 @@ export default function SizeDemo() {
 
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/diseases/${product._id}`, product);
-      // reloadData();
+      handleDelete(product._id);
+      reloadData();
     } catch (error) {
       console.log("Error:", error);
     }
@@ -189,7 +185,11 @@ export default function SizeDemo() {
             <Diseases_Update data={data} reloadData={reloadData} />
           </TabPanel>
           <TabPanel header="Hình ảnh">
-            <Image uploadUrl={url} images={data.images} reloadData={reloadData} />
+            <Image
+              uploadUrl={url}
+              images={data.images}
+              reloadData={reloadData}
+            />
           </TabPanel>
         </TabView>
       </>
@@ -241,8 +241,7 @@ export default function SizeDemo() {
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
-          sortable
-
+            sortable
             field="name"
             header="Bệnh"
             value={product.name}
@@ -307,7 +306,7 @@ export default function SizeDemo() {
           visible={productDialog}
           onHide={() => setProductDialog(false)}
         >
-          <Diseases_Create/>
+          <Diseases_Create />
         </Dialog>
       </div>
     </div>

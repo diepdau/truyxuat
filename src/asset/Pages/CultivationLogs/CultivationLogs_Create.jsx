@@ -1,11 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef,useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import "./CultivationLogs.css";
 import { Calendar } from "primereact/calendar";
-
+import { handleCreate} from "../../service/cultivationLog_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   name: "",
   description: "",
@@ -16,6 +16,7 @@ function YourComponent({ reloadData,herd_id }) {
   const [product, setProduct] = useState(emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
+  const { token } = useContext(AuthContext);
 
   const handleChange = (event) => {
     const { value, name } = event.target;
@@ -26,24 +27,20 @@ function YourComponent({ reloadData,herd_id }) {
     });
   };
 
-  const handleCreate = async () => {
+  const handle = async () => {
     if (!validate()) {
       return;
     }
 
     try {
-      const dateString = product.date; // Giữ nguyên giá trị ngày
-      await axios.post(`https://agriculture-traceability.vercel.app/api/v1/cultivation-logs/`, {
+      const dateString = product.date; 
+      const data={
         name: product.name,
         description: product.description,
         date: dateString,
         herd: herd_id,
-      });
-      toast.current.show({
-        severity: "success",
-        summary: "Thêm hoàn thành",
-        life: 3000,
-      });
+      };
+      handleCreate( data,token);
       reloadData();
       setProduct(emptyProduct);
     } catch (error) {
@@ -56,18 +53,14 @@ function YourComponent({ reloadData,herd_id }) {
     const newErrors = {};
 
     if (!product.name.trim()) {
-      newErrors.name = "Name is required.";
+      newErrors.name = "Tên là bắt buộc .";
       isValid = false;
     }
 
     if (!product.description.trim()) {
-      newErrors.description = "Description is required.";
+      newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
-    } else if (product.description.trim().length < 20) {
-      newErrors.description =
-        "Description must be at least 20 characters long.";
-      isValid = false;
-    }
+    } 
 
     setErrors(newErrors);
     return isValid;
@@ -112,7 +105,7 @@ function YourComponent({ reloadData,herd_id }) {
         id="Luu"
         label="Lưu"
         severity="success"
-        onClick={handleCreate}
+        onClick={handle}
       />
     </div>
   );

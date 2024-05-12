@@ -1,8 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef,useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
-import axios from "axios";
 import { Toast } from "primereact/toast";
+import { handleCreate} from "../../service/disease_data.js";
+import { AuthContext } from "../../service/user_service.js";
 import "./Diseases.css";
 const emptyProduct = {
   name: "",
@@ -15,6 +16,7 @@ function YourComponent() {
   const [product, setProduct] = useState(emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
+  const { token } = useContext(AuthContext);
   const handleChange = (event) => {
     const { value, name } = event.target;
 
@@ -24,19 +26,19 @@ function YourComponent() {
     });
   };
 
-  const handleCreate = async () => {
+  const handle = async () => {
     if (!validate()) {
       return;
     }
 
     try {
-      await axios.post(`https://agriculture-traceability.vercel.app/api/v1/diseases/`, {
+      const data={
         name: product.name,
         description: product.description,
         symptoms: product.symptoms,
         preventive_measures: product.preventive_measures,
-      });
-
+      };
+      handleCreate(data,token);
       toast.current.show({
         severity: "success",
         summary: "Thêm hoàn thành",
@@ -55,32 +57,29 @@ function YourComponent() {
 
     // Kiểm tra lỗi cho trường name
     if (!product.name.trim()) {
-      newErrors.name = "Name is required.";
+      newErrors.name = "Tên là bắt buộc.";
       isValid = false;
-    } else if (product.name.trim().length < 10) {
-      newErrors.symptoms = "Name must be at least 10 characters long.";
-      isValid = false;
-    }
+    } 
 
     // Kiểm tra lỗi cho trường description
     if (!product.description.trim()) {
-      newErrors.description = "Description is required.";
+      newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
     } else if (product.description.trim().length < 20) {
       newErrors.description =
-        "Description must be at least 20 characters long.";
+        "Mô tả ít nhất 20 kí tự.";
       isValid = false;
     }
 
     // Kiểm tra lỗi cho trường symptoms
     if (!product.symptoms.trim()) {
-      newErrors.symptoms = "Symptoms is required.";
+      newErrors.symptoms = "Triệu chứng là bắt buộc.";
       isValid = false;
     }
 
     // Kiểm tra lỗi cho trường preventive_measures
     if (!product.preventive_measures.trim()) {
-      newErrors.preventive_measures = "Preventive measures is required.";
+      newErrors.preventive_measures = "Biện pháp phòng ngừa là bắt buộc.";
       isValid = false;
     }
 
@@ -146,7 +145,7 @@ function YourComponent() {
         id="Luu"
         label="Lưu"
         severity="success"
-        onClick={handleCreate}
+        onClick={handle}
       />
     </div>
   );

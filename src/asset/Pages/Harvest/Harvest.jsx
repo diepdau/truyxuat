@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef,useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -19,6 +19,8 @@ import "./Harvest.css";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Paginator } from "primereact/paginator";
 import DateConverter from "../../../components/Date/Date.jsx";
+import { handleDelete,handleGetHerdHarvest} from "../../service/harvest_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -28,6 +30,7 @@ const emptyProduct = {
   date: "",
 };
 function Harvest({ isherdharvest }) {
+  const { token } = useContext(AuthContext);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [harvests, setHarvests] = useState([]);
@@ -51,12 +54,12 @@ function Harvest({ isherdharvest }) {
         //     value
         //   )}`
         // );
-        const response = await fetch(`https://agriculture-traceability.vercel.app/api/v1/harvests/herd/${isherdharvest}`);
-        const data = await response.json();
-        data.harvests.forEach((element) => {
+        const response = await handleGetHerdHarvest(isherdharvest,token);
+        response.data.harvests.forEach((element) => {
           element.date = <DateConverter originalDate={element.date} />;
         });
-        setHarvests(data.harvests);
+        
+        setHarvests(response.data.harvests);
         // setTotalPages(data.totalPages);
       } catch (error) {
         console.log("There was a problem with the fetch operation:", error);
@@ -188,7 +191,7 @@ function Harvest({ isherdharvest }) {
 
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/harvests/${product._id}`, product);
+      handleDelete(product._id,token);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -382,7 +385,7 @@ function Harvest({ isherdharvest }) {
               className="pi pi-exclamation-triangle mr-3"
               style={{ fontSize: "2rem" }}
             />
-            {product && <span>Bạn có chắc chắn xóa những đàn này?</span>}
+            {product && <span>Bạn có chắc chắn xóa những thu hoạch này?</span>}
           </div>
         </Dialog>
         <Dialog

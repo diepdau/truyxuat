@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -14,6 +14,8 @@ import CultivationLogs_Create from "./CultivationLogs_Create.jsx";
 import ImageUploader from "../../../components/Images/Image.jsx";
 import { Paginator } from "primereact/paginator";
 import DateConverter from "../../../components/Date/Date.jsx";
+import { handleDelete } from "../../service/cultivationLog_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   _id: null,
   herd: {
@@ -32,6 +34,7 @@ export default function CulivationLogs_Herd({ idherd }) {
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const toast = useRef(null);
+  const { token } = useContext(AuthContext);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
@@ -43,17 +46,21 @@ export default function CulivationLogs_Herd({ idherd }) {
 
   const fetchData = async (value = "") => {
     try {
-      const response = await fetch(
+      const response = await axios.get(
         `https://agriculture-traceability.vercel.app/api/v1/cultivation-logs/herd/${idherd}?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
           value
-        )}`
+        )}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
-      const data = await response.json();
-      data.cultivationLogs.forEach((element) => {
+      response.data.cultivationLogs.forEach((element) => {
         element.date = <DateConverter originalDate={element.date} />;
       });
-      setProducts(data.cultivationLogs);
-      setTotalPages(data.totalPages);
+      setProducts(response.data.cultivationLogs);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.log("There was a problem with the fetch operation:", error);
     }
@@ -164,7 +171,7 @@ export default function CulivationLogs_Herd({ idherd }) {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/cultivation-logs/${product._id}`, product);
+      handleDelete(product._id, token);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -230,15 +237,14 @@ export default function CulivationLogs_Herd({ idherd }) {
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
-          sortable
+            sortable
             field="name"
             header="Tên hoạt động"
             value={product.name}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
-          sortable
-          
+            sortable
             field="date"
             header="Ngày"
             style={{ minWidth: "10rem" }}
@@ -291,7 +297,7 @@ export default function CulivationLogs_Herd({ idherd }) {
             />
             {product && (
               <span>
-                Bạn có chắc chắn muốn xóa <b>{product.herd}</b>?
+                Bạn có chắc chắn muốn xóa <b>{product.name}</b>?
               </span>
             )}
           </div>

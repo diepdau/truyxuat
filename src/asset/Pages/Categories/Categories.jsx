@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef,useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -11,6 +11,8 @@ import "../Home/HerdsList.css";
 import Categories_Create from "./Categories_Create.jsx";
 import { TabPanel, TabView } from "primereact/tabview";
 import { Paginator } from "primereact/paginator";
+import { handleDelete} from "../../service/categories_data.js";
+import { AuthContext } from "../../service/user_service.js";
 export const todoUrl =
   "https://agriculture-traceability.vercel.app/api/v1/categories";
 export const userUrl =
@@ -25,6 +27,7 @@ const emptyProduct = {
   coordinates: [0, 0],
 };
 export default function FarmmingAreas() {
+  const { token } = useContext(AuthContext);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
@@ -39,23 +42,20 @@ export default function FarmmingAreas() {
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, currentLimit]);
+  }, [currentPage, currentLimit,product]);
 
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        todoUrl
-        // `https://agriculture-traceability.vercel.app/api/v1/categories?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
-        //   value
-        // )}`
+        `https://agriculture-traceability.vercel.app/api/v1/categories?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+          value
+        )}`
       );
-      if (response.status === 500) {
-        setHasError(true);
-        return;
-      }
+      // if (response.status === 500) {
+      //   setHasError(true);
+      //   return;
+      // }
       const data = await response.json();
-
-      console.log(data.categories);
       setProducts(data.categories);
       setTotalPages(data.totalPages);
     } catch (error) {
@@ -101,9 +101,6 @@ export default function FarmmingAreas() {
   const deleteSelectedProducts = () => {
     for (const selectedProduct of selectedProducts) {
       handleDeleteUser(selectedProduct);
-      try {
-        reloadData();
-      } catch {}
       setDeleteProductsDialog(false);
       toast.current.show({
         severity: "success",
@@ -116,9 +113,6 @@ export default function FarmmingAreas() {
     let _products = products.filter((val) => val._id === product._id);
     const firstObject = _products[0];
     handleDeleteUser(firstObject);
-    try {
-      reloadData();
-    } catch {}
     setDeleteProductDialog(false);
     toast.current.show({
       severity: "success",
@@ -177,8 +171,8 @@ export default function FarmmingAreas() {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`/categories/${product._id}`, product);
-      // reloadData();
+      handleDelete(product._id,token);
+      reloadData();
     } catch (error) {
       console.log("Error:", error);
     }

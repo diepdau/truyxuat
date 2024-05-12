@@ -2,10 +2,15 @@ import React, { useState, useEffect, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { AuthContext } from "../../service/user_service.js";
+import {
+  getuserList,
+  createUserList,
+  handleDelete,
+  handleRole,
+} from "../../service/user_data.js";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
-import axios from "axios";
 import { Dropdown } from "primereact/dropdown";
 import { useNavigate } from "react-router-dom";
 const emptyProduct = {
@@ -17,7 +22,7 @@ const emptyProduct = {
   password: "",
 };
 export default function SizeDemo() {
-  const { getuserList } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
@@ -27,8 +32,8 @@ export default function SizeDemo() {
   const [selectedProducts, setSelectedProducts] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
-      const userList = await getuserList();
-      setProducts(userList);
+      const userList = await getuserList(token);
+      setProducts(userList.data.users);
     };
 
     fetchData();
@@ -61,16 +66,14 @@ export default function SizeDemo() {
   const handleCreateUser = async (event) => {
     event.preventDefault();
     try {
-      await axios.post(
-        "https://agriculture-traceability.vercel.app/api/v1/users",
-        {
-          first_name: product.first_name,
-          last_name: product.last_name,
-          email: product.email,
-          role: selectedRole.name,
-          password: product.password,
-        }
-      );
+      const a = {
+        first_name: product.first_name,
+        last_name: product.last_name,
+        email: product.email,
+        role: selectedRole.name,
+        password: product.password,
+      };
+      await createUserList(a, token);
       alert("tạo tài khoản thành công");
     } catch (error) {
       console.log("Error:", error);
@@ -126,13 +129,16 @@ export default function SizeDemo() {
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
-        label="No"
+        label="Không"
         icon="pi pi-times"
         outlined
+        severity="secondary"
+        className="button_Dia"
         onClick={hideDeleteProductsDialog}
       />
       <Button
-        label="Yes"
+      className="button_Dia"
+        label="Đồng ý"
         icon="pi pi-check"
         onClick={deleteSelectedProducts}
         severity="danger"
@@ -141,8 +147,8 @@ export default function SizeDemo() {
   );
   const deleteoneProductDialogFooter = (
     <React.Fragment>
-      <Button label="Không" outlined onClick={hideDeleteProductDialog} />
-      <Button label="Đồng ý" severity="danger" onClick={deleteProduct} />
+      <Button  className="button_Dia"  severity="secondary" label="Không" outlined onClick={hideDeleteProductDialog} />
+      <Button className="button_Dia" label="Đồng ý" severity="danger" onClick={deleteProduct} />
     </React.Fragment>
   );
   const confirmDeleteProduct = (product) => {
@@ -163,10 +169,7 @@ export default function SizeDemo() {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(
-        `https://agriculture-traceability.vercel.app/api/v1/users/${product._id}`,
-        product
-      );
+      await handleDelete(product._id, token);
       alert("xóa tài khoản thành công");
     } catch (error) {
       console.log("Error:", error);
@@ -177,12 +180,7 @@ export default function SizeDemo() {
       var userId = selectedProduct._id;
     }
     try {
-      const response = await axios.patch(
-        `https://agriculture-traceability.vercel.app/api/v1/users/${userId}`,
-        {
-          role: selectedRole.name,
-        }
-      );
+      const response = await handleRole(userId, selectedRole.name, token);
       alert("sửa vai trò thành công");
       console.log(response);
     } catch (error) {
@@ -349,16 +347,17 @@ export default function SizeDemo() {
             </form>
 
             <Button
-              label="Lưu"
-              icon="pi pi-check"
+              className="button_Dia"
+              label="Hủy"
+              outlined
               severity="danger"
-              onClick={handleCreateUser}
+              onClick={() => setProductDialog(false)}
             />
             <Button
-              label="Hủy"
-              icon="pi pi-times"
-              outlined
-              onClick={() => setProductDialog(false)}
+              className="button_Dia"
+              label="Lưu"
+              severity="success"
+              onClick={handleCreateUser}
             />
           </div>
         </Dialog>

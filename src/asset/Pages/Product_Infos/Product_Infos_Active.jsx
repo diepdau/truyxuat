@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect ,useContext} from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import "./Product_Infos.css";
 import { InputTextarea } from "primereact/inputtextarea";
-
+import { handleCreate,handleGetProductInfor,handleUpdate} from "../../service/productInfor_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   _id: "",
   name: "",
@@ -23,6 +23,7 @@ function YourComponent({
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
+  const { token } = useContext(AuthContext);
   const handleChange = (event) => {
     const { name, value } = event.target;
     setProduct({
@@ -38,26 +39,21 @@ function YourComponent({
   const fetchData = async () => {
     if (id_product_info) {
       try {
-        const a = await axios.get(
-          `https://agriculture-traceability.vercel.app/api/v1/product-infos/${id_product_info}`
-        );
+        const a = await handleGetProductInfor(id_product_info,token)
         setProduct(a.data.productInfo);
       } catch (error) {
         console.log("Error", error);
       }
     }
   };
-  const handleCreate = async () => {
+  const handle = async () => {
     if (!validate()) {
       return;
     }
 
     try {
       if (data) {
-        await axios.patch(
-          `https://agriculture-traceability.vercel.app/api/v1/product-infos/${data._id}`,
-          product
-        );
+        await handleUpdate(data._id,product,token);
         toast.current.show({
           severity: "success",
           summary: "Sửa hoàn thành",
@@ -67,10 +63,7 @@ function YourComponent({
           ...product,
         });
       } else {
-        await axios.post(
-          `https://agriculture-traceability.vercel.app/api/v1/product-infos`,
-          product
-        );
+        await handleCreate(product,token);
         toast.current.show({
           severity: "success",
           summary: "Thêm hoàn thành",
@@ -171,7 +164,7 @@ function YourComponent({
           id="Save"
           label={isUpdate ? "Cập nhật" : "Lưu"}
           severity="success"
-          onClick={handleCreate}
+          onClick={handle}
         />
       )}
     </div>

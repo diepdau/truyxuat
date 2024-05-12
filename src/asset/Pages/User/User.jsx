@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import "./User.css";
 import imgAdmin from "../../Img/Desktop/adminName.png";
 import { Button } from "primereact/button";
+import { updateUserInfo, getUser, changeUserPassword,getUserAdmin} from "../../service/user_data.js";
 import { AuthContext } from "../../service/user_service.js";
 import { Dialog } from "primereact/dialog";
 const initFormValue = {
@@ -16,21 +17,22 @@ const initFormValue = {
   newPassword: "",
 };
 export default function User() {
-  const { updateUserInfo, getUser, changeUserPassword } =
-    useContext(AuthContext);
+  const { token } = useContext(AuthContext);
   const [user, setuser] = useState([]);
   const [passwordDialog, setpasswordDialog] = useState(false);
   const [formValue, setFormValue] = useState(initFormValue);
   const location = useLocation();
   const userId = location.pathname.split("/")[2];
-  
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        if (userId) {
-          const res = await getUser(userId);
-          setuser(res);
-          console.log(user);
+        if (userId && userId === "my-profile") {
+          const res = await getUserAdmin(token);
+          setuser(res.data.user);
+        }
+        else{
+          const res = await getUser(userId,token);
+          setuser(res.data.user);
         }
       } catch (error) {
         console.log("Error fetching user details:", error);
@@ -49,17 +51,17 @@ export default function User() {
     event.preventDefault();
     try {
       await updateUserInfo({
-        first_name: formValue.first_name || user.user.first_name,
-        last_name: formValue.last_name || user.user.last_name,
-        email: formValue.email || user.user.email,
-        phone: formValue.phone || user.user.phone,
-        address: formValue.address || user.user.address,
-        role: formValue.role || user.user.role,
-      });
+        first_name: formValue.first_name || user.first_name,
+        last_name: formValue.last_name || user.last_name,
+        email: formValue.email || user.email,
+        phone: formValue.phone || user.phone,
+        address: formValue.address || user.address,
+        role: formValue.role || user.role,
+      },token);
       alert("Chỉnh sửa thành công")
       navigator("/user")
     } catch (error) {
-      console.log("Lỗi chỉnh sửa:", error.message);
+      console.log("Lỗi chỉnh sửa:", error.mgs);
     }
   };
   const handleChangePassword = async (event) => {
@@ -68,9 +70,9 @@ export default function User() {
       await changeUserPassword({
         oldPassword: formValue.oldPassword,
         newPassword: formValue.newPassword,
-      });
+      },token);
     } catch (error) {
-      console.log("Lỗi chỉnh sửa:", error.message);
+      console.log("Lỗi chỉnh sửa:", error.msg);
     }
   };
   const changePassword = () => {
@@ -84,7 +86,7 @@ export default function User() {
             <h1 className="userTitle">Tài khoản</h1>
 
             <Button
-            disabled
+            disabled={userId !== "my-profile" && userId.length !== 10}
               label="Đổi mật khẩu"
               severity="success"
               onClick={changePassword}
@@ -97,9 +99,10 @@ export default function User() {
                 <img src={imgAdmin} alt="" className="userShowImg" />
                 <div className="userShowTopTitle">
                   <span className="userShowUsername">
-                    {user.user.first_name}
+                  {userId === "my-profile" ? user.name : user.first_name}
+
                   </span>
-                  <span className="userShowUserTitle">{user.user.role}</span>
+                  <span className="userShowUserTitle">{user.role}</span>
                 </div>
               </div>
 
@@ -107,10 +110,11 @@ export default function User() {
                 <span className="userShowTitle">Thông tin tài khoản</span>
                 <div className="userUpdateItem">
                   <label>Tên</label>
+
                   <input
                     type="text"
                     className="userUpdateInput"
-                    value={user.user.first_name}
+                    value={userId === "my-profile" ? user.name : user.first_name}
                   />
                 </div>
                 <div className="userUpdateItem">
@@ -118,7 +122,7 @@ export default function User() {
                   <input
                     type="text"
                     className="userUpdateInput"
-                    value={user.user.email}
+                    value={user.email}
                   />
                 </div>
                 {/* <div className="userUpdateItem">
@@ -126,7 +130,7 @@ export default function User() {
                   <input
                     type="password"
                     className="userUpdateInput"
-                    value={user.user.password}
+                    value={user.password}
                   />
                 </div> */}
               </div>
@@ -140,7 +144,7 @@ export default function User() {
                     <input
                       type="text"
                       name="first_name"
-                      placeholder={user.user.first_name}
+                      placeholder={user.first_name}
                       className="userUpdateInput"
                       value={formValue.first_name}
                       onChange={handleChange}
@@ -151,7 +155,7 @@ export default function User() {
                     <input
                       type="text"
                       name="last_name"
-                      placeholder={user.user.last_name}
+                      placeholder={user.last_name}
                       className="userUpdateInput"
                       value={formValue.last_name}
                       onChange={handleChange}
@@ -162,7 +166,7 @@ export default function User() {
                     <input
                       type="text"
                       name="email"
-                      placeholder={user.user.email}
+                      placeholder={user.email}
                       className="userUpdateInput"
                       value={formValue.email}
                       onChange={handleChange}
@@ -173,7 +177,7 @@ export default function User() {
                     <input
                       name="phone"
                       type="text"
-                      placeholder={user.user.phone}
+                      placeholder={user.phone}
                       className="userUpdateInput"
                       value={formValue.phone}
                       onChange={handleChange}
@@ -184,7 +188,7 @@ export default function User() {
                     <input
                       type="text"
                       name="address"
-                      placeholder={user.user.address}
+                      placeholder={user.address}
                       className="userUpdateInput"
                       value={formValue.address}
                       onChange={handleChange}
@@ -195,7 +199,7 @@ export default function User() {
                     <input
                       type="text"
                       name="role"
-                      placeholder={user.user.role}
+                      placeholder={user.role}
                       className="userUpdateInput"
                       value={formValue.role}
                       onChange={handleChange}
@@ -215,7 +219,7 @@ export default function User() {
                     <input type="file" id="file" style={{ display: "none" }} />
                   </div>
                   <Button
-                  disabled
+                  disabled={userId !== "my-profile" && userId.length !== 10}
                     type="submit"
                     className="userUpdateButton"
                     label="Chỉnh sửa"

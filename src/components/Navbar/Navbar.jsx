@@ -25,7 +25,9 @@ export default function Navbar() {
   let items = [
     {
       template: (item, options) => (
-        <Link className="link" to={`/user/${currentUser.userId}`}>
+        // <Link className="link" to={`/user/${currentUser.userId}`}>
+        <Link className="link" to={`/user/my-profile`}>
+
           Hồ sơ của tôi
         </Link>
       ),

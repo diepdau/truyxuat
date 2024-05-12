@@ -36,7 +36,18 @@ export const handleDelete = async (product, token) => {
         console.log("Error:", error);
     }
 };
-
+export const handleUpdate = async (_id,data, token) => {
+    try {
+       const res= await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/herds/${_id}`,data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return res;
+    } catch (error) {
+        console.log("Error:", error);
+    }
+};
 export const handleGetCategory = async (token) => {
     try {
         const response = await axios.get("https://agriculture-traceability.vercel.app/api/v1/categories?limit=50",);
@@ -48,7 +59,7 @@ export const handleGetCategory = async (token) => {
 
 export const handleGetFarm = async (token) => {
     try {
-        const response = await axios.get("https://agriculture-traceability.vercel.app/api/v1/farm?limit=50", {
+        const response = await axios.get("https://agriculture-traceability.vercel.app/api/v1/farm?limit=50&searchQuery=Lạc", {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -84,3 +95,41 @@ export const createNewAutoHerd = async (herdId, quantity, token) =>{
       console.error("Error:", error);
   }
 }
+
+
+
+export const handleCreateAnimal = async (data, token) => {
+    try {
+        await axios.post("https://agriculture-traceability.vercel.app/api/v1/animals", data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    } catch (error) {
+        console.log("Error:", error);
+    }
+};
+
+export const handleDeleteAnimal = async (_id, token) => {
+    try {
+        await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/animals/${_id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    } catch (error) {
+        console.log("Error:", error);
+    }
+};
+export const handleUpdateAnimal = async (_id,data, token) => {
+    try {
+       const res= await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/animals/${_id}`,data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return res;
+    } catch (error) {
+        console.log("Error:", error);
+    }
+};

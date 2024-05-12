@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect,useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import "./Harvest.css";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
-
+import { handleUpdate, getHerd} from "../../service/harvest_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   herd: {
     _id: "",
@@ -35,18 +35,20 @@ function YourComponent({ data, reloadData, isProcessors }) {
   const [herds, setHerds] = useState({});
   const [selectedHerd, setSelectedHerd] = useState(null);
   const toast = useRef(null);
+  const { token } = useContext(AuthContext);
+
   useEffect(() => {
-    getHerd();
+    getHerdData();
   }, []);
-  const getHerd = async () => {
+  
+  const getHerdData = async () => {
     try {
-      const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/herds?limit=60`);
-      setHerds(res.data.herds);
+      const a=await getHerd();
+      setHerds(a.data.herds);
     } catch (error) {
       console.log(error);
     }
   };
-
   const handleChange = (event) => {
     const { value, name } = event.target;
     setProduct({
@@ -79,7 +81,7 @@ function YourComponent({ data, reloadData, isProcessors }) {
     });
   };
 
-  const handleCreate = async () => {
+  const handle = async () => {
     if (!validate()) {
       return;
     }
@@ -87,7 +89,7 @@ function YourComponent({ data, reloadData, isProcessors }) {
       ? product.date.props.originalDate
       : product.date;
     try {
-      await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/harvests/${data._id}`, product);
+      handleUpdate(data._id,product, token);
       toast.current.show({
         severity: "success",
         summary: "Sửa hoàn thành",
@@ -137,7 +139,6 @@ function YourComponent({ data, reloadData, isProcessors }) {
     formattedDate = new Date(product.date);
   }
 
-  console.log(data);
   return (
     <div>
       <div className="container_update">
@@ -148,10 +149,9 @@ function YourComponent({ data, reloadData, isProcessors }) {
               <h4>Đàn</h4>
               <Dropdown
                 placeholder={data.herd.name}
-                type="text"
                 value={selectedHerd}
                 options={herds}
-                optionLabel="herds.name"
+                optionLabel="name"
                 onChange={(e) => {
                   setSelectedHerd(e.value);
                   product.herd = e.value._id;
@@ -166,7 +166,6 @@ function YourComponent({ data, reloadData, isProcessors }) {
           <InputText
             name="name"
             value={product.name}
-            autoResize
             style={{ width: "100%" }}
             onChange={handleChange}
           />
@@ -266,7 +265,7 @@ function YourComponent({ data, reloadData, isProcessors }) {
           id="Save"
           label="Lưu"
           severity="success"
-          onClick={handleCreate}
+          onClick={handle}
         />
       )}
     </div>

@@ -1,13 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef,useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import "./CultivationLogs.css";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
-import DateConverter from "../../../components/Date/Date";
+import { handleUpdate} from "../../service/cultivationLog_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   name: "",
   description: "",
@@ -15,6 +15,7 @@ const emptyProduct = {
 };
 
 function YourComponent({ reloadData, data }) {
+  const { token } = useContext(AuthContext);
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
@@ -44,12 +45,11 @@ function YourComponent({ reloadData, data }) {
     }
 
     try {
-      const response = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/cultivation-logs/${data._id}`, {
+      const response = handleUpdate(data._id, {
         name: product.name,
         description: product.description,
         date: formattedDate,
-      });
-      console.log(response);
+      },token);
       toast.current.show({
         severity: "success",
         summary: "Sửa hoàn thành",
@@ -73,13 +73,13 @@ function YourComponent({ reloadData, data }) {
 
     // Kiểm tra lỗi cho trường name
     if (!product.name.trim()) {
-      newErrors.name = "Name is required.";
+      newErrors.name = "Tên là bắt buộc.";
       isValid = false;
     }
 
     // Kiểm tra lỗi cho trường description
     if (!product.description.trim()) {
-      newErrors.description = "Description is required.";
+      newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
     }
 
@@ -101,7 +101,6 @@ function YourComponent({ reloadData, data }) {
           <InputText
             name="name"
             defaultValue={product.name}
-            autoResize
             style={{ width: "100%" }}
             onChange={handleChange}
           />

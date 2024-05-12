@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef,useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
-
+import {handleUpdate, handleGetCategory, handleGetFarm,handleCreate } from '../../service/Herd_data.js';
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   name: "",
   member_count: 0,
@@ -28,14 +28,14 @@ function YourComponent({ data, reloadData, isUpdate }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
+  const { token } = useContext(AuthContext);
   const [farm, setfarm] = useState({});
   const [categories, setcategories] = useState({});
-  var url = data ? `herds/upload/${data._id}` : "";
+  var url = data ? `https://agriculture-traceability.vercel.app/api/v1/herds/upload/${data._id}` : "";
   const [selectedCategories, setelectedCategories] = useState(null);
   const [selectedfarm, setSelectedfarm] = useState(null);
   const handleChange = (event) => {
     const { value, name } = event.target;
-
     setProduct({
       ...product,
       [name]: value,
@@ -45,13 +45,14 @@ function YourComponent({ data, reloadData, isUpdate }) {
     fetchDataFarm();
     fetchDataCategory();
   }, []);
+
   const fetchDataCategory = async () => {
-    const categoryList = await axios.get("https://agriculture-traceability.vercel.app/api/v1/categories?limit=100");
-    setcategories(categoryList.data.categories);
+    const categoryList =  await handleGetCategory(token);
+    setcategories(categoryList);
   };
   const fetchDataFarm = async () => {
-    const farmList = await axios.get("https://agriculture-traceability.vercel.app/api/v1/farm?limit=60");
-    setfarm(farmList.data.farms);
+    const farmList =await  handleGetFarm(token);
+    setfarm(farmList);
   };
   const onRowEditComplete = async () => {
     if (!validate()) {
@@ -59,13 +60,14 @@ function YourComponent({ data, reloadData, isUpdate }) {
     }
     try {
       if (isUpdate) {
-        await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/herds/${data._id}`, product);
+       const a= await handleUpdate(data._id,product,token);
         toast.current.show({severity: "success", summary: "Sửa hoàn thành",life: 3000, });
         setProduct({
           ...product,
          });
+         console.log(a);
       } else {
-        await axios.post(`https://agriculture-traceability.vercel.app/api/v1/herds`, product);
+        await handleCreate(product, token);
         toast.current.show({severity: "success",summary: "Thêm hoàn thành", life: 3000,});
         setProduct(emptyProduct);
       }
@@ -115,7 +117,6 @@ function YourComponent({ data, reloadData, isUpdate }) {
           <InputText
             name="name"
             value={product.name}
-            autoResize
             style={{ width: "100%" }}
             onChange={handleChange}
           />
@@ -174,7 +175,6 @@ function YourComponent({ data, reloadData, isUpdate }) {
             onChange={(e) => {
               setSelectedfarm(e.value);
               product.farm._id = e.value._id;
-              console.log(product.farm._id);
             }}
             value={selectedfarm}
             style={{ width: "100%" }}

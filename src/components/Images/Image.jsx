@@ -1,11 +1,13 @@
-import React, { useRef } from "react";
+import React, { useRef ,useContext} from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { Galleria } from "primereact/galleria";
 import { Toast } from "primereact/toast";
 import { InputText } from "primereact/inputtext";
+import { AuthContext } from "../../asset/service/user_service.js";
 import "./Image.css";
 const ImageUploader = ({ uploadUrl, images, reloadData }) => {
+  const { token } = useContext(AuthContext);
   const { register, handleSubmit } = useForm();
   const toast = useRef(null);
   const upLoadImage = async (data) => {
@@ -14,7 +16,11 @@ const ImageUploader = ({ uploadUrl, images, reloadData }) => {
       formData.append("images", file);
     }
     try {
-      await axios.patch(uploadUrl, formData);
+      await axios.patch(uploadUrl, formData,{
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
       toast.current.show({
         severity: "success",
         summary: "Đã thêm hình",

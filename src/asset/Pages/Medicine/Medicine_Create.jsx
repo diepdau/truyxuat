@@ -1,11 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import "./Medicine.css";
 import { InputTextarea } from "primereact/inputtextarea";
-
+import { handleCreate, handleUpdate } from "../../service/medicine_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   name: "",
   description: "",
@@ -22,7 +22,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
-
+  const { token } = useContext(AuthContext);
   const handleChange = (event) => {
     const { name, value } = event.target;
     setProduct({
@@ -39,7 +39,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
     try {
       let response;
       if (data) {
-        response = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/medicines/${data._id}`, product);
+        response = await handleUpdate(data._id, product, token);
         toast.current.show({
           severity: "success",
           summary: "Sửa hoàn thành",
@@ -47,7 +47,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
         });
         setProduct(response.data);
       } else {
-        response = await axios.post(`https://agriculture-traceability.vercel.app/api/v1/medicines/`, product);
+        response = await handleCreate(product, token);
         toast.current.show({
           severity: "success",
           summary: "Thêm hoàn thành",
@@ -65,39 +65,39 @@ function YourComponent({ data, reloadData, isUpdate }) {
     let isValid = true;
     const newErrors = {};
 
-    if (!product.name) {
+    if (product.name.trim()==="") {
       newErrors.name = "Tên là bắt buộc.";
       isValid = false;
     }
-    if (!product.description) {
+    if (product.description.trim()==="") {
       newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
     }
-    if (!product.ingredients) {
+    if (product.ingredients.trim()==="") {
       newErrors.ingredients = "Thành phần là băt buộc.";
       isValid = false;
     }
-    if (!product.usage_instruction) {
+    if (product.usage_instruction.trim()==="") {
       newErrors.usage_instruction = "Hướng dẫn sử dụng là bắt buộc.";
       isValid = false;
     }
-    if (!product.toxicity) {
+    if (product.toxicity.trim()==="") {
       newErrors.toxicity = "Độ độc là bắt buộc.";
       isValid = false;
     }
-    if (!product.dosage) {
+    if (product.dosage.trim()==="") {
       newErrors.dosage = "Liều lượng là bắt buộc.";
       isValid = false;
     }
-    if (!product.isolation) {
+    if (product.isolation.trim()==="") {
       newErrors.isolation = "Cách ly là bắt buộc.";
       isValid = false;
     }
-    if (!product.recommendation) {
+    if (product.recommendation.trim()==="") {
       newErrors.recommendation = "Khuyến nghị là bắt buộc.";
       isValid = false;
     }
-    if (!product.certificate) {
+    if (product.certificate.trim()==="") {
       newErrors.certificate = "Giấy phép là bắt buộc.";
       isValid = false;
     }
