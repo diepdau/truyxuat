@@ -1,29 +1,34 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
-import { Toast } from "primereact/toast";
 // import { useNavigate } from "react-router-dom";
 export const AuthContext = createContext("");
 
 export const AuthContexProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null
-    
-  );
+  const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
+  const [token, setToken] = useState("");
 
   const loginApi = async (inputs) => {
-    // const res = await axios.post("/auth/login", inputs);
-    const res = await axios.post("https://agriculture-traceability.vercel.app/api/v1/auth/login", inputs);
-    const user = res.data.user;
-    // setCurrentUser(user);
-     setCurrentUser({ ...user, expirationTime: Date.now() + 24 * 60 * 60 * 1000 }); // Thêm thời gian hết hạn 24 giờ
-    // setCurrentUser({ ...user, expirationTime: Date.now() + 5 * 60 * 1000 }); 
+    try {
+      const res = await axios.post("https://agriculture-traceability.vercel.app/api/v1/auth/login", inputs);
+      const user = res.data.user;
+      const accounttoken = res.data.token;
+
+      // Lưu user và token vào state
+      setCurrentUser({ ...user, expirationTime: Date.now() + 24 * 60 * 60 * 1000 });
+      setToken(accounttoken);
+      document.cookie = accounttoken;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const logout = async (inputs) => {
-    await axios.get("https://agriculture-traceability.vercel.app/api/v1/auth/logout",inputs);
+    await axios.get("https://agriculture-traceability.vercel.app/api/v1/auth/logout", inputs);
     setCurrentUser(null);
+    setToken(null);
+    localStorage.removeItem("token");
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   };
-
 
 
 const getuserList = async () => {
@@ -81,14 +86,13 @@ const changeUserPassword = async (data) => {
 
     if (tokenExpirationTime && currentTime > tokenExpirationTime) {
       alert("Đã hết thời gian đăng nhập");
-      logout(); 
+      logout();
       // Đăng xuất nếu token đã hết hạn
     }
-    
   }, [currentUser, logout]);
 
   return (
-    <AuthContext.Provider value={{ currentUser, loginApi, logout ,getuserList,createUserList,getUser,updateUserInfo,changeUserPassword}}>
+    <AuthContext.Provider value={{ currentUser, token, loginApi, logout, getuserList, createUserList, getUser, updateUserInfo, changeUserPassword }}>
       {children}
     </AuthContext.Provider>
   );

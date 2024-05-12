@@ -8,10 +8,13 @@ import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
-import Categories_Create from "./Categories_Create.jsx"
+import Categories_Create from "./Categories_Create.jsx";
 import { TabPanel, TabView } from "primereact/tabview";
 import { Paginator } from "primereact/paginator";
-export const todoUrl = "https://agriculture-traceability.vercel.app/api/v1/categories";
+export const todoUrl =
+  "https://agriculture-traceability.vercel.app/api/v1/categories";
+export const userUrl =
+  "https://agriculture-traceability.vercel.app/api/v1/herds";
 
 const emptyProduct = {
   _id: null,
@@ -32,6 +35,7 @@ export default function FarmmingAreas() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -39,13 +43,18 @@ export default function FarmmingAreas() {
 
   const fetchData = async (value = "") => {
     try {
-      const response = await fetch(todoUrl
+      const response = await fetch(
+        todoUrl
         // `https://agriculture-traceability.vercel.app/api/v1/categories?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
         //   value
         // )}`
       );
+      if (response.status === 500) {
+        setHasError(true);
+        return;
+      }
       const data = await response.json();
-      
+
       console.log(data.categories);
       setProducts(data.categories);
       setTotalPages(data.totalPages);
@@ -182,7 +191,7 @@ export default function FarmmingAreas() {
       <>
         <TabView>
           <TabPanel header="Thông tin">
-          <Categories_Create
+            <Categories_Create
               data={data}
               isUpdate={true}
               reloadData={reloadData}
@@ -215,6 +224,8 @@ export default function FarmmingAreas() {
   );
   return (
     <div>
+      {hasError ? <div>Opps come back later</div> : null}
+
       <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar
@@ -238,9 +249,17 @@ export default function FarmmingAreas() {
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
-          sortable
+            sortable
             field="name"
             header="Tên nhóm"
+            value={product.name}
+            style={{ minWidth: "10rem" }}
+          ></Column>
+
+          <Column
+            sortable
+            field="slug"
+            header="slug"
             value={product.name}
             style={{ minWidth: "10rem" }}
           ></Column>
@@ -303,7 +322,7 @@ export default function FarmmingAreas() {
           visible={productDialog}
           onHide={() => setProductDialog(false)}
         >
-          <Categories_Create reloadData={reloadData}isUpdate={false}/>
+          <Categories_Create reloadData={reloadData} isUpdate={false} />
         </Dialog>
       </div>
     </div>

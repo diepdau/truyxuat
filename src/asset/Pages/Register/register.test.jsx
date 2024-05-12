@@ -247,26 +247,28 @@ test("validate password function should pass on correct input", () => {
   });
 
  //Kiểm tra email đã tồn tại khi click
-//  test("Email is exists", () => {                 //SAI
+//  test("Email is exists", async() => {                 //SAI
 //   render(
 //     <BrowserRouter>
 //       <Register />
 //     </BrowserRouter>
 //   );
-  // const buttonEl = screen.getByRole("button");
-  // const firstNameInputEl = screen.getByPlaceholderText(/Họ/i);
-  // const lastNameInputEl = screen.getByPlaceholderText(/Tên/i);
-  // const usernameInputEl = screen.getByPlaceholderText(/Email/i);
-  // const passwordInputEl = screen.getByPlaceholderText(/Mật khẩu/i);
+//   const buttonEl = screen.getByRole("button");
+//   const firstNameInputEl = screen.getByPlaceholderText(/Họ/i);
+//   const lastNameInputEl = screen.getByPlaceholderText(/Tên/i);
+//   const usernameInputEl = screen.getByPlaceholderText(/Email/i);
+//   const passwordInputEl = screen.getByPlaceholderText(/Mật khẩu/i);
 
-  // const testValue = "admin@gmail.com";
+//   const testValue = "admin@gmail.com";
 
-  // fireEvent.change(firstNameInputEl, { target: { value: testValue } });
-  // fireEvent.change(lastNameInputEl, { target: { value: testValue } });
-  // fireEvent.change(usernameInputEl, { target: { value: testValue } });
-  // fireEvent.change(passwordInputEl, { target: { value: testValue } });
-  // fireEvent.click(buttonEl);
- 
-  // const errorEl = screen.getByTestId("error");
-  // expect(errorEl).toHaveTextContent(/Email đã tồn tại/i);
+//   fireEvent.change(firstNameInputEl, { target: { value: testValue } });
+//   fireEvent.change(lastNameInputEl, { target: { value: testValue } });
+//   fireEvent.change(usernameInputEl, { target: { value: testValue } });
+//   fireEvent.change(passwordInputEl, { target: { value: testValue } });
+//   fireEvent.click(buttonEl);
+
+//   await screen.findByText("Email đã tồn tại");
+//   expect(screen.getByText("Email đã tồn tại")).toBeInTheDocument();
+//   // const errorEl = screen.getByTestId("error");
+//   // expect(errorEl).toHaveTextContent(/Email đã tồn tại/i);
 // });

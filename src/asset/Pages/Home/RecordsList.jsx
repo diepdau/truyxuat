@@ -6,15 +6,13 @@ import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
-import { Dropdown } from "primereact/dropdown";
+import { createNewAutoHerd } from '../../service/Herd_data.js';
 import { Toast } from "primereact/toast";
 import "./HerdsList.css";
 import Record_Create from "./Record_Create.jsx";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
-import { Paginator } from "primereact/paginator";
 import DateConverter from "../../../components/Date/Date";
-import DateDifferenceComponent from "./DateBirth.jsx";
 
 const emptyProduct = {
   _id: null,
@@ -91,9 +89,10 @@ export default function SizeDemo({ herdId }) {
   //Hàm tạo con trong đàn tự động
   const handleCreateNewAuto = async () => {
     try {
-      await axios.post(`https://agriculture-traceability.vercel.app/api/v1/herds/${herdId}/generate-animals`, {
-        quantity: product.quantity,
-      });
+      // await axios.post(`https://agriculture-traceability.vercel.app/api/v1/herds/${herdId}/generate-animals`, {
+      //   quantity: product.quantity,
+      // });
+      await createNewAutoHerd(herdId,product.quantity);
       setProductDialogNewAuto(false);
       reloadData();
       toast.current.show({
@@ -325,10 +324,6 @@ export default function SizeDemo({ herdId }) {
       </span>
     </div>
   );
-  const DateTime = new Date();
-
-  const DateTime1 = <DateConverter originalDate={"2024-04-28T17:00:00.000Z"}/>;
-  console.log("opp", DateTime1.props.originalDate);
   return (
     <div>
       <Toast className="toast" ref={toast} />

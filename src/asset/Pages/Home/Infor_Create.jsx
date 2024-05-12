@@ -1,8 +1,8 @@
 import { useEffect, useState, useContext, useRef } from "react";
 import { Button } from "primereact/button";
-import axios from "axios";
 import { Toast } from "primereact/toast";
-import { HerdsContext } from "../../service/Herd_data.js";
+import {handleCreate, handleGetCategory, handleGetFarm } from '../../service/Herd_data.js';
+import { AuthContext } from "../../service/user_service.js";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import { InputText } from "primereact/inputtext";
@@ -14,16 +14,16 @@ const initFormValue = {
   description: "",
   quantity: 0,
   farm: "",
-  start_date: "",
+  start_date: new Date(),
   location: "",
 };
 function Infor_Herd({ isUpdate, reloadData }) {
+  const { token } = useContext(AuthContext);
   const [formData, setFormData] = useState(initFormValue);
   const [categories, setcategories] = useState([]);
   const [farm, setfarm] = useState([]);
   const [selectedCategories, setelectedCategories] = useState(null);
   const [selectedfarm, setSelectedfarm] = useState(null);
-  const { handleGetCategory, handleGetFarm } = useContext(HerdsContext);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
   useEffect(() => {
@@ -32,11 +32,11 @@ function Infor_Herd({ isUpdate, reloadData }) {
   }, []);
 
   const fetchDataCategory = async () => {
-    const categoryList = await handleGetCategory();
+    const categoryList = await handleGetCategory(token);
     setcategories(categoryList);
   };
   const fetchDataFarm = async () => {
-    const farmList = await handleGetFarm();
+    const farmList = await handleGetFarm(token);
     setfarm(farmList);
   };
   const handleChange = (event) => {
@@ -51,7 +51,7 @@ function Infor_Herd({ isUpdate, reloadData }) {
       return;
     }
     try {
-      await axios.post(`https://agriculture-traceability.vercel.app/api/v1/herds/`, formData);
+      await handleCreate(formData,token);
       toast.current.show({
         severity: "success",
         summary: "Thêm hoàn thành",
