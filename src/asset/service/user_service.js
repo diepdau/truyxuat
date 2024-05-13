@@ -5,34 +5,40 @@ export const AuthContext = createContext("");
 
 export const AuthContexProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
-  const [token, setToken] = useState(localStorage.getItem("userToken") || null);
+  const [token, setToken] = useState(JSON.parse(localStorage.getItem("userToken")) || null);
+
 
   const loginApi = async (inputs) => {
     try {
       const res = await axios.post("https://agriculture-traceability.vercel.app/api/v1/auth/login", inputs);
       const user = res.data.user;
       const accountToken = res.data.token;
-
-      // Lưu user và token vào state và localStorage
       setCurrentUser({ ...user, expirationTime: Date.now() + 24 * 60 * 60 * 1000 });
       setToken(accountToken);
-      localStorage.setItem("userToken", accountToken);
+      localStorage.getItem("userToken",accountToken)
     } catch (error) {
       console.log(error);
     }
   };
   const logout = async (inputs) => {
-    await axios.get("https://agriculture-traceability.vercel.app/api/v1/auth/logout", inputs);
+    await axios.get("https://agriculture-traceability.vercel.app/api/v1/auth/logout", inputs,{
+      headers: {
+        Authorization: `Bearer ${token}`
+    }
+    });
     setCurrentUser(null);
     setToken(null);
-    localStorage.removeItem("token");
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    localStorage.removeItem("userToken");
+    localStorage.removeItem("user");
+
   };
 
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(currentUser));
-  }, [currentUser]);
+    localStorage.setItem("userToken", JSON.stringify(token));
+    
+  }, [currentUser,token]);
 
   useEffect(() => {
     const tokenExpirationTime = currentUser?.expirationTime;

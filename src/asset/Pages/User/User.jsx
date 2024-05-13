@@ -3,7 +3,12 @@ import { useLocation } from "react-router-dom";
 import "./User.css";
 import imgAdmin from "../../Img/Desktop/adminName.png";
 import { Button } from "primereact/button";
-import { updateUserInfo, getUser, changeUserPassword,getUserAdmin} from "../../service/user_data.js";
+import {
+  updateUserInfo,
+  getUser,
+  changeUserPassword,
+  getUserAdmin,
+} from "../../service/user_data.js";
 import { AuthContext } from "../../service/user_service.js";
 import { Dialog } from "primereact/dialog";
 const initFormValue = {
@@ -17,7 +22,7 @@ const initFormValue = {
   newPassword: "",
 };
 export default function User() {
-  const { token } = useContext(AuthContext);
+  const { currentUser, token } = useContext(AuthContext);
   const [user, setuser] = useState([]);
   const [passwordDialog, setpasswordDialog] = useState(false);
   const [formValue, setFormValue] = useState(initFormValue);
@@ -29,9 +34,8 @@ export default function User() {
         if (userId && userId === "my-profile") {
           const res = await getUserAdmin(token);
           setuser(res.data.user);
-        }
-        else{
-          const res = await getUser(userId,token);
+        } else {
+          const res = await getUser(userId, token);
           setuser(res.data.user);
         }
       } catch (error) {
@@ -50,16 +54,19 @@ export default function User() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await updateUserInfo({
-        first_name: formValue.first_name || user.first_name,
-        last_name: formValue.last_name || user.last_name,
-        email: formValue.email || user.email,
-        phone: formValue.phone || user.phone,
-        address: formValue.address || user.address,
-        role: formValue.role || user.role,
-      },token);
-      alert("Chỉnh sửa thành công")
-      navigator("/user")
+      await updateUserInfo(
+        {
+          first_name: formValue.first_name || user.first_name,
+          last_name: formValue.last_name || user.last_name,
+          email: formValue.email || user.email,
+          phone: formValue.phone || user.phone,
+          address: formValue.address || user.address,
+          role: formValue.role || user.role,
+        },
+        token
+      );
+      alert("Chỉnh sửa thành công");
+      navigator("/user");
     } catch (error) {
       console.log("Lỗi chỉnh sửa:", error.mgs);
     }
@@ -67,10 +74,13 @@ export default function User() {
   const handleChangePassword = async (event) => {
     event.preventDefault();
     try {
-      await changeUserPassword({
-        oldPassword: formValue.oldPassword,
-        newPassword: formValue.newPassword,
-      },token);
+      await changeUserPassword(
+        {
+          oldPassword: formValue.oldPassword,
+          newPassword: formValue.newPassword,
+        },
+        token
+      );
     } catch (error) {
       console.log("Lỗi chỉnh sửa:", error.msg);
     }
@@ -83,10 +93,10 @@ export default function User() {
       {user && Object.keys(user).length > 0 && (
         <>
           <div className="userTitleContainer">
-            <h1 className="userTitle">Tài khoản</h1>
+            <h2 className="userTitle">Tài khoản</h2>
 
             <Button
-            disabled={userId !== "my-profile" && userId.length !== 10}
+              disabled={currentUser.role === "admin" && userId.length > 10}
               label="Đổi mật khẩu"
               severity="success"
               onClick={changePassword}
@@ -99,8 +109,7 @@ export default function User() {
                 <img src={imgAdmin} alt="" className="userShowImg" />
                 <div className="userShowTopTitle">
                   <span className="userShowUsername">
-                  {userId === "my-profile" ? user.name : user.first_name}
-
+                   {currentUser.name}
                   </span>
                   <span className="userShowUserTitle">{user.role}</span>
                 </div>
@@ -110,11 +119,10 @@ export default function User() {
                 <span className="userShowTitle">Thông tin tài khoản</span>
                 <div className="userUpdateItem">
                   <label>Tên</label>
-
                   <input
                     type="text"
                     className="userUpdateInput"
-                    value={userId === "my-profile" ? user.name : user.first_name}
+                    value={currentUser.name }
                   />
                 </div>
                 <div className="userUpdateItem">
@@ -219,7 +227,9 @@ export default function User() {
                     <input type="file" id="file" style={{ display: "none" }} />
                   </div>
                   <Button
-                  disabled={userId !== "my-profile" && userId.length !== 10}
+                    disabled={
+                      currentUser.role === "admin" && userId.length > 10
+                    }
                     type="submit"
                     className="userUpdateButton"
                     label="Chỉnh sửa"
@@ -274,13 +284,13 @@ export default function User() {
               </form>
 
               <Button
-              className="btn_top"
+                className="btn_top"
                 label="Lưu"
                 severity="success"
                 onClick={handleChangePassword}
               />
               <Button
-              className="btn_top"
+                className="btn_top"
                 label="Hủy"
                 severity="danger"
                 onClick={() => setpasswordDialog(false)}

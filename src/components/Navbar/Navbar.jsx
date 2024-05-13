@@ -24,14 +24,21 @@ export default function Navbar() {
 
   let items = [
     {
-      template: (item, options) => (
-        // <Link className="link" to={`/user/${currentUser.userId}`}>
-        <Link className="link" to={`/user/my-profile`}>
-
-          Hồ sơ của tôi
-        </Link>
-      ),
+      template: (item, options) => {
+        return (
+          currentUser && currentUser.role === "admin" ? (
+            <Link className="link" to={`/user/my-profile`}>
+              Hồ sơ của tôi
+            </Link>
+          ) : (
+            <Link className="link" to={`/user/${currentUser.userId}`}>
+              Hồ sơ của tôi
+            </Link>
+          )
+        );
+      },
     },
+    
     {
       template: (item, options) =>
         currentUser.role === "admin" ? (
