@@ -70,12 +70,10 @@ margin-top: 2px;
   width: 100%;
   padding: 6px 12px;
   border-radius: 8px;
-  background-color: #0D955C;
   border: none;
   color: #fff;
   font-size: 16px;
   font-weight: bold;
-  cursor: pointer;
   transition: background-color 0.3s;
   margin: 27px 0px 52px 0px;
 }

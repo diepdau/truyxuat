@@ -35,10 +35,10 @@ const Login = () => {
       navigate("/danh-sach-dan");
     } catch (err) {
       const er = err.response.data.msg;
-      if (er.includes("Incorrect")) {
-        setError("Email hoặc mật khẩu sai");
+      if (er.includes("credentials")) {
+        setError("Email không tồn tại");
       } else {
-        setError("Chưa nhập email hoặc mật khẩu");
+        setError("Email hoặc mật khẩu sai");
       }
     }
   };
@@ -102,9 +102,8 @@ const Login = () => {
             onClick={handleClick}
             className="submit-btn"
             style={{
-              textDecoration: "none",
-              color: "white",
-              cursor: "pointer",
+             cursor:(!email || !password) ? "" : "pointer",
+              backgroundColor: (!email || !password) ? "grey" : " #0D955C", 
             }}
           >
             {loading ? "Loading" : "Đăng nhập"}
