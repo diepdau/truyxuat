@@ -1,11 +1,15 @@
-import React, { useState, useEffect, useRef,useContext } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
-import { handleUpdateAnimal,createNewAutoHerd, handleDeleteAnimal } from '../../service/Herd_data.js';
+import {
+  handleUpdateAnimal,
+  createNewAutoHerd,
+  handleDeleteAnimal,
+} from "../../service/Herd_data.js";
 import { Toast } from "primereact/toast";
 import "./HerdsList.css";
 import Record_Create from "./Record_Create.jsx";
@@ -89,7 +93,7 @@ export default function SizeDemo({ herdId }) {
   //Hàm tạo con trong đàn tự động
   const handleCreateNewAuto = async () => {
     try {
-      await createNewAutoHerd(herdId,product.quantity,token);
+      await createNewAutoHerd(herdId, product.quantity, token);
       setProductDialogNewAuto(false);
       reloadData();
       toast.current.show({
@@ -207,14 +211,14 @@ export default function SizeDemo({ herdId }) {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await handleDeleteAnimal(product._id,token);
+      await handleDeleteAnimal(product._id, token);
     } catch (error) {
       console.log("Error:", error);
     }
   };
 
   //Xử lý thu hoạch chưa
-  
+
   const Birth_weight = (options) => {
     return (
       <InputText
@@ -269,12 +273,16 @@ export default function SizeDemo({ herdId }) {
     }
     console.log("birth_day", formattedDate);
     try {
-       await handleUpdateAnimal(Id, {  
-       name: newData.name,
-      birth_date: formattedDate,
-      birth_weight: newData.birth_weight,
-      herd: herdId,
-    },token);
+      await handleUpdateAnimal(
+        Id,
+        {
+          name: newData.name,
+          birth_date: formattedDate,
+          birth_weight: newData.birth_weight,
+          herd: herdId,
+        },
+        token
+      );
       reloadData();
       toast.current.show({
         severity: "success",
@@ -364,6 +372,8 @@ export default function SizeDemo({ herdId }) {
             editor={(options) => Birth_date(options)}
             style={{ minWidth: "5rem" }}
           ></Column>
+
+
           {/* <Column
             sortable
             field="birth_date"
@@ -398,7 +408,7 @@ export default function SizeDemo({ herdId }) {
           rowsPerPageOptions={[5, 10, 20]}
           onPageChange={onPageChange}
         /> */}
-        
+
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}

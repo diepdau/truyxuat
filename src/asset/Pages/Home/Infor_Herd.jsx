@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef,useContext } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
@@ -6,7 +6,12 @@ import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
-import {handleUpdate, handleGetCategory, handleGetFarm,handleCreate } from '../../service/Herd_data.js';
+import {
+  handleUpdate,
+  handleGetCategory,
+  handleGetFarm,
+  handleCreate,
+} from "../../service/Herd_data.js";
 import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   name: "",
@@ -22,8 +27,13 @@ const emptyProduct = {
   },
   start_date: "",
   location: "",
+  status: "",
 };
-
+const statusOptions = [
+  { label: "Chưa thu hoạch", value: "Chưa thu hoạch" },
+  { label: "Đang thu hoạch", value: "Đang thu hoạch" },
+  { label: "Đã thu hoạch", value: "Đã thu hoạch" },
+];
 function YourComponent({ data, reloadData, isUpdate }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
@@ -31,7 +41,9 @@ function YourComponent({ data, reloadData, isUpdate }) {
   const { token } = useContext(AuthContext);
   const [farm, setfarm] = useState({});
   const [categories, setcategories] = useState({});
-  var url = data ? `https://agriculture-traceability.vercel.app/api/v1/herds/upload/${data._id}` : "";
+  var url = data
+    ? `https://agriculture-traceability.vercel.app/api/v1/herds/upload/${data._id}`
+    : "";
   const [selectedCategories, setelectedCategories] = useState(null);
   const [selectedfarm, setSelectedfarm] = useState(null);
   const handleChange = (event) => {
@@ -41,17 +53,23 @@ function YourComponent({ data, reloadData, isUpdate }) {
       [name]: value,
     });
   };
+  const handleStatusChange = (event) => {
+    setProduct({
+      ...product,
+      status: event.value,
+    });
+  };
   useEffect(() => {
     fetchDataFarm();
     fetchDataCategory();
   }, []);
 
   const fetchDataCategory = async () => {
-    const categoryList =  await handleGetCategory(token);
+    const categoryList = await handleGetCategory(token);
     setcategories(categoryList);
   };
   const fetchDataFarm = async () => {
-    const farmList =await  handleGetFarm(token);
+    const farmList = await handleGetFarm(token);
     setfarm(farmList);
   };
   const onRowEditComplete = async () => {
@@ -60,15 +78,23 @@ function YourComponent({ data, reloadData, isUpdate }) {
     }
     try {
       if (isUpdate) {
-       const a= await handleUpdate(data._id,product,token);
-        toast.current.show({severity: "success", summary: "Sửa hoàn thành",life: 3000, });
+        const a = await handleUpdate(data._id, product, token);
+        toast.current.show({
+          severity: "success",
+          summary: "Sửa hoàn thành",
+          life: 3000,
+        });
         setProduct({
           ...product,
-         });
-         console.log(a);
+        });
+        console.log(a);
       } else {
         await handleCreate(product, token);
-        toast.current.show({severity: "success",summary: "Thêm hoàn thành", life: 3000,});
+        toast.current.show({
+          severity: "success",
+          summary: "Thêm hoàn thành",
+          life: 3000,
+        });
         setProduct(emptyProduct);
       }
       reloadData();
@@ -76,7 +102,6 @@ function YourComponent({ data, reloadData, isUpdate }) {
       console.log("Error update:", error);
     }
   };
- 
 
   const validate = () => {
     let isValid = true;
@@ -182,6 +207,30 @@ function YourComponent({ data, reloadData, isUpdate }) {
         </div>
 
         <div style={{ flex: 1 }}>
+          <h4>Trạng thái</h4>
+          <Dropdown
+            name="status"
+            value={product.status}
+            options={statusOptions}
+            onChange={handleStatusChange}
+            placeholder={data ? data.status : ""}
+            style={{ width: "100%" }}
+            optionLabel="label"
+            optionValue="value"
+            ClassName={(option) => {
+              switch (option.value) {
+                case "Chưa thu hoạch":
+                  return "text-red";
+                case "Đang thu hoạch":
+                  return "text-yellow";
+                case "Đã thu hoạch":
+                  return "text-green";
+                default:
+                  return "";
+              }
+            }}
+          />
+
           <h4>Mô tả</h4>
           <InputTextarea
             name="description"

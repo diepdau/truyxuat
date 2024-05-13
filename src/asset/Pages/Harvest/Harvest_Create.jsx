@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
@@ -16,6 +15,7 @@ const emptyProduct = {
   unit: null,
   date: new Date(),
   description: "",
+  status:"",
 };
 const unitOptions = [
   { label: "Cân", value: "Cân" },
@@ -23,7 +23,11 @@ const unitOptions = [
   { label: "Túi", value: "Túi" },
   { label: "Lít", value: "Lít" },
 ];
-
+const statusOptions = [
+  { label: "Chưa thu hoạch", value: "Chưa thu hoạch" },
+  { label: "Đang thu hoạch", value: "Đang thu hoạch" },
+  { label: "Đã thu hoạch", value: "Đã thu hoạch" },
+];
 function Harvest_Create({ reloadData, idherd }) {
   const [product, setProduct] = useState(emptyProduct);
   const [errors, setErrors] = useState({});
@@ -62,7 +66,12 @@ function Harvest_Create({ reloadData, idherd }) {
       unit: event.value,
     });
   };
-
+  const handleStatusChange = (event) => {
+    setProduct({
+      ...product,
+      status: event.value,
+    });
+  };
   const handle = async () => {
     if (!validate()) {
       return;
@@ -183,6 +192,15 @@ function Harvest_Create({ reloadData, idherd }) {
 
         {/* Cột phải */}
         <div style={{ flex: 1 }}>
+        <h4>Trạng thái</h4>
+              <Dropdown
+                name="status"
+                value={product.status}
+                options={statusOptions}
+                onChange={handleStatusChange}
+                placeholder="Chọn trạng thái"
+                style={{ width: "100%" }}
+              />
           <h4>Mô tả</h4>
           <InputTextarea
             name="description"

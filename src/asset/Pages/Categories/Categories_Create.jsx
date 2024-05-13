@@ -41,6 +41,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
         setFormData(res.data);
       } else {
         handleCreate(formData, token);
+        
         toast.current.show({
           severity: "success",
           summary: "Thêm hoàn thành",

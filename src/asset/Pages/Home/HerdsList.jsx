@@ -13,6 +13,8 @@ import { Paginator } from "primereact/paginator";
 import DateConverter from "../../../components/Date/Date.jsx";
 import { AuthContext } from "../../service/user_service.js";
 import {handleDelete } from "../../service/Herd_data.js";
+import AgeResult from "./DateBirth.jsx";
+
 const emptyProduct = {
   _id: null,
   name: "",
@@ -51,10 +53,17 @@ export default function SizeDemo() {
         `https://agriculture-traceability.vercel.app/api/v1/herds?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent( value)}`);
       const data = await response.json();
       data.herds.forEach((element) => {
-        element.date = <DateConverter originalDate={element.start_date} />;
+        element.farm.name = <AgeResult birthDate={element.start_date} />;
+     });
+      data.herds.forEach((element) => {
+         element.date = <DateConverter originalDate={element.start_date} />;
       });
+
+      
       setProducts(data.herds);
       setTotalPages(data.totalPages);
+      console.log(data.herds);
+
     } catch (error) {
       console.log("Error", error);
     }
@@ -201,7 +210,19 @@ export default function SizeDemo() {
       </div>
     );
   };
-
+  const isProcessedBodyTemplate = (rowData) => {
+    let iconClass = "pi";
+    if (rowData.status === 'Chưa thu hoạch') {
+      iconClass += " text-red-500 pi-times-circle";
+    } else if (rowData.status === 'Đang thu hoạch') {
+      iconClass += " text-yellow-500 pi-circle";
+    } else if (rowData.status === 'Đã thu hoạch') {
+      iconClass += " text-green-500 pi-check-circle";
+    }
+  
+    return <i className={iconClass}></i>;
+  };
+  
   const [input, setInput] = useState("");
   const handleChange = (value) => {
     setInput(value);
@@ -234,8 +255,16 @@ export default function SizeDemo() {
           editMode="row" dataKey="_id" tableStyle={{ minWidth: "68rem" }} header={header}  >
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column field="name"  header="Tên đàn" sortable  value={product.name}  style={{ minWidth: "10rem" }} ></Column>
-          <Column field="member_count"  header="Số lượng" sortable  value={product.member_count} style={{ minWidth: "10rem" }}></Column>
-          <Column field="date" sortable header="Ngày tạo" value={product.start_date}style={{ width: "20%" }}></Column>
+          <Column field="member_count"  header="Số lượng" sortable  value={product.member_count} style={{ minWidth: "6rem" }}></Column>
+          <Column field="status" header="Trạng thái"   dataType="boolean"
+            bodyClassName="text-center"
+            style={{ minWidth: "5rem" }}
+            body={isProcessedBodyTemplate}
+          />
+
+          {/* <Column field="date" sortable header="Ngày tạo" value={product.start_date}style={{ width: "10%" }}></Column> */}
+          <Column field="farm.name" sortable header="Tháng tuổi" value={product.farm.name}style={{ minWidth: "6rem" }}></Column>
+        
           <Column header="Nhóm" sortable sortField="category.name" filterField="category" style={{ minWidth: "14rem" }} body={representativeBodyTemplate}/>
           <Column body={actionBodyTemplate} headerStyle={{ width: "10%", minWidth: "4rem" }}  bodyStyle={{ left: "0" }} ></Column>
         </DataTable>

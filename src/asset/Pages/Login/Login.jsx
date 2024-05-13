@@ -59,7 +59,7 @@ const Login = () => {
             {/* <label htmlFor="email" className="form-label">
               Email
             </label> */}
-            <InputText
+            <input
               placeholder="Email"
               id="email"
               className="form-control"
@@ -76,7 +76,7 @@ const Login = () => {
               Password
             </label> */}
             <div className="password-input-container">
-              <InputText
+              <input
                 id="password"
                 className="form-control"
                 type="password"
