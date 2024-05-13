@@ -9,16 +9,14 @@ export const AuthContexProvider = ({ children }) => {
 
 
   const loginApi = async (inputs) => {
-    try {
       const res = await axios.post("https://agriculture-traceability.vercel.app/api/v1/auth/login", inputs);
       const user = res.data.user;
       const accountToken = res.data.token;
       setCurrentUser({ ...user, expirationTime: Date.now() + 24 * 60 * 60 * 1000 });
       setToken(accountToken);
       localStorage.getItem("userToken",accountToken)
-    } catch (error) {
-      console.log(error);
-    }
+      return res;
+    
   };
   const logout = async (inputs) => {
     await axios.get("https://agriculture-traceability.vercel.app/api/v1/auth/logout", inputs,{
