@@ -29,3 +29,20 @@
       display: none;
     } */
   }
+
+  .item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px; /* Độ rộng của đường viền màu hồng */
+    height: 100%;
+    background-color: transparent; /* Màu đường viền ban đầu */
+    transition: background-color 0.3s ease; /* Hiệu ứng chuyển đổi màu */
+  }
+  
+  .item.selected::before {
+    background-color: pink; /* Màu đường viền khi menu được chọn */
+  }
+  
+  

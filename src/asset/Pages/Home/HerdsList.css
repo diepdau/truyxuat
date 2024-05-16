@@ -9,10 +9,17 @@
 .toast{
     margin-top: 90px;
 }
-.card_herd{
-    width: 81%;
-}@media screen and (max-width: 600px) {
+@media screen and (max-width: 600px) {
     .p-input-icon-left .p-inputtext {
       width: 100px; /* Điều chỉnh kích thước của input tại đây */
     }
   }
+
+  .herdList {
+    display: grid;
+    grid-template-rows: auto auto; 
+    grid-gap: 20px; /* Khoảng cách giữa hai hàng */
+  }
+  .card_herd{
+    grid-gap: 20px; 
+}

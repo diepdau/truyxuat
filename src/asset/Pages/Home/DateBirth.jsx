@@ -11,7 +11,8 @@ const AgeResult = ({ birthDate }) => {
 
     return months <= 0 ? 0 : months; 
   };
-  const months = calculateAge(birthDate);
+  const months = parseInt(calculateAge(birthDate), 10);
+  //const months = calculateAge(birthDate);
   return <div>{months}</div>;
 };
 

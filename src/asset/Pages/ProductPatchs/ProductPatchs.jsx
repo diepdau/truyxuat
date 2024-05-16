@@ -5,7 +5,7 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
@@ -35,6 +35,8 @@ export default function SizeDemo() {
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const { token } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   useEffect(() => {
     fetchData();
   }, [currentPage, currentLimit]);
@@ -80,10 +82,17 @@ export default function SizeDemo() {
           onClick={confirmDeleteSelected}
           disabled={!selectedProducts || !selectedProducts.length}
         />
+         <Button
+          label="Thông tin loại"
+          severity="success"
+          onClick={onClickInforProduct}
+        />
       </div>
     );
   };
-
+  const onClickInforProduct = () => {
+    navigate(`/thong-tin`);
+  };
   const confirmDeleteSelected = () => {
     setDeleteProductsDialog(true);
   };

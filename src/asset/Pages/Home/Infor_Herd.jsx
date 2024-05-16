@@ -7,6 +7,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
 import {
+  fetchHerd,
   handleUpdate,
   handleGetCategory,
   handleGetFarm,
@@ -34,18 +35,28 @@ const statusOptions = [
   { label: "Đang thu hoạch", value: "Đang thu hoạch" },
   { label: "Đã thu hoạch", value: "Đã thu hoạch" },
 ];
-function YourComponent({ data, reloadData, isUpdate }) {
+function YourComponent({herdId,data,isUpdate }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
   const { token } = useContext(AuthContext);
   const [farm, setfarm] = useState({});
   const [categories, setcategories] = useState({});
-  var url = data
-    ? `https://agriculture-traceability.vercel.app/api/v1/herds/upload/${data._id}`
+  var url = herdId
+    ? `https://agriculture-traceability.vercel.app/api/v1/herds/upload/${herdId}`
     : "";
   const [selectedCategories, setelectedCategories] = useState(null);
   const [selectedfarm, setSelectedfarm] = useState(null);
+
+  const getHerd = async () => {
+    try {
+      const res = await fetchHerd(herdId,token)
+      setProduct(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleChange = (event) => {
     const { value, name } = event.target;
     setProduct({
@@ -58,12 +69,16 @@ function YourComponent({ data, reloadData, isUpdate }) {
       ...product,
       status: event.value,
     });
+
   };
   useEffect(() => {
+    getHerd();
     fetchDataFarm();
     fetchDataCategory();
   }, []);
-
+  const reloadData = () => {
+    getHerd();
+  };
   const fetchDataCategory = async () => {
     const categoryList = await handleGetCategory(token);
     setcategories(categoryList);
@@ -78,7 +93,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
     }
     try {
       if (isUpdate) {
-        const a = await handleUpdate(data._id, product, token);
+        const a = await handleUpdate(herdId, product, token);
         toast.current.show({
           severity: "success",
           summary: "Sửa hoàn thành",
@@ -110,6 +125,9 @@ function YourComponent({ data, reloadData, isUpdate }) {
     // Kiểm tra lỗi cho trường name
     if (!product.name) {
       newErrors.name = "Tên là bắt buộc.";
+      isValid = false;
+    }else if (!/^[\w\s]+_\d{8}_\d+$/.test(product.name)) {
+      newErrors.name = "Tên không đúng định dạng (YC: Tênđàn_ngaythangnam_STT)";
       isValid = false;
     }
 
@@ -213,11 +231,11 @@ function YourComponent({ data, reloadData, isUpdate }) {
             value={product.status}
             options={statusOptions}
             onChange={handleStatusChange}
-            placeholder={data ? data.status : ""}
+            placeholder={product ? product.status : ""}
             style={{ width: "100%" }}
             optionLabel="label"
             optionValue="value"
-            ClassName={(option) => {
+            className={(option) => {
               switch (option.value) {
                 case "Chưa thu hoạch":
                   return "text-red";
@@ -239,9 +257,10 @@ function YourComponent({ data, reloadData, isUpdate }) {
             style={{ width: "100%" }}
             onChange={handleChange}
           />
-          {errors.location && (
-            <small className="p-error">{errors.location}</small>
+          {errors.description && (
+            <small className="p-error">{errors.description}</small>
           )}
+
         </div>
       </div>
       <Button

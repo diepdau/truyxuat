@@ -14,7 +14,7 @@ import DateConverter from "../../../components/Date/Date.jsx";
 import { AuthContext } from "../../service/user_service.js";
 import {handleDelete } from "../../service/Herd_data.js";
 import AgeResult from "./DateBirth.jsx";
-
+import { classNames } from "primereact/utils";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -58,8 +58,6 @@ export default function SizeDemo() {
       data.herds.forEach((element) => {
          element.date = <DateConverter originalDate={element.start_date} />;
       });
-
-      
       setProducts(data.herds);
       setTotalPages(data.totalPages);
       console.log(data.herds);
@@ -95,6 +93,11 @@ export default function SizeDemo() {
           label="Xem chi tiết"
           severity="success"
           onClick={onRowDoubleClick}
+        />
+        <Button
+          label="Nhóm"
+          severity="success"
+          onClick={onClickCategories}
         />
       </div>
     );
@@ -143,7 +146,9 @@ export default function SizeDemo() {
       }
     }
   };
-
+  const onClickCategories = () => {
+        navigate(`/categories`);
+  };
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
@@ -241,6 +246,18 @@ export default function SizeDemo() {
       </span>
     </div>
   );
+  const stockBodyTemplate = (rowData) => {
+
+    const stockClassName = classNames('border-circle w-2rem h-2rem inline-flex font-bold justify-content-center align-items-center text-sm', {
+        'bg-red-100 text-red-900': rowData.farm.name === 0,
+        'bg-blue-100 text-blue-900': rowData.farm.name> 0 && rowData.farm.name < 10,
+        'bg-teal-100 text-teal-900':rowData.farm.name > 10
+    });
+
+    return <div className={stockClassName}>{rowData.farm.name}</div>;
+};
+
+
   return (
     <div>
       <Toast className="toast" ref={toast} />
@@ -255,7 +272,7 @@ export default function SizeDemo() {
           editMode="row" dataKey="_id" tableStyle={{ minWidth: "68rem" }} header={header}  >
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column field="name"  header="Tên đàn" sortable  value={product.name}  style={{ minWidth: "10rem" }} ></Column>
-          <Column field="member_count"  header="Số lượng" sortable  value={product.member_count} style={{ minWidth: "6rem" }}></Column>
+          <Column field="member_count"  header="Số lượng" sortable  value={product.member_count} style={{ minWidth: "6rem" }} ></Column>
           <Column field="status" header="Trạng thái"   dataType="boolean"
             bodyClassName="text-center"
             style={{ minWidth: "5rem" }}
@@ -263,7 +280,7 @@ export default function SizeDemo() {
           />
 
           {/* <Column field="date" sortable header="Ngày tạo" value={product.start_date}style={{ width: "10%" }}></Column> */}
-          <Column field="farm.name" sortable header="Tháng tuổi" value={product.farm.name}style={{ minWidth: "6rem" }}></Column>
+          <Column field="farm.name"  sortable header="Tháng tuổi" value={product.farm.name}style={{ minWidth: "6rem" }}body={stockBodyTemplate}></Column>
         
           <Column header="Nhóm" sortable sortField="category.name" filterField="category" style={{ minWidth: "14rem" }} body={representativeBodyTemplate}/>
           <Column body={actionBodyTemplate} headerStyle={{ width: "10%", minWidth: "4rem" }}  bodyStyle={{ left: "0" }} ></Column>

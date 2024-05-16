@@ -1,4 +1,4 @@
-import React,{useContext} from 'react';
+import React,{useContext,useState} from 'react';
 import {menu} from "./data.ts";
 import {menuUser} from "./dataUser.ts";
 import { Link } from "react-router-dom";
@@ -8,7 +8,12 @@ import { AuthContext } from "../../asset/service/user_service.js";
 
 function Sidebar0() {
   const { currentUser } = useContext(AuthContext);
+  const [selectedItem, setSelectedItem] = useState(null);
 
+  // Hàm xử lý sự kiện click cho mỗi menu item
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+  };
   return (
       <div>
         <nav className="sidebar">
@@ -16,7 +21,7 @@ function Sidebar0() {
         {currentUser.role === "admin" ? (
           menu.map((item) => (
             <Link className="menu-link" key={item.id} to={item.url}>
-              <li className="item" >
+              <li  className={selectedItem === item ? 'selected item' : 'item'}>
                 <i className={item.icon}></i>
                 <span className="title">{item.label}</span>
               </li>
@@ -39,3 +44,7 @@ function Sidebar0() {
 }
 
 export default Sidebar0;
+
+
+
+

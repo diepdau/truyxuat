@@ -59,7 +59,7 @@ export const handleGetCategory = async (token) => {
 
 export const handleGetFarm = async (token) => {
     try {
-        const response = await axios.get("https://agriculture-traceability.vercel.app/api/v1/farm?limit=50&searchQuery=Lạc", {
+        const response = await axios.get("https://agriculture-traceability.vercel.app/api/v1/farm?limit=50&searchQuery=ạ", {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -82,7 +82,18 @@ export const fetchAllHerds = async (limit, page, token) => {
         console.log("Error: ", error);
     }
 };
-
+export const fetchHerd = async (herdId,token)=> {
+    try {
+      const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/herds/${herdId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    return res.data.herd;
+} catch (error) {
+    console.log("Error: ", error);
+}
+  };
 export const createNewAutoHerd = async (herdId, quantity, token) =>{
   try {
      await axios.post(`https://agriculture-traceability.vercel.app/api/v1/herds/${herdId}/generate-animals`, {
@@ -95,6 +106,8 @@ export const createNewAutoHerd = async (herdId, quantity, token) =>{
       console.error("Error:", error);
   }
 }
+
+
 
 
 

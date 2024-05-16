@@ -1,4 +1,4 @@
-import React, { useRef ,useContext} from "react";
+import React, { useRef ,useContext,useState} from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { Galleria } from "primereact/galleria";
@@ -8,6 +8,8 @@ import { AuthContext } from "../../asset/service/user_service.js";
 import "./Image.css";
 const ImageUploader = ({ uploadUrl, images, reloadData }) => {
   const { token } = useContext(AuthContext);
+  const [err, setError] = useState(null);
+
   const { register, handleSubmit } = useForm();
   const toast = useRef(null);
   const upLoadImage = async (data) => {
@@ -28,6 +30,8 @@ const ImageUploader = ({ uploadUrl, images, reloadData }) => {
       });
       reloadData();
     } catch (error) {
+      const er = error.response.data.msg;
+      if (er.includes("large")) {setError("File quá lớn");}
       console.log("Error img:", error);
     }
   };
@@ -51,6 +55,9 @@ const ImageUploader = ({ uploadUrl, images, reloadData }) => {
   return (
     <div>
       <Toast className="toast" ref={toast} />
+      {err && (
+         <Toast className="toast error-feedback" ref={err} />
+            )}
       <Galleria
         className="Image_animals"
         value={images}

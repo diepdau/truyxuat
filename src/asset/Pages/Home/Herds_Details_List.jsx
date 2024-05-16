@@ -8,7 +8,7 @@ import Treatments from "../Treatments/Treatments.jsx";
 import "./HerdsList.css";
 import axios from "axios";
 import Harvest from "../Harvest/Harvest.jsx";
-
+import YourComponent from "./ThongKe.jsx";
 export default function BasicDemo() {
   const [formData, setFormData] = useState({});
   const location = useLocation();
@@ -29,24 +29,28 @@ export default function BasicDemo() {
     getHerd();
   };
   return (
+    <div className="herdList">
+    {/* <YourComponent data={formData}  reloadData={reloadData123} /> */}
     <div className="card card_herd">
-      <TabView>
-        <TabPanel header="Thông tin">
-          <Infor_Herd  data={formData}  reloadData={reloadData123}  isUpdate={true}/>
-        </TabPanel>
-        <TabPanel header="Danh sách con">
-          <RecordsList herdId={herdId} />
-        </TabPanel>
-        <TabPanel header="Nhật kí chăm sóc">
-          <CultivationLogs_Herd idherd={herdId} />
-        </TabPanel>
-        <TabPanel header="Thu hoạch">
-          <Harvest  isherdharvest={herdId}/>
-        </TabPanel>
-        <TabPanel header="Điều trị">
-          <Treatments idherd={herdId} herdname={formData.name} />
-        </TabPanel>
-      </TabView>
+    <TabView>
+      <TabPanel header="Thông tin">
+        <Infor_Herd   herdId={herdId}  data={formData}  reloadData={reloadData123}  isUpdate={true}/>
+      </TabPanel>
+      <TabPanel header="Danh sách con">
+        <RecordsList herdId={herdId} />
+      </TabPanel>
+      <TabPanel header="Nhật kí chăm sóc">
+        <CultivationLogs_Herd idherd={herdId} />
+      </TabPanel>
+      <TabPanel header="Thu hoạch">
+        <Harvest  isherdharvest={herdId}/>
+      </TabPanel>
+      <TabPanel header="Điều trị">
+        <Treatments idherd={herdId} herdname={formData.name} />
+      </TabPanel>
+    </TabView>
+  </div>
     </div>
+    
   );
 }

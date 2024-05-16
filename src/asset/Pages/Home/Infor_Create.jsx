@@ -81,6 +81,9 @@ function Infor_Herd({ isUpdate, reloadData }) {
     if (!formData.name) {
       newErrors.name = "Tên là bắt buộc.";
       isValid = false;
+    }else if (!/^[\w\s]+_\d{8}_\d+$/.test(formData.name)) {
+      newErrors.name = "Tên không đúng định dạng (YC: Tênđàn_ngaythangnam_STT)";
+      isValid = false;
     }
 
     // Kiểm tra lỗi cho trường location
