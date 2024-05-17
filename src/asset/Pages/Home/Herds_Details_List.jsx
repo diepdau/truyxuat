@@ -29,8 +29,8 @@ export default function BasicDemo() {
     getHerd();
   };
   return (
-    <div className="herdList">
-    {/* <YourComponent data={formData}  reloadData={reloadData123} /> */}
+    <div className="div_main herdList">
+    <YourComponent data={formData}  reloadData={reloadData123} />
     <div className="card card_herd">
     <TabView>
       <TabPanel header="Thông tin">

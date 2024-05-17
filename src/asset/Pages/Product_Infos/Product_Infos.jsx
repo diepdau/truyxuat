@@ -205,7 +205,7 @@ export default function ProductInfos() {
   );
 
   return (
-    <div>
+    <div className="div_main">
       <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar
@@ -223,7 +223,6 @@ export default function ProductInfos() {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          tableStyle={{ minWidth: "68rem" }}
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />

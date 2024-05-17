@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect,useContext } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
@@ -6,7 +6,14 @@ import "./ProductPatchs.css";
 import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
-import { handleCreate,getProductInfos,getProduct,getFarm} from "../../service/productPatchs_data.js";
+import { classNames } from "primereact/utils";
+
+import {
+  handleCreate,
+  getProductInfos,
+  getProduct,
+  getFarm,
+} from "../../service/productPatchs_data.js";
 import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   name: "",
@@ -18,13 +25,18 @@ const emptyProduct = {
   quantity: "",
   harvest: "",
   product_info: "",
+  currency_unit: null,
   production_date: new Date(),
 };
 const unitOptions = [
-  { label: "VND", value: "VND" },
   { label: "Kg", value: "Kg" },
   { label: "Túi", value: "Túi" },
   { label: "Lít", value: "Lít" },
+];
+
+const currentUnitOptions = [
+  { label: "VND", value: "VND" },
+  { label: "$", value: "$" },
 ];
 function YourComponent({ reloadData, isUpdate }) {
   const { token } = useContext(AuthContext);
@@ -33,6 +45,7 @@ function YourComponent({ reloadData, isUpdate }) {
   const [ProductInfos, setProductInfos] = useState({});
   const [selectedProductInfos, setSelectedProductInfos] = useState(null);
   const [productDescription, setProductDescription] = useState("");
+  const [isQuantity, setIsQuantity] = useState("");
 
   const [Products, setProducts] = useState({});
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -41,12 +54,14 @@ function YourComponent({ reloadData, isUpdate }) {
   const [selectedFarm, setSelectedFarm] = useState(null);
   const toast = useRef(null);
 
-  useEffect(() => {getAllData();}, []);
+  useEffect(() => {
+    getAllData();
+  }, []);
 
   const getAllData = async () => {
-      setProductInfos(await getProductInfos());
-      setProducts(await getProduct());
-      setFarms(await getFarm());
+    setProductInfos(await getProductInfos());
+    setProducts(await getProduct());
+    setFarms(await getFarm());
   };
 
   const handleChange = (event) => {
@@ -62,6 +77,12 @@ function YourComponent({ reloadData, isUpdate }) {
       unit: event.value,
     });
   };
+  const handleCurrentUnitChange = (event) => {
+    setProduct({
+      ...product,
+      currency_unit: event.value,
+    });
+  };
   const handleProductChange = (e) => {
     setSelectedProductInfos(e.value);
     product.product_info = e.value._id;
@@ -73,7 +94,7 @@ function YourComponent({ reloadData, isUpdate }) {
     }
 
     try {
-      const res =handleCreate(product,token);
+      const res = handleCreate(product, token);
       toast.current.show({
         severity: "success",
         summary: "Thêm hoàn thành",
@@ -103,6 +124,11 @@ function YourComponent({ reloadData, isUpdate }) {
         "Khối lượng tịnh phải lớn hơn 0 và không được để trống";
       isValid = false;
     }
+    if (product.net_weight * product.quantity >= isQuantity) {
+      newErrors.quantity = "Tổng SL sản phẩm ít hơn sản phẩm thô";
+      isValid = false;
+    }
+
     if (!isUpdate) {
       if (!selectedProduct) {
         newErrors.product = "Sản phẩm là bắt nuộc.";
@@ -155,22 +181,47 @@ function YourComponent({ reloadData, isUpdate }) {
             onChange={handleChange}
           />
           {errors.name && <small className="p-error">{errors.name}</small>} */}
-          <h4>Sản phẩm</h4>
-          <Dropdown
-            placeholder={ProductName}
-            type="text"
-            value={selectedProduct}
-            options={Products}
-            optionLabel="name"
-            onChange={(e) => {
-              setSelectedProduct(e.value);
-              product.harvest = e.value._id;
-            }}
-            style={{ width: "100%" }}
-          />
-          {errors.product && (
-            <small className="p-error">{errors.product}</small>
-          )}
+          <div className="input-container">
+            <div style={{ width: "100%", marginRight: "2vh", flex: "3" }}>
+              <h4>Sản phẩm</h4>
+              <Dropdown
+                placeholder={ProductName}
+                type="text"
+                value={selectedProduct}
+                options={Products}
+                optionLabel="name"
+                onChange={(e) => {
+                  setSelectedProduct(e.value);
+                  product.harvest = e.value._id;
+                  setIsQuantity(e.value.quantity);
+                }}
+                style={{ width: "100%" }}
+                itemTemplate={(option) => (
+                  <div className="p-clearfix">
+                    <i
+                      className={classNames("pi", {
+                        "text-green-500 pi-check-circle": option.isProcessed,
+                        "text-red-500 pi-times-circle": !option.isProcessed,
+                      })}
+                      style={{ float: "left", marginRight: ".5em" }}
+                    ></i>
+                    <span>{option.name}</span>
+                  </div>
+                )}
+              />
+              {errors.product && (
+                <small className="p-error">{errors.product}</small>
+              )}
+            </div>
+            <div style={{ width: "100%", flex: "1" }}>
+              <h4>&nbsp;</h4>
+              <InputText
+                disabled
+                value={"SL: " + isQuantity}
+                style={{ width: "100%" }}
+              />
+            </div>
+          </div>
           <div className="input-container">
             <div style={{ width: "100%", marginRight: "2vh" }}>
               <h4>Số lượng</h4>
@@ -185,8 +236,8 @@ function YourComponent({ reloadData, isUpdate }) {
                 <small className="p-error">{errors.quantity}</small>
               )}
             </div>
-            <div style={{ width: "100%" }}>
-              <h4>Khối lượng tịnh</h4>
+            <div style={{ width: "100%", marginRight: "2vh" }}>
+              <h4>KL tịnh</h4>
               <InputText
                 name="net_weight"
                 type="number"
@@ -197,6 +248,18 @@ function YourComponent({ reloadData, isUpdate }) {
               {errors.net_weight && (
                 <small className="p-error">{errors.net_weight}</small>
               )}
+            </div>
+
+            <div style={{ width: "100%" }}>
+              <h4>ĐVT</h4>
+              <Dropdown
+                name="Đơn vị tính"
+                value={product.unit}
+                options={unitOptions}
+                onChange={handleUnitChange}
+                style={{ width: "100%" }}
+              />
+              {errors.unit && <small className="p-error">{errors.unit}</small>}
             </div>
           </div>
           <div className="input-container">
@@ -214,16 +277,18 @@ function YourComponent({ reloadData, isUpdate }) {
               )}
             </div>
             <div style={{ width: "100%" }}>
-              <h4>ĐVT</h4>
+              <h4>ĐV tiền tệ</h4>
               <Dropdown
-                name="Đơn vị tính"
-                value={product.unit}
-                options={unitOptions}
-                onChange={handleUnitChange}
-                placeholder="Đơn vị tính"
+                name="currency_unit"
+                value={product.currency_unit}
+                options={currentUnitOptions}
+                onChange={handleCurrentUnitChange}
+                placeholder="Đơn vị tiền tệ"
                 style={{ width: "100%" }}
               />
-              {errors.unit && <small className="p-error">{errors.unit}</small>}
+              {errors.currency_unit && (
+                <small className="p-error">{errors.currency_unit}</small>
+              )}
             </div>
           </div>
           <h4>Vị trí</h4>
@@ -259,7 +324,7 @@ function YourComponent({ reloadData, isUpdate }) {
                 value={product.production_date}
                 onChange={handleChange}
               />
-              
+
               {errors.production_date && (
                 <small className="p-error">{errors.production_date}</small>
               )}
@@ -286,7 +351,7 @@ function YourComponent({ reloadData, isUpdate }) {
           />
           {errors.dte && <small className="p-error">{errors.dte}</small>}
           <div className="Product_info">
-            <h4>Thông tin</h4>
+            <h4>Thông tin loại</h4>
             <Dropdown
               placeholder={ProductInfosName}
               type="text"
@@ -301,7 +366,7 @@ function YourComponent({ reloadData, isUpdate }) {
             )}
             <h4>Mô tả</h4>
             <InputTextarea
-              disabled
+              readOnly
               autoResize
               value={productDescription}
               style={{ width: "100%" }}

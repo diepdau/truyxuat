@@ -13,15 +13,9 @@
   margin-left: -9px;
     padding: 15px;
 }
-  /* .card > div {
-    display: flex;
-    margin-top: 20px;
-  } */
-  
   .product-names {
     width: 70vh;
     margin-right: 20px;
-    /* border-right: 1px solid #ccc; */
     padding-right: 20px;
     border-top: 3px solid #0D955C
  
@@ -75,10 +69,15 @@ display: none;
   display: flex;
   justify-content: center;
 }
-.p-tabview .p-tabview-panels {
+/* .p-tabview .p-tabview-panels {
   padding: 0px;
-}
+} */
 .chart-container .p-chart-label {
   transform: rotate(-45deg);
   white-space: nowrap;
 }
+.div_main{
+  margin: 120px 40px;
+  width: 95%;
+}
+

@@ -17,7 +17,7 @@ import Chart_Products from "./Chart_Products.jsx";
 import "./Harvest.css";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { Paginator } from "primereact/paginator";
-import DateConverter from "../../../components/Date/Date.jsx";
+import {DateConverter} from "../../../components/Date/Date.jsx";
 import { handleDelete,handleGetHerdHarvest} from "../../service/harvest_data.js";
 import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
@@ -55,7 +55,8 @@ function Harvest({ isherdharvest }) {
         // );
         const response = await handleGetHerdHarvest(isherdharvest,token);
         response.data.harvests.forEach((element) => {
-          element.date = <DateConverter originalDate={element.date} />;
+          // element.date = <DateConverter originalDate={element.date} />;
+          element.date = DateConverter(element.date); 
         });
         
         setHarvests(response.data.harvests);
@@ -73,7 +74,9 @@ function Harvest({ isherdharvest }) {
         );
         const data = await response.json();
         data.harvests.forEach((element) => {
-          element.date = <DateConverter originalDate={element.date} />;
+          // element.date = <DateConverter originalDate={element.date} />;
+        element.date = DateConverter(element.date); 
+
         });
         setHarvests(data.harvests);
         setTotalPages(data.totalPages);
@@ -282,7 +285,7 @@ function Harvest({ isherdharvest }) {
     </div>
   );
   return (
-    <div>
+    <div className={isherdharvest? "": "div_main"} >
       <Toast className="toast" ref={toast} />
 
       {!isherdharvest && (
@@ -309,7 +312,6 @@ function Harvest({ isherdharvest }) {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          tableStyle={{ minWidth: "68rem" }}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>

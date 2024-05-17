@@ -216,7 +216,7 @@ export default function FarmmingAreas() {
     </div>
   );
   return (
-    <div>
+    <div className="div_main">
       {hasError ? <div>Opps come back later</div> : null}
 
       <Toast className="toast" ref={toast} />
@@ -236,7 +236,6 @@ export default function FarmmingAreas() {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          tableStyle={{ minWidth: "68rem" }}
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />

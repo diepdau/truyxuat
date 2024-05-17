@@ -15,7 +15,7 @@ import "./HerdsList.css";
 import Record_Create from "./Record_Create.jsx";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
-import DateConverter from "../../../components/Date/Date";
+import {DateConverter} from "../../../components/Date/Date";
 import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   _id: null,
@@ -55,9 +55,11 @@ export default function SizeDemo({ herdId }) {
       );
       const data = await response.json();
       data.herd.records.forEach((element) => {
-        element.birth_date = (
-          <DateConverter originalDate={element.birth_date} />
-        );
+        // element.birth_date = (
+        //   <DateConverter originalDate={element.birth_date} />
+        // );
+
+        element.birth_date = DateConverter(element.birth_date); 
       });
       setProducts(data.herd.records);
       setTotalPages(data.totalPages);
@@ -330,7 +332,7 @@ export default function SizeDemo({ herdId }) {
     </div>
   );
   return (
-    <div>
+    <div className={herdId? "": "div_main"} >
       <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar
@@ -349,7 +351,6 @@ export default function SizeDemo({ herdId }) {
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey="_id"
-          tableStyle={{ minWidth: "64rem" }}
           // header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />

@@ -1,11 +1,9 @@
 import React from 'react';
-import DateConverter from "../../../components/Date/Date";
+import {DateConverter} from "../../../components/Date/Date";
 
 const YourComponent=({data,reloadData}) =>{
     // data.start_date.forEach((element) => {
-    //     element.start_date = (
-    //       <DateConverter originalDate={element.start_date} />
-    //     );
+    //     element.start_date = DateConverter (element.start_date );
     //   });
     return (
         <div className="grid">

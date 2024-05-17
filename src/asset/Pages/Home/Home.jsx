@@ -4,7 +4,7 @@ import Chart from "./Chart.jsx";
 import HerdsList from "./HerdsList.jsx";
 const Dashboard   = () => {
   return (
-        <div>
+        <div className="div_main">
           <Chart />
           <HerdsList />
         </div>

@@ -89,7 +89,7 @@ export default function User() {
     setpasswordDialog(true);
   };
   return (
-    <div className="user">
+    <div className="user div_main">
       {user && Object.keys(user).length > 0 && (
         <>
           <div className="userTitleContainer">

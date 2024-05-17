@@ -13,7 +13,7 @@ import Image_Upload from "../../../components/Images/Image.jsx";
 import "./Processors.css";
 import { Paginator } from "primereact/paginator";
 import { classNames } from "primereact/utils";
-import DateConverter from "../../../components/Date/Date.jsx";
+import {DateConverter} from "../../../components/Date/Date.jsx";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -44,7 +44,9 @@ export default function SizeDemo() {
       );
       const data = await response.json();
       data.processor.forEach((element) => {
-        element.date = <DateConverter originalDate={element.date} />;
+        // element.date = <DateConverter originalDate={element.date} />;
+        element.date = DateConverter(element.date); 
+
       });
       setProducts(data.processor);
       setTotalPages(data.totalPages);
@@ -270,7 +272,7 @@ export default function SizeDemo() {
 
   return (
     <>
-      <div>
+      <div className="div_main">
         <Toast className="toast" ref={toast} />
         <div className="card">
           <Toolbar
@@ -292,7 +294,6 @@ export default function SizeDemo() {
             onRowToggle={(e) => setExpandedRows(e.data)}
             rowGroupMode="rowspan"
             sortOrder={1}
-            tableStyle={{ minWidth: "68rem" }}
           >
             <Column expander={allowExpansion} style={{ width: "5rem" }} />
 

@@ -8,6 +8,7 @@ import "./Harvest.css";
 import { InputText } from "primereact/inputtext";
 import { handleCreate, getHerd } from "../../service/harvest_data.js";
 import { AuthContext } from "../../service/user_service.js";
+import { nullDependencies } from "mathjs";
 const emptyProduct = {
   herd: "",
   name: "",
@@ -23,6 +24,7 @@ const unitOptions = [
   { label: "Túi", value: "Túi" },
   { label: "Lít", value: "Lít" },
 ];
+
 const statusOptions = [
   { label: "Chưa thu hoạch", value: "Chưa thu hoạch" },
   { label: "Đang thu hoạch", value: "Đang thu hoạch" },

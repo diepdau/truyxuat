@@ -40,20 +40,7 @@ h4 {
     font-weight: normal;
     margin-top: 2vh;
   }
-  .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link{
-    border-color:rgb(255, 255, 255);
-    color: rgb(0, 128, 0);
-  }
-  .p-tabview .p-tabview-nav .p-tabview-ink-bar {
- background-color: none;
-  }
-  .p-tabview .p-tabview-nav li .p-tabview-nav-link {
-    border: solid #ffffff;
-}
-.p-inputtextarea 
-{
-    height: 49px;
-}
+
 .container_update{
     display: flex;
     flex-wrap: wrap;

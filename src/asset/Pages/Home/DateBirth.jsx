@@ -1,19 +1,10 @@
-import React from 'react';
+export const calculateAgeInMonths = (birthDate) => {
+  const currentDate = new Date();
+  const birthDateObj = new Date(birthDate);
 
-const AgeResult = ({ birthDate }) => {
-  const calculateAge = (birthDate) => {
-    const currentDate = new Date();
-    const birthDateObj = new Date(birthDate);
+  let months = (currentDate.getFullYear() - birthDateObj.getFullYear()) * 12;
+  months -= birthDateObj.getMonth();
+  months += currentDate.getMonth();
 
-    let months = (currentDate.getFullYear() - birthDateObj.getFullYear()) * 12;
-    months -= birthDateObj.getMonth();
-    months += currentDate.getMonth();
-
-    return months <= 0 ? 0 : months; 
-  };
-  const months = parseInt(calculateAge(birthDate), 10);
-  //const months = calculateAge(birthDate);
-  return <div>{months}</div>;
+  return months <= 0 ? 0 : months;
 };
-
-export default AgeResult;

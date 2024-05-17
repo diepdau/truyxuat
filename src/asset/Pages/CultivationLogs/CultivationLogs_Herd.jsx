@@ -11,9 +11,8 @@ import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
 import CultivationLogs_Update from "./CultivationLogs_Update.jsx";
 import CultivationLogs_Create from "./CultivationLogs_Create.jsx";
-import ImageUploader from "../../../components/Images/Image.jsx";
-import { Paginator } from "primereact/paginator";
-import DateConverter from "../../../components/Date/Date.jsx";
+// import DateConverter from "../../../components/Date/Date.jsx";
+ import {DateConverter} from "../../../components/Date/Date.jsx";
 import { handleDelete } from "../../service/cultivationLog_data.js";
 import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
@@ -57,7 +56,8 @@ export default function CulivationLogs_Herd({ idherd }) {
         }
       );
       response.data.cultivationLogs.forEach((element) => {
-        element.date = <DateConverter originalDate={element.date} />;
+        // element.date = <DateConverter originalDate={element.date} />;
+        element.date =  DateConverter(element.date); 
       });
       setProducts(response.data.cultivationLogs);
       setTotalPages(response.data.totalPages);
@@ -212,8 +212,7 @@ export default function CulivationLogs_Herd({ idherd }) {
       </span>
     </div>
   );
-  return (
-    <div>
+  return ( <div className={idherd? "": "div_main"} >
       <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar
@@ -231,7 +230,6 @@ export default function CulivationLogs_Herd({ idherd }) {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          tableStyle={{ minWidth: "60rem" }}
           // header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />

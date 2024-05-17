@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef,useContext } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -13,12 +13,12 @@ import ProductPatchs_Update from "./ProductPatchs_Update.jsx";
 import ImageComponent from "../../../components/Images/Image.jsx";
 import "./ProductPatchs.css";
 import { Paginator } from "primereact/paginator";
-import DateConverter from "../../../components/Date/Date.jsx";
+import { DateConverter } from "../../../components/Date/Date.jsx";
 import Harvest_Update from "../Harvest/Harvest_Update.jsx";
 import ProductPatchs_Create from "./ProductPatchs_Create.jsx";
 import { Image } from "primereact/image";
 import Product_Infos_Actives from "../Product_Infos/Product_Infos_Active.jsx";
-import { handleDelete} from "../../service/productPatchs_data.js";
+import { handleDelete } from "../../service/productPatchs_data.js";
 import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   _id: null,
@@ -50,9 +50,11 @@ export default function SizeDemo() {
       );
       const data = await response.json();
       data.processor.forEach((element) => {
-        element.production_date = (
-          <DateConverter originalDate={element.production_date} />
-        );
+        // element.production_date = (
+        //   <DateConverter originalDate={element.production_date} />
+        // );
+
+        element.production_date = DateConverter(element.production_date);
       });
       setProducts(data.processor);
       setTotalPages(data.totalPages);
@@ -82,7 +84,7 @@ export default function SizeDemo() {
           onClick={confirmDeleteSelected}
           disabled={!selectedProducts || !selectedProducts.length}
         />
-         <Button
+        <Button
           label="Thông tin loại"
           severity="success"
           onClick={onClickInforProduct}
@@ -177,7 +179,7 @@ export default function SizeDemo() {
 
   const handleDeleteUser = async (product) => {
     try {
-      handleDelete(product._id,token);
+      handleDelete(product._id, token);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -253,7 +255,7 @@ export default function SizeDemo() {
     </div>
   );
   return (
-    <div>
+    <div className="div_main">
       <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar
@@ -271,7 +273,6 @@ export default function SizeDemo() {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          tableStyle={{ minWidth: "68rem" }}
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
@@ -364,7 +365,10 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <ProductPatchs_Create reloadData={reloadData} isUpdate={false} />
+          <ProductPatchs_Create
+            reloadData={reloadData}
+            isUpdate={false}
+          />
         </Dialog>
       </div>
     </div>

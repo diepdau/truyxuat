@@ -1,4 +1,4 @@
-import React, { useState, useEffect,  useRef,useContext } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -10,10 +10,10 @@ import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import "./HerdsList.css";
 import { Paginator } from "primereact/paginator";
-import DateConverter from "../../../components/Date/Date.jsx";
+import {DateConverter} from "../../../components/Date/Date.jsx";
 import { AuthContext } from "../../service/user_service.js";
-import {handleDelete } from "../../service/Herd_data.js";
-import AgeResult from "./DateBirth.jsx";
+import { handleDelete } from "../../service/Herd_data.js";
+import { calculateAgeInMonths } from "./DateBirth.jsx";
 import { classNames } from "primereact/utils";
 const emptyProduct = {
   _id: null,
@@ -50,18 +50,22 @@ export default function SizeDemo() {
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        `https://agriculture-traceability.vercel.app/api/v1/herds?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent( value)}`);
+        `https://agriculture-traceability.vercel.app/api/v1/herds?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+          value
+        )}`
+      );
       const data = await response.json();
       data.herds.forEach((element) => {
-        element.farm.name = <AgeResult birthDate={element.start_date} />;
-     });
+        element.farm.name = calculateAgeInMonths(element.start_date);
+      });
+
       data.herds.forEach((element) => {
-         element.date = <DateConverter originalDate={element.start_date} />;
+        // element.date = <DateConverter originalDate={element.start_date} />;
+        element.date = DateConverter(element.date); 
       });
       setProducts(data.herds);
       setTotalPages(data.totalPages);
       console.log(data.herds);
-
     } catch (error) {
       console.log("Error", error);
     }
@@ -94,11 +98,7 @@ export default function SizeDemo() {
           severity="success"
           onClick={onRowDoubleClick}
         />
-        <Button
-          label="Nhóm"
-          severity="success"
-          onClick={onClickCategories}
-        />
+        <Button label="Nhóm" severity="success" onClick={onClickCategories} />
       </div>
     );
   };
@@ -139,7 +139,11 @@ export default function SizeDemo() {
   const navigate = useNavigate();
   const onRowDoubleClick = () => {
     if (!selectedProducts) {
-      toast.current.show({severity:'warn', detail:'Bạn phải chọn 1 đàn', life: 3000});
+      toast.current.show({
+        severity: "warn",
+        detail: "Bạn phải chọn 1 đàn",
+        life: 3000,
+      });
     } else {
       for (const selectedProduct of selectedProducts) {
         navigate(`/herds/${selectedProduct._id}`);
@@ -147,7 +151,7 @@ export default function SizeDemo() {
     }
   };
   const onClickCategories = () => {
-        navigate(`/categories`);
+    navigate(`/categories`);
   };
   const deleteProductDialogFooter = (
     <React.Fragment>
@@ -199,7 +203,7 @@ export default function SizeDemo() {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await handleDelete(product,token);
+      await handleDelete(product, token);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -217,17 +221,17 @@ export default function SizeDemo() {
   };
   const isProcessedBodyTemplate = (rowData) => {
     let iconClass = "pi";
-    if (rowData.status === 'Chưa thu hoạch') {
+    if (rowData.status === "Chưa thu hoạch") {
       iconClass += " text-red-500 pi-times-circle";
-    } else if (rowData.status === 'Đang thu hoạch') {
+    } else if (rowData.status === "Đang thu hoạch") {
       iconClass += " text-yellow-500 pi-circle";
-    } else if (rowData.status === 'Đã thu hoạch') {
+    } else if (rowData.status === "Thu hoạch xong") {
       iconClass += " text-green-500 pi-check-circle";
     }
-  
+
     return <i className={iconClass}></i>;
   };
-  
+
   const [input, setInput] = useState("");
   const handleChange = (value) => {
     setInput(value);
@@ -247,19 +251,18 @@ export default function SizeDemo() {
     </div>
   );
   const stockBodyTemplate = (rowData) => {
-
-    const stockClassName = classNames('border-circle w-2rem h-2rem inline-flex font-bold justify-content-center align-items-center text-sm', {
-        'bg-red-100 text-red-900': rowData.farm.name === 0,
-        'bg-blue-100 text-blue-900': rowData.farm.name> 0 && rowData.farm.name < 10,
-        'bg-teal-100 text-teal-900':rowData.farm.name > 10
-    });
+    const stockClassName = classNames(
+      "border-circle w-2rem h-2rem inline-flex font-bold justify-content-center align-items-center text-sm",
+      {
+        "bg-teal-100 text-teal-900": rowData.farm.name > 6,
+      }
+    );
 
     return <div className={stockClassName}>{rowData.farm.name}</div>;
-};
-
+  };
 
   return (
-    <div>
+    <div >
       <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar
@@ -268,26 +271,67 @@ export default function SizeDemo() {
           // right={rightToolbarTemplate}
         ></Toolbar>
 
-        <DataTable value={products}  selectionMode={"row"} selection={selectedProducts}  onSelectionChange={(e) => setSelectedProducts(e.value)}
-          editMode="row" dataKey="_id" tableStyle={{ minWidth: "68rem" }} header={header}  >
+        <DataTable
+          value={products}
+          selectionMode={"row"}
+          selection={selectedProducts}
+          onSelectionChange={(e) => setSelectedProducts(e.value)}
+          editMode="row"
+          dataKey="_id"
+          header={header}
+        >
           <Column selectionMode="multiple" exportable={true}></Column>
-          <Column field="name"  header="Tên đàn" sortable  value={product.name}  style={{ minWidth: "10rem" }} ></Column>
-          <Column field="member_count"  header="Số lượng" sortable  value={product.member_count} style={{ minWidth: "6rem" }} ></Column>
-          <Column field="status" header="Trạng thái"   dataType="boolean"
+          <Column
+            field="name"
+            header="Tên đàn"
+            sortable
+            value={product.name}
+            style={{ minWidth: "10rem" }}
+          ></Column>
+          <Column
+            field="member_count"
+            header="Số lượng"
+            sortable
+            value={product.member_count}
+            style={{ minWidth: "6rem" }}
+          ></Column>
+          <Column
+            field="status"
+            header="Trạng thái"
+            dataType="boolean"
             bodyClassName="text-center"
             style={{ minWidth: "5rem" }}
             body={isProcessedBodyTemplate}
           />
 
           {/* <Column field="date" sortable header="Ngày tạo" value={product.start_date}style={{ width: "10%" }}></Column> */}
-          <Column field="farm.name"  sortable header="Tháng tuổi" value={product.farm.name}style={{ minWidth: "6rem" }}body={stockBodyTemplate}></Column>
-        
-          <Column header="Nhóm" sortable sortField="category.name" filterField="category" style={{ minWidth: "14rem" }} body={representativeBodyTemplate}/>
-          <Column body={actionBodyTemplate} headerStyle={{ width: "10%", minWidth: "4rem" }}  bodyStyle={{ left: "0" }} ></Column>
+          <Column
+            field="farm.name"
+            sortable
+            header="Tháng tuổi"
+            style={{ minWidth: "6rem" }}
+            body={stockBodyTemplate}
+          ></Column>
+
+          <Column
+            header="Nhóm"
+            sortable
+            sortField="category.name"
+            filterField="category"
+            style={{ minWidth: "14rem" }}
+            body={representativeBodyTemplate}
+          />
+          <Column
+            body={actionBodyTemplate}
+            headerStyle={{ width: "10%", minWidth: "4rem" }}
+            bodyStyle={{ left: "0" }}
+          ></Column>
         </DataTable>
         <Paginator
-          first={(currentPage - 1) * currentLimit}  totalRecords={totalPages * currentLimit} 
-          rows={currentLimit}  rowsPerPageOptions={[5, 10, 20]}
+          first={(currentPage - 1) * currentLimit}
+          totalRecords={totalPages * currentLimit}
+          rows={currentLimit}
+          rowsPerPageOptions={[5, 10, 20]}
           onPageChange={onPageChange}
         />
         <Dialog

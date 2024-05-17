@@ -188,7 +188,7 @@ export default function SizeDemo() {
     }
   };
   return (
-    <div className="card">
+    <div className="div_main">
       <div className="card">
         <Toolbar
           className="mb-4"
@@ -203,7 +203,6 @@ export default function SizeDemo() {
           editMode="row"
           dataKey="_id"
           onRowEditComplete={onRowEditComplete}
-          tableStyle={{ minWidth: "68rem" }}
         >
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column

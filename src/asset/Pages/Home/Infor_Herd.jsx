@@ -6,6 +6,7 @@ import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
+import "./HerdsList.css"
 import {
   fetchHerd,
   handleUpdate,
@@ -33,9 +34,9 @@ const emptyProduct = {
 const statusOptions = [
   { label: "Chưa thu hoạch", value: "Chưa thu hoạch" },
   { label: "Đang thu hoạch", value: "Đang thu hoạch" },
-  { label: "Đã thu hoạch", value: "Đã thu hoạch" },
+  { label: "Thu hoạch xong", value: "Thu hoạch xong" },
 ];
-function YourComponent({herdId,data,isUpdate }) {
+function YourComponent({ herdId, data, isUpdate }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
@@ -50,7 +51,7 @@ function YourComponent({herdId,data,isUpdate }) {
 
   const getHerd = async () => {
     try {
-      const res = await fetchHerd(herdId,token)
+      const res = await fetchHerd(herdId, token);
       setProduct(res);
     } catch (error) {
       console.log(error);
@@ -69,7 +70,6 @@ function YourComponent({herdId,data,isUpdate }) {
       ...product,
       status: event.value,
     });
-
   };
   useEffect(() => {
     getHerd();
@@ -126,7 +126,7 @@ function YourComponent({herdId,data,isUpdate }) {
     if (!product.name) {
       newErrors.name = "Tên là bắt buộc.";
       isValid = false;
-    }else if (!/^[\w\s]+_\d{8}_\d+$/.test(product.name)) {
+    } else if (!/^[\w\s]+_\d{8}_\d+$/.test(product.name)) {
       newErrors.name = "Tên không đúng định dạng (YC: Tênđàn_ngaythangnam_STT)";
       isValid = false;
     }
@@ -235,18 +235,8 @@ function YourComponent({herdId,data,isUpdate }) {
             style={{ width: "100%" }}
             optionLabel="label"
             optionValue="value"
-            className={(option) => {
-              switch (option.value) {
-                case "Chưa thu hoạch":
-                  return "text-red";
-                case "Đang thu hoạch":
-                  return "text-yellow";
-                case "Đã thu hoạch":
-                  return "text-green";
-                default:
-                  return "";
-              }
-            }}
+           
+            
           />
 
           <h4>Mô tả</h4>
@@ -260,7 +250,6 @@ function YourComponent({herdId,data,isUpdate }) {
           {errors.description && (
             <small className="p-error">{errors.description}</small>
           )}
-
         </div>
       </div>
       <Button

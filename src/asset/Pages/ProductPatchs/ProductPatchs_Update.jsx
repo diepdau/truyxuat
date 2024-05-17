@@ -19,9 +19,15 @@ const emptyProduct = {
   quantity: "",
   harvest: "",
   product_info: new Date(),
+  currency_unit:"",
   // production_date: "",
 };
 const unitOptions = [
+  { label: "Kg", value: "Kg" },
+  { label: "Túi", value: "Túi" },
+  { label: "Lít", value: "Lít" },
+];
+const currentunitOptions = [
   { label: "Đồng", value: "Đồng" },
   { label: "VND", value: "VND" },
 ];
@@ -50,6 +56,12 @@ function YourComponent({ data, reloadData, isUpdate }) {
     setProduct({
       ...product,
       [name]: value,
+    });
+  };
+  const handleCurrencyUnitChange = (event) => {
+    setProduct({
+      ...product,
+      currency_unit: event.value,
     });
   };
   const handleUnitChange = (event) => {
@@ -154,6 +166,51 @@ function YourComponent({ data, reloadData, isUpdate }) {
             onChange={handleChange}
           />
           {errors.name && <small className="p-error">{errors.name}</small>}
+
+          <div className="input-container">
+            <div style={{ width: "100%", marginRight: "2vh" }}>
+              <h4>Số lượng</h4>
+              <InputText
+                type="number"
+                name="quantity"
+                value={product.quantity}
+                style={{ width: "100%" }}
+                onChange={handleChange}
+              />
+              {errors.quantity && (
+                <small className="p-error">{errors.quantity}</small>
+              )}
+            </div>
+            <div style={{ width: "100%" , marginRight: "2vh"}}>
+              <h4>Khối lượng tịnh</h4>
+              <InputText
+                name="net_weight"
+                type="number"
+                value={product.net_weight}
+                autoResize
+                style={{ width: "100%" }}
+                onChange={handleChange}
+              />
+              {errors.net_weight && (
+                <small className="p-error">{errors.net_weight}</small>
+              )}
+            </div>
+
+            <div style={{ width: "100%" }}>
+              <h4>ĐVT</h4>
+              <Dropdown
+                name="unit"
+                value={product.unit}
+                options={unitOptions}
+                onChange={handleUnitChange}
+                placeholder="Đơn vị tính"
+                style={{ width: "100%" }}
+              />
+              {errors.unit && (
+                <small className="p-error">{errors.unit}</small>
+              )}
+            </div>
+          </div>
           <div className="input-container">
             <div style={{ width: "100%", marginRight: "2vh" }}>
               <h4>Giá</h4>
@@ -170,46 +227,16 @@ function YourComponent({ data, reloadData, isUpdate }) {
               )}
             </div>
             <div style={{ width: "100%" }}>
-              <h4>ĐVT</h4>
+              <h4>ĐV Tiền tệ</h4>
               <Dropdown
-                name="Đơn vị tính"
-                value={product.unit}
-                options={unitOptions}
-                onChange={handleUnitChange}
-                placeholder="Chọn đơn vị tính"
+                name="currency_unit"
+                value={product.currency_unit}
+                options={currentunitOptions}
+                onChange={handleCurrencyUnitChange}
+                placeholder="Tiền tệ"
                 style={{ width: "100%" }}
               />
-              {errors.unit && <small className="p-error">{errors.unit}</small>}
-            </div>
-          </div>
-
-          <div className="input-container">
-            <div style={{ width: "100%", marginRight: "2vh" }}>
-              <h4>Số lượng</h4>
-              <InputText
-                type="number"
-                name="quantity"
-                value={product.quantity}
-                style={{ width: "100%" }}
-                onChange={handleChange}
-              />
-              {errors.quantity && (
-                <small className="p-error">{errors.quantity}</small>
-              )}
-            </div>
-            <div style={{ width: "100%" }}>
-              <h4>Khối lượng tịnh</h4>
-              <InputText
-                name="net_weight"
-                type="number"
-                value={product.net_weight}
-                autoResize
-                style={{ width: "100%" }}
-                onChange={handleChange}
-              />
-              {errors.net_weight && (
-                <small className="p-error">{errors.net_weight}</small>
-              )}
+              {errors.currency_unit && <small className="p-error">{errors.currency_unit}</small>}
             </div>
           </div>
 

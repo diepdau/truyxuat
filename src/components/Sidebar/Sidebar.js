@@ -10,41 +10,44 @@ function Sidebar0() {
   const { currentUser } = useContext(AuthContext);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  // Hàm xử lý sự kiện click cho mỗi menu item
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
+
   return (
-      <div>
-        <nav className="sidebar">
+    <div>
+      <nav className="sidebar">
         <div className="menu-items">
-        {currentUser.role === "admin" ? (
-          menu.map((item) => (
-            <Link className="menu-link" key={item.id} to={item.url}>
-              <li  className={selectedItem === item ? 'selected item' : 'item'}>
-                <i className={item.icon}></i>
-                <span className="title">{item.label}</span>
-              </li>
-            </Link>
-          ))
-        ):
-        (menuUser.map((item) => (
-          <Link className="menu-link" key={item.id} to={item.url}>
-            <li className="item" >
-              <i className={item.icon}></i>
-              <span className="title">{item.label}</span>
-            </li>
-          </Link>
-        ))
-        )}
+          {currentUser.role === "admin" ? (
+            menu.map((item) => (
+              <Link className="menu-link" key={item.id} to={item.url}>
+                <li
+                  className={selectedItem === item ? 'selected item' : 'item'}
+                  onClick={() => handleItemClick(item)}
+                >
+                  <i id="icon"className={item.icon}></i>
+                  <span className="title">{item.label}</span>
+                </li>
+              </Link>
+            ))
+          ) : (
+            menuUser.map((item) => (
+              <Link className="menu-link" key={item.id} to={item.url}>
+                <li
+                  className={selectedItem === item ? 'selected item' : 'item'}
+                  onClick={() => handleItemClick(item)}
+                >
+                  <i id="icon" className={item.icon}></i>
+                  <span className="title">{item.label}</span>
+                </li>
+              </Link>
+            ))
+          )}
         </div>
       </nav>
-      </div>
+    </div>
   );
 }
 
 export default Sidebar0;
-
-
-
 

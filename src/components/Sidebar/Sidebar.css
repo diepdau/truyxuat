@@ -1,11 +1,9 @@
 
   .main {
-    left:270px;
-    transition: all 0.5s ease;
+    transition: all 0.3s ease;
     z-index: 100;
     position: relative;
     display: flex;
-    margin: 131px 40px 40px 40px;
     background: rgb(217, 226, 224);
   }
   .sidebar {
@@ -35,14 +33,33 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 5px; /* Độ rộng của đường viền màu hồng */
+    width: 5px; 
     height: 100%;
-    background-color: transparent; /* Màu đường viền ban đầu */
-    transition: background-color 0.3s ease; /* Hiệu ứng chuyển đổi màu */
+    background-color: transparent;
+    transition: background-color 0.3s ease; 
   }
-  
-  .item.selected::before {
-    background-color: pink; /* Màu đường viền khi menu được chọn */
-  }
+ 
+  .selected {
+    background-color: #e9e8e8;
+    color:green;
+  border-radius: 3px; 
+  font-weight:bold;
+ #icon{
+  font-weight:bolder;
+
+ }}
+
+
+
+.with-sidebar {
+  width: calc(100% - 270px);
+  margin-left:270px ;
+}
+
+.full-width {
+  width: 100%;
+  margin-left:  0px;
+}
+
   
   

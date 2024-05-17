@@ -137,7 +137,7 @@ function YourComponent({
                 value={product.description}
                 style={{ width: "100%" }}
                 onChange={handleChange}
-                disabled={isProcessors}
+                readOnly={isProcessors}
               />
             </>
           )}

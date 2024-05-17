@@ -5,14 +5,13 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
 import Treatments_Create from "./Treatments_Create.jsx";
 import "./Treatments.css";
 import { Paginator } from "primereact/paginator";
-import DateConverter from "../../../components/Date/Date.jsx";
+import {DateConverter} from "../../../components/Date/Date.jsx";
 import { handleDelete} from "../../service/treatment_data.js";
 import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
@@ -49,10 +48,14 @@ export default function SizeDemo({ idherd,herdname }) {
         );
         const data = await res.json();
         data.treatments.forEach((element) => {
-          element.date = <DateConverter originalDate={element.date} />;
-          element.retreat_date = (
-            <DateConverter originalDate={element.retreat_date} />
-          );
+          // element.date = <DateConverter originalDate={element.date} />;
+          // element.retreat_date = (
+          //   <DateConverter originalDate={element.retreat_date} />
+          // );
+
+        element.date = DateConverter(element.date); 
+        element.retreat_date = DateConverter(element.retreat_date); 
+          
         });
         setProducts(data.treatments);
         setTotalPages(data.totalPages);
@@ -68,7 +71,9 @@ export default function SizeDemo({ idherd,herdname }) {
         );
         const data = await res.json();
         data.treatments.forEach((element) => {
-          element.date = <DateConverter originalDate={element.date} />;
+          // element.date = <DateConverter originalDate={element.date} />;
+        element.date = DateConverter(element.date); 
+
         });
         setProducts(data.treatments);
         setTotalPages(data.totalPages);
@@ -185,7 +190,7 @@ export default function SizeDemo({ idherd,herdname }) {
 
   const handleDeleteUser = async (product) => {
     try {
-      await handleDelete(product._id);
+      await handleDelete(product._id,token);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -232,7 +237,7 @@ export default function SizeDemo({ idherd,herdname }) {
     </div>
   );
   return (
-    <div>
+    <div  className={idherd? "": "div_main"} >
       <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar
@@ -250,7 +255,6 @@ export default function SizeDemo({ idherd,herdname }) {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          tableStyle={{ minWidth: "68rem" }}
           header={header}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
