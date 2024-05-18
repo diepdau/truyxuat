@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect,useContext } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
@@ -7,7 +7,11 @@ import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import Product_Infos_Actives from "../Product_Infos/Product_Infos_Active.jsx";
-import { handleUpdate,getProductInfos,getFarm} from "../../service/productPatchs_data.js";
+import {
+  handleUpdate,
+  getProductInfos,
+  getFarm,
+} from "../../service/productPatchs_data.js";
 import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   name: "",
@@ -19,7 +23,7 @@ const emptyProduct = {
   quantity: "",
   harvest: "",
   product_info: new Date(),
-  currency_unit:"",
+  currency_unit: "",
   // production_date: "",
 };
 const unitOptions = [
@@ -31,7 +35,7 @@ const currentunitOptions = [
   { label: "Đồng", value: "Đồng" },
   { label: "VND", value: "VND" },
 ];
-function YourComponent({ data, reloadData, isUpdate }) {
+function YourComponent({ data, reloadData, isUpdate, isProProduct }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const [ProductInfos, setProductInfos] = useState({});
@@ -49,7 +53,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
   const getAllData = async () => {
     setProductInfos(await getProductInfos());
     setFarms(await getFarm());
-};
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -84,7 +88,7 @@ function YourComponent({ data, reloadData, isUpdate }) {
       ? product.production_date.props.originalDate
       : product.production_date;
     try {
-      const res = handleUpdate(data._id, product,token  );
+      const res = handleUpdate(data._id, product, token);
       toast.current.show({
         severity: "success",
         summary: "Sửa hoàn thành",
@@ -158,104 +162,131 @@ function YourComponent({ data, reloadData, isUpdate }) {
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <Toast className="toast" ref={toast} />
           <h4>Tên sản phẩm</h4>
-          <InputText
-            disabled
-            name="name"
-            value={product.harvest.name}
-            style={{ width: "100%" }}
-            onChange={handleChange}
-          />
+          {isProProduct ? (
+            <>
+              <InputText
+                value={product.product_info.name}
+                style={{ width: "100%" }}
+              />
+              <h4>Mô tả</h4>
+              <InputTextarea
+                autoResize
+                value={product.product_info.description}
+                style={{ width: "100%" }}
+              />
+              <h4>Phương pháp bảo quản</h4>
+              <InputText
+                
+                value={product.product_info.storage_method}
+                style={{ width: "100%" }}
+              />
+            </>
+          ) : (
+            <InputText
+              disabled
+              name="name"
+              value={product.harvest.name}
+              style={{ width: "100%" }}
+              onChange={handleChange}
+            />
+          )}
           {errors.name && <small className="p-error">{errors.name}</small>}
 
-          <div className="input-container">
-            <div style={{ width: "100%", marginRight: "2vh" }}>
-              <h4>Số lượng</h4>
-              <InputText
-                type="number"
-                name="quantity"
-                value={product.quantity}
-                style={{ width: "100%" }}
-                onChange={handleChange}
-              />
-              {errors.quantity && (
-                <small className="p-error">{errors.quantity}</small>
-              )}
-            </div>
-            <div style={{ width: "100%" , marginRight: "2vh"}}>
-              <h4>Khối lượng tịnh</h4>
-              <InputText
-                name="net_weight"
-                type="number"
-                value={product.net_weight}
-                autoResize
-                style={{ width: "100%" }}
-                onChange={handleChange}
-              />
-              {errors.net_weight && (
-                <small className="p-error">{errors.net_weight}</small>
-              )}
-            </div>
+          {!isProProduct && (
+            <>
+              <div className="input-container">
+                <div style={{ width: "100%", marginRight: "2vh" }}>
+                  <h4>Số lượng</h4>
+                  <InputText
+                    type="number"
+                    name="quantity"
+                    value={product.quantity}
+                    style={{ width: "100%" }}
+                    onChange={handleChange}
+                  />
+                  {errors.quantity && (
+                    <small className="p-error">{errors.quantity}</small>
+                  )}
+                </div>
+                <div style={{ width: "100%", marginRight: "2vh" }}>
+                  <h4>Khối lượng tịnh</h4>
+                  <InputText
+                    name="net_weight"
+                    type="number"
+                    value={product.net_weight}
+                    autoResize
+                    style={{ width: "100%" }}
+                    onChange={handleChange}
+                  />
+                  {errors.net_weight && (
+                    <small className="p-error">{errors.net_weight}</small>
+                  )}
+                </div>
 
-            <div style={{ width: "100%" }}>
-              <h4>ĐVT</h4>
+                <div style={{ width: "100%" }}>
+                  <h4>ĐVT</h4>
+                  <Dropdown
+                    name="unit"
+                    value={product.unit}
+                    options={unitOptions}
+                    onChange={handleUnitChange}
+                    placeholder="Đơn vị tính"
+                    style={{ width: "100%" }}
+                  />
+                  {errors.unit && (
+                    <small className="p-error">{errors.unit}</small>
+                  )}
+                </div>
+              </div>
+              <div className="input-container">
+                <div style={{ width: "100%", marginRight: "2vh" }}>
+                  <h4>Giá</h4>
+                  <InputText
+                    name="price"
+                    type="number"
+                    value={product.price}
+                    autoResize
+                    style={{ width: "100%" }}
+                    onChange={handleChange}
+                  />
+                  {errors.price && (
+                    <small className="p-error">{errors.price}</small>
+                  )}
+                </div>
+                <div style={{ width: "100%" }}>
+                  <h4>ĐV Tiền tệ</h4>
+                  <Dropdown
+                    name="currency_unit"
+                    value={product.currency_unit}
+                    options={currentunitOptions}
+                    onChange={handleCurrencyUnitChange}
+                    placeholder="Tiền tệ"
+                    style={{ width: "100%" }}
+                  />
+                  {errors.currency_unit && (
+                    <small className="p-error">{errors.currency_unit}</small>
+                  )}
+                </div>
+              </div>
+
+              <h4>Nơi đóng gói</h4>
               <Dropdown
-                name="unit"
-                value={product.unit}
-                options={unitOptions}
-                onChange={handleUnitChange}
-                placeholder="Đơn vị tính"
+                placeholder={FarmName}
+                type="text"
+                value={selectedFarm}
+                options={Farms}
+                optionLabel="name"
+                onChange={(e) => {
+                  setSelectedFarm(e.value);
+                  product.location = e.value._id;
+                }}
                 style={{ width: "100%" }}
               />
-              {errors.unit && (
-                <small className="p-error">{errors.unit}</small>
-              )}
-            </div>
-          </div>
-          <div className="input-container">
-            <div style={{ width: "100%", marginRight: "2vh" }}>
-              <h4>Giá</h4>
-              <InputText
-                name="price"
-                type="number"
-                value={product.price}
-                autoResize
-                style={{ width: "100%" }}
-                onChange={handleChange}
-              />
-              {errors.price && (
-                <small className="p-error">{errors.price}</small>
-              )}
-            </div>
-            <div style={{ width: "100%" }}>
-              <h4>ĐV Tiền tệ</h4>
-              <Dropdown
-                name="currency_unit"
-                value={product.currency_unit}
-                options={currentunitOptions}
-                onChange={handleCurrencyUnitChange}
-                placeholder="Tiền tệ"
-                style={{ width: "100%" }}
-              />
-              {errors.currency_unit && <small className="p-error">{errors.currency_unit}</small>}
-            </div>
-          </div>
 
-          <h4>Nơi đóng gói</h4>
-          <Dropdown
-            placeholder={FarmName}
-            type="text"
-            value={selectedFarm}
-            options={Farms}
-            optionLabel="name"
-            onChange={(e) => {
-              setSelectedFarm(e.value);
-              product.location = e.value._id;
-            }}
-            style={{ width: "100%" }}
-          />
-
-          {errors.location && (
-            <small className="p-error">{errors.location}</small>
+              {errors.location && (
+                <small className="p-error">{errors.location}</small>
+              )}
+            </>
           )}
         </div>
         <div style={{ flex: 1 }}>
@@ -303,24 +334,26 @@ function YourComponent({ data, reloadData, isUpdate }) {
             onChange={handleChange}
           />
           {errors.dte && <small className="p-error">{errors.dte}</small>}
-
-          <div className="Product_info">
-            {/* eslint-disable-next-line react/jsx-pascal-case */}
-            <Product_Infos_Actives
-              reloadData={reloadData}
-              isProcessors={true}
-              id_product_info={data.product_info}
-            />
-          </div>
+          {!isProProduct && (
+            <div className="Product_info">
+              {/* eslint-disable-next-line react/jsx-pascal-case */}
+              <Product_Infos_Actives
+                reloadData={reloadData}
+                isProcessors={true}
+                id_product_info={data.product_info}
+              />
+            </div>
+          )}
         </div>
       </div>
+      {!isProProduct && (
       <Button
         className="button_Dia"
         id="Save"
         label={isUpdate ? "Lưu" : "Tạo mới"}
         severity="success"
         onClick={handle}
-      />
+      />)}
     </div>
   );
 }

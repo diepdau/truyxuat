@@ -17,7 +17,6 @@ import { DateConverter } from "../../../components/Date/Date.jsx";
 import Harvest_Update from "../Harvest/Harvest_Update.jsx";
 import ProductPatchs_Create from "./ProductPatchs_Create.jsx";
 import { Image } from "primereact/image";
-import Product_Infos_Actives from "../Product_Infos/Product_Infos_Active.jsx";
 import { handleDelete } from "../../service/productPatchs_data.js";
 import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
@@ -89,11 +88,19 @@ export default function SizeDemo() {
           severity="success"
           onClick={onClickInforProduct}
         />
+         <Button
+          label="Danh sách sản phẩm"
+          severity="success"
+          onClick={onClickProcessorProduct}
+        />
       </div>
     );
   };
   const onClickInforProduct = () => {
     navigate(`/thong-tin`);
+  };
+  const onClickProcessorProduct = () => {
+    navigate(`/processors/products`);
   };
   const confirmDeleteSelected = () => {
     setDeleteProductsDialog(true);

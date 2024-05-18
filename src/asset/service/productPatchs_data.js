@@ -75,3 +75,16 @@ export const getFarm = async () => {
         console.log(error);
     }
 };
+
+export const handleGetProcProduct = async (token) => {
+    try {
+        const response = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/processors/products`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        console.log("Error: ", error);
+    }
+};
