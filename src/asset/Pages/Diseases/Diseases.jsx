@@ -5,7 +5,6 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
@@ -48,7 +47,6 @@ export default function SizeDemo() {
         )}`
       );
       const data = await response.json();
-      console.log(data.diseases);
       setProducts(data.diseases);
       setTotalPages(data.totalPages);
     } catch (error) {
@@ -167,7 +165,7 @@ export default function SizeDemo() {
 
   const handleDeleteUser = async (product) => {
     try {
-      handleDelete(product._id);
+      handleDelete(product._id,token);
       reloadData();
     } catch (error) {
       console.log("Error:", error);

@@ -1,17 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef ,useContext} from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
 import FarmingAreas_Create from "./FarmingAreas_Create.jsx";
 import ImageUploader from "../../../components/Images/Image.jsx";
 import { TabPanel, TabView } from "primereact/tabview";
 import { Paginator } from "primereact/paginator";
+import { handleDelete } from "../../service/farm_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -31,6 +32,7 @@ export default function FarmmingAreas() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
     fetchData();
@@ -166,8 +168,8 @@ export default function FarmmingAreas() {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/farm/${product._id}`, product);
-      // reloadData();
+      await handleDelete(product._id,token);
+      reloadData();
     } catch (error) {
       console.log("Error:", error);
     }

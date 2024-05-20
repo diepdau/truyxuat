@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
 import axios from "axios";
@@ -6,7 +6,8 @@ import { Toast } from "primereact/toast";
 import "./FarmingAreas.css";
 import { InputText } from "primereact/inputtext";
 import Map123 from "../../../components/Map/Map";
-
+import { handleCreate, handleUpdate } from "../../service/farm_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyData = {
   name: "",
   description: "",
@@ -20,6 +21,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
   const coo = isUpdate ? data.coordinates : [];
+  const { token } = useContext(AuthContext);
 
   const handleChange = (event) => {
     const { value, name } = event.target;
@@ -29,27 +31,29 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
     });
   };
   function convertStringArrayToNumberArray(arr) {
-    return arr.split(",").map((item) => parseFloat(item, 10));
+    console.log(arr);
+    // return arr.split(",").map((item) => parseFloat(item, 10));
   }
-  const handleCreate = async () => {
+  const handle = async () => {
     if (!validate()) {
       return;
     }
+
     formData.coordinates = convertStringArrayToNumberArray(
       formData.coordinates
     );
     try {
       if (data) {
-        const res = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/farm/${data._id}`, formData);
+        const res = handleUpdate(data._id, formData, token);
         toast.current.show({
           severity: "success",
           summary: "Sửa hoàn thành",
           life: 3000,
         });
 
-        setFormData(res.data);
+        setFormData(res);
       } else {
-        await axios.post(`https://agriculture-traceability.vercel.app/api/v1/farm`, formData);
+        await handleCreate(formData, token);
         toast.current.show({
           severity: "success",
           summary: "Thêm hoàn thành",
@@ -57,6 +61,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
         });
         setFormData(emptyData);
       }
+      reloadData();
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -67,17 +72,17 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
     let isValid = true;
     const newErrors = {};
 
-    if (!formData.name.trim()) {
+    if (!formData.name && formData.name === "") {
       newErrors.name = "Tên là bắt buộc.";
       isValid = false;
     }
 
-    if (!formData.description.trim()) {
+    if (!formData.description && formData.description === "") {
       newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
     }
 
-    if (!formData.area) {
+    if (!formData.area && formData.area === "") {
       newErrors.area = "Diện tích là bắt buộc.";
       isValid = false;
     } else if (parseFloat(formData.area) < 0) {
@@ -85,24 +90,32 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
       isValid = false;
     }
 
-    if (!formData.address.trim()) {
+    if (!formData.address && formData.address === "") {
       newErrors.address = "Địa chỉ là bắt buộc.";
       isValid = false;
     }
-
-    if (!formData.coordinates) {
+    if (!formData.coordinates &&formData.coordinates === "") {
       newErrors.coordinates = "Tọa độ là bắt buộc.";
       isValid = false;
     } else {
-      const coordinatesArray = formData.coordinates.split(",").map(Number);
-      if (
-        coordinatesArray.length !== 2 ||
-        coordinatesArray.some((coord) => isNaN(coord)) ||
-        coordinatesArray.some((coord) => coord <= 0)
-      ) {
-        newErrors.coordinates =
-          "Tọa độ chưa đúng định dạng và phải lớn hơn hoặc khác không.";
+      if (formData.coordinates[0] === 0 && formData.coordinates[1] === 0) {
+      
+        newErrors.coordinates = "Tọa độ là bắt buộc.";
         isValid = false;
+      } else {
+        
+        if (!isUpdate) {
+          const coordinatesArray = formData.coordinates.split(",").map(Number);
+          if (
+            coordinatesArray.length !== 2 ||
+            coordinatesArray.some((coord) => isNaN(coord)) ||
+            coordinatesArray.some((coord) => coord <= 0)
+          ) {
+            newErrors.coordinates =
+              "Tọa độ chưa đúng định dạng và phải lớn hơn hoặc khác không.";
+            isValid = false;
+          }
+        }
       }
     }
     setErrors(newErrors);
@@ -177,7 +190,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
         id="Save"
         label={isUpdate ? "Cập nhật" : "Lưu"}
         severity="success"
-        onClick={handleCreate}
+        onClick={handle}
       />
     </div>
   );

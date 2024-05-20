@@ -33,15 +33,16 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
     try {
       if (data) {
         const res = handleUpdate(data._id, formData, token);
+        reloadData();
         toast.current.show({
           severity: "success",
           summary: "Sửa hoàn thành",
           life: 3000,
         });
-        setFormData(res.data);
+        setFormData(res);
       } else {
         handleCreate(formData, token);
-        
+        reloadData();
         toast.current.show({
           severity: "success",
           summary: "Thêm hoàn thành",
@@ -49,6 +50,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
         });
         setFormData(emptyData);
       }
+      reloadData();
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -59,12 +61,12 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
     let isValid = true;
     const newErrors = {};
 
-    if (!formData.name) {
+    if (!formData.name && formData.name === "") {
       newErrors.name = "Tên nhóm là bắt buộc.";
       isValid = false;
     }
 
-    if (!formData.description) {
+    if (!formData.description && formData.description === "") {
       newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
     }

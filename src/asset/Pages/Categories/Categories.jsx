@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef,useContext } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -10,12 +10,8 @@ import "../Home/HerdsList.css";
 import Categories_Create from "./Categories_Create.jsx";
 import { TabPanel, TabView } from "primereact/tabview";
 import { Paginator } from "primereact/paginator";
-import { handleDelete} from "../../service/categories_data.js";
+import { handleDelete } from "../../service/categories_data.js";
 import { AuthContext } from "../../service/user_service.js";
-export const todoUrl =
-  "https://agriculture-traceability.vercel.app/api/v1/categories";
-export const userUrl =
-  "https://agriculture-traceability.vercel.app/api/v1/herds";
 
 const emptyProduct = {
   _id: null,
@@ -37,11 +33,10 @@ export default function FarmmingAreas() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
-  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, currentLimit,product]);
+  }, []);
 
   const fetchData = async (value = "") => {
     try {
@@ -50,10 +45,6 @@ export default function FarmmingAreas() {
           value
         )}`
       );
-      // if (response.status === 500) {
-      //   setHasError(true);
-      //   return;
-      // }
       const data = await response.json();
       setProducts(data.categories);
       setTotalPages(data.totalPages);
@@ -81,7 +72,7 @@ export default function FarmmingAreas() {
           label="Xóa"
           severity="danger"
           onClick={confirmDeleteSelected}
-          disabled={!selectedProducts || !selectedProducts.length}
+          // disabled={!selectedProducts || !selectedProducts.length}
         />
       </div>
     );
@@ -155,6 +146,13 @@ export default function FarmmingAreas() {
     </React.Fragment>
   );
   const confirmDeleteProduct = (product) => {
+    if (!product) {
+      toast.current.show({
+        severity: "warn",
+        summary: "Bạn phải chọn 1 nhóm",
+        life: 3000,
+      });
+    }
     setProduct(product);
     setDeleteProductDialog(true);
   };
@@ -162,6 +160,7 @@ export default function FarmmingAreas() {
     return (
       <React.Fragment>
         <i
+          data-testid="custom-element"
           className="pi pi-trash"
           onClick={() => confirmDeleteProduct(rowData)}
         ></i>
@@ -170,7 +169,8 @@ export default function FarmmingAreas() {
   };
   const handleDeleteUser = async (product) => {
     try {
-      handleDelete(product._id,token);
+      handleDelete(product._id, token);
+      reloadData();
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -217,8 +217,6 @@ export default function FarmmingAreas() {
   );
   return (
     <div className="div_main">
-      {hasError ? <div>Opps come back later</div> : null}
-
       <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar
@@ -268,7 +266,6 @@ export default function FarmmingAreas() {
           rowsPerPageOptions={[5, 10, 20]}
           onPageChange={onPageChange}
         />
-
         <Dialog
           visible={deleteProductsDialog}
           style={{ width: "32rem" }}

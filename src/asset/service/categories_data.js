@@ -45,7 +45,7 @@ export const handleUpdate = async (_id,data,token) => {
             Authorization: `Bearer ${token}`
         } 
     });
-    return res;
+    return res.data.category;
     } catch (error) {
         console.log("Error: ", error);
     }
