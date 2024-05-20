@@ -1,10 +1,13 @@
-import React, { useState, useRef,useContext } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
-import { handleCreateAnimal, handleUpdateAnimal} from "../../service/Herd_data.js";
+import {
+  handleCreateAnimal,
+  handleUpdateAnimal,
+} from "../../service/Herd_data.js";
 import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   _id: null,
@@ -40,7 +43,7 @@ function YourComponent({ herdId, data, reloadData, isUpdate }) {
 
     try {
       if (isUpdate) {
-        await handleUpdateAnimal(data._id,product,token);
+        await handleUpdateAnimal(data._id, product, token);
         console.log(product);
         toast.current.show({
           severity: "success",
@@ -48,14 +51,17 @@ function YourComponent({ herdId, data, reloadData, isUpdate }) {
           life: 3000,
         });
       } else {
-        await handleCreateAnimal( {
-          name: product.name,
-          birth_date: product.birth_date,
-          birth_weight: product.birth_weight,
-          is_harvested: selectedIsHarvested.name,
-          herd: herdId,
-        },token);
-        
+        await handleCreateAnimal(
+          {
+            name: product.name,
+            birth_date: product.birth_date,
+            birth_weight: product.birth_weight,
+            is_harvested: selectedIsHarvested.name,
+            herd: herdId,
+          },
+          token
+        );
+
         toast.current.show({
           severity: "success",
           summary: "Thêm hoàn thành",
@@ -63,6 +69,7 @@ function YourComponent({ herdId, data, reloadData, isUpdate }) {
         });
         setProduct(emptyProduct);
       }
+      reloadData();
       reloadData();
     } catch (error) {
       console.log("Error update:", error);
@@ -91,58 +98,57 @@ function YourComponent({ herdId, data, reloadData, isUpdate }) {
 
   return (
     <div>
-          <Toast className="toast" ref={toast} />
+      <Toast className="toast" ref={toast} />
 
-      
-        <div className="container_update">
-          <div
-            style={{
-              flex: 1,
-              paddingRight: "1rem",
-            }}
-          >
-            <h4>Tên</h4>
-            <InputText
-              type="text"
-              name="name"
-              value={product.name}
-              onChange={handleChange}
-              style={{ width: "100%" }}
-            />
-            {errors.name && <small className="p-error">{errors.name}</small>}
-            <h4>Ngày sinh</h4>
-            <Calendar
-              inputId="cal_date"
-              name="date"
-              style={{ width: "100%" }}
-              value={product.birth_date}
-              onChange={handleChange}
-            />
-          </div>
-          <div style={{ flex: 1 }}>
-            <h4>Cân nặng</h4>
-            <InputText
-              type="number"
-              name="birth_weight"
-              value={product.birth_weight}
-              onChange={handleChange}
-              style={{ width: "100%" }}
-            />
-            {errors.birth_weight && (
-              <small className="p-error">{errors.birth_weight}</small>
-            )}
-
-            <h4>Thu hoạch</h4>
-            <Dropdown
-              type="text"
-              options={Is_harvested}
-              optionLabel="name"
-              value={selectedIsHarvested}
-              onChange={(e) => setSelectedIsHarvested(e.value)}
-              style={{ width: "100%" }}
-            />
-          </div>
+      <div className="container_update">
+        <div
+          style={{
+            flex: 1,
+            paddingRight: "1rem",
+          }}
+        >
+          <h4>Tên</h4>
+          <InputText
+            type="text"
+            name="name"
+            value={product.name}
+            onChange={handleChange}
+            style={{ width: "100%" }}
+          />
+          {errors.name && <small className="p-error">{errors.name}</small>}
+          <h4>Ngày sinh</h4>
+          <Calendar
+            inputId="cal_date"
+            name="date"
+            style={{ width: "100%" }}
+            value={product.birth_date}
+            onChange={handleChange}
+          />
         </div>
+        <div style={{ flex: 1 }}>
+          <h4>Cân nặng</h4>
+          <InputText
+            type="number"
+            name="birth_weight"
+            value={product.birth_weight}
+            onChange={handleChange}
+            style={{ width: "100%" }}
+          />
+          {errors.birth_weight && (
+            <small className="p-error">{errors.birth_weight}</small>
+          )}
+
+          <h4>Thu hoạch</h4>
+          <Dropdown
+            type="text"
+            options={Is_harvested}
+            optionLabel="name"
+            value={selectedIsHarvested}
+            onChange={(e) => setSelectedIsHarvested(e.value)}
+            style={{ width: "100%" }}
+          />
+        </div>
+      </div>
 
       <Button
         className="button_Dia"

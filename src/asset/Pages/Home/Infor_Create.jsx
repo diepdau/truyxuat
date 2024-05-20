@@ -59,6 +59,7 @@ function Infor_Herd({ isUpdate, reloadData }) {
       });
       setFormData(initFormValue);
       reloadData();
+      reloadData();
     } catch (error) {
       console.log("Error:", error);
     }

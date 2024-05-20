@@ -88,7 +88,7 @@ export default function SizeDemo() {
           severity="success"
           onClick={onClickInforProduct}
         />
-         <Button
+        <Button
           label="Danh sách sản phẩm"
           severity="success"
           onClick={onClickProcessorProduct}
@@ -187,6 +187,7 @@ export default function SizeDemo() {
   const handleDeleteUser = async (product) => {
     try {
       handleDelete(product._id, token);
+      reloadData();
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -372,10 +373,7 @@ export default function SizeDemo() {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <ProductPatchs_Create
-            reloadData={reloadData}
-            isUpdate={false}
-          />
+          <ProductPatchs_Create reloadData={reloadData} isUpdate={false} />
         </Dialog>
       </div>
     </div>

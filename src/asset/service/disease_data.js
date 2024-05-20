@@ -15,7 +15,7 @@ export const handleGet = async (name, token) => {
 
 export const handleCreate = async (data, token) => {
     try {
-        const res=  await axios.post("https://agriculture-traceability.vercel.app/api/v1/diseases/", data, {
+        const res = await axios.post("https://agriculture-traceability.vercel.app/api/v1/diseases/", data, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -28,7 +28,7 @@ export const handleCreate = async (data, token) => {
 
 export const handleDelete = async (_id, token) => {
     try {
-         await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/diseases/${_id}`, {
+        await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/diseases/${_id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -38,16 +38,15 @@ export const handleDelete = async (_id, token) => {
     }
 };
 
-export const handleUpdate = async (_id,data,token) => {
+export const handleUpdate = async (_id, data, token) => {
     try {
-       const res= await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/diseases/${_id}`,data,{
-        headers: {
-            Authorization: `Bearer ${token}`
-        } 
-    });
-    return res;
+        const res = await axios.patch(`https://agriculture-traceability.vercel.app/api/v1/diseases/${_id}`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return res.data.disease;
     } catch (error) {
         console.log("Error: ", error);
     }
 };
-

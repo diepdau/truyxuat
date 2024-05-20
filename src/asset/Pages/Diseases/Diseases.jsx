@@ -165,7 +165,8 @@ export default function SizeDemo() {
 
   const handleDeleteUser = async (product) => {
     try {
-      handleDelete(product._id,token);
+      handleDelete(product._id, token);
+      reloadData();
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -303,7 +304,7 @@ export default function SizeDemo() {
           visible={productDialog}
           onHide={() => setProductDialog(false)}
         >
-          <Diseases_Create />
+          <Diseases_Create reloadData={reloadData} />
         </Dialog>
       </div>
     </div>

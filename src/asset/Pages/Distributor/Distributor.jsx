@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -13,6 +13,8 @@ import Distributor_Create from "./Distributor_Create.jsx";
 import Image from "../../../components/Images/Image.jsx";
 import "./Distributor.css";
 import { Paginator } from "primereact/paginator";
+import { handleDelete } from "../../service/distributors_data.js";
+import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {};
 export default function SizeDemo() {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -26,6 +28,7 @@ export default function SizeDemo() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
     fetchData();
@@ -157,7 +160,8 @@ export default function SizeDemo() {
 
   const handleDeleteUser = async (product) => {
     try {
-      await axios.delete(`https://agriculture-traceability.vercel.app/api/v1/distributors/${product._id}`, product);
+      await handleDelete(product._id, token);
+      reloadData();
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -179,7 +183,11 @@ export default function SizeDemo() {
             />
           </TabPanel>
           <TabPanel header="Hình ảnh">
-            <Image uploadUrl={url} images={data.images} reloadData={reloadData} />
+            <Image
+              uploadUrl={url}
+              images={data.images}
+              reloadData={reloadData}
+            />
           </TabPanel>
         </TabView>
       </>
@@ -230,27 +238,25 @@ export default function SizeDemo() {
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
           <Column
-          sortable
-
+            sortable
             field="warehouse_name"
             header="Tên nhà kho"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
-          sortable
+            sortable
             field="warehouse_address"
             header="Địa chỉ kho"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
-          sortable
-
+            sortable
             field="stores"
             header="Cửa hàng"
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
-          sortable
+            sortable
             field="product_patch"
             header="Lô hàng"
             style={{ minWidth: "10rem" }}

@@ -113,6 +113,8 @@ function YourComponent({ herdId, data, isUpdate }) {
         setProduct(emptyProduct);
       }
       reloadData();
+      reloadData();
+
     } catch (error) {
       console.log("Error update:", error);
     }

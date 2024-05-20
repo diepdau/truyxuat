@@ -12,7 +12,7 @@ const emptyProduct = {
   preventive_measures: "",
 };
 
-function YourComponent() {
+function YourComponent({reloadData}) {
   const [product, setProduct] = useState(emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
@@ -44,7 +44,8 @@ function YourComponent() {
         summary: "Thêm hoàn thành",
         life: 3000,
       });
-
+      reloadData();
+      reloadData();
       setProduct(emptyProduct);
     } catch (error) {
       console.log("Error update:", error);

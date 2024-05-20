@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef ,useContext} from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -11,8 +11,8 @@ import { TabView, TabPanel } from "primereact/tabview";
 import Treatments_Create from "./Treatments_Create.jsx";
 import "./Treatments.css";
 import { Paginator } from "primereact/paginator";
-import {DateConverter} from "../../../components/Date/Date.jsx";
-import { handleDelete} from "../../service/treatment_data.js";
+import { DateConverter } from "../../../components/Date/Date.jsx";
+import { handleDelete } from "../../service/treatment_data.js";
 import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   _id: null,
@@ -22,7 +22,7 @@ const emptyProduct = {
   unit: "",
   date: "",
 };
-export default function SizeDemo({ idherd,herdname }) {
+export default function SizeDemo({ idherd, herdname }) {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
@@ -53,9 +53,8 @@ export default function SizeDemo({ idherd,herdname }) {
           //   <DateConverter originalDate={element.retreat_date} />
           // );
 
-        element.date = DateConverter(element.date); 
-        element.retreat_date = DateConverter(element.retreat_date); 
-          
+          element.date = DateConverter(element.date);
+          element.retreat_date = DateConverter(element.retreat_date);
         });
         setProducts(data.treatments);
         setTotalPages(data.totalPages);
@@ -72,9 +71,9 @@ export default function SizeDemo({ idherd,herdname }) {
         const data = await res.json();
         data.treatments.forEach((element) => {
           // element.date = <DateConverter originalDate={element.date} />;
-        element.date = DateConverter(element.date); 
-
+          element.date = DateConverter(element.date);
         });
+        console.log(data.treatments);
         setProducts(data.treatments);
         setTotalPages(data.totalPages);
       } catch (error) {
@@ -190,7 +189,8 @@ export default function SizeDemo({ idherd,herdname }) {
 
   const handleDeleteUser = async (product) => {
     try {
-      await handleDelete(product._id,token);
+      await handleDelete(product._id, token);
+      reloadData();
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -237,7 +237,7 @@ export default function SizeDemo({ idherd,herdname }) {
     </div>
   );
   return (
-    <div  className={idherd? "": "div_main"} >
+    <div className={idherd ? "" : "div_main"}>
       <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar

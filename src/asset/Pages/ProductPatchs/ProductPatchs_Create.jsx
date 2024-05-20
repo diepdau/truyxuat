@@ -102,6 +102,8 @@ function YourComponent({ reloadData, isUpdate }) {
       });
       console.log(res);
       reloadData();
+      reloadData();
+
       setProduct(emptyProduct);
     } catch (error) {
       console.log("Error update:", error);

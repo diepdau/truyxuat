@@ -56,6 +56,8 @@ function YourComponent({ data, reloadData, isUpdate }) {
         setProduct(emptyProduct);
       }
       reloadData();
+      reloadData();
+      
     } catch (error) {
       console.log("Error:", error);
     }

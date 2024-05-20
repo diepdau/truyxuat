@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect,useContext } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
@@ -6,8 +6,8 @@ import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import "./Treatments.css";
 import typeOptions from "./Type.jsx";
-import { handleCreate,handleUpdate} from "../../service/treatment_data.js";
-import { getHerd} from "../../service/harvest_data.js";
+import { handleCreate, handleUpdate } from "../../service/treatment_data.js";
+import { getHerd } from "../../service/harvest_data.js";
 import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   herd: "",
@@ -33,7 +33,7 @@ const modeOptions = [
 ];
 const siteOptions = ["Mông", "Sườn", "Cổ", "Khác"];
 
-function YourComponent({ data, reloadData, isUpdate ,nameherd}) {
+function YourComponent({ data, reloadData, isUpdate, nameherd }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState({});
@@ -44,8 +44,10 @@ function YourComponent({ data, reloadData, isUpdate ,nameherd}) {
     getAllHerd();
   }, []);
 
-  const getAllHerd = async () => { const a =await getHerd();
-     setHerds(a.data.herds); };
+  const getAllHerd = async () => {
+    const a = await getHerd();
+    setHerds(a.data.herds);
+  };
 
   const handleTypeChange = (event) => {
     setProduct({
@@ -80,7 +82,7 @@ function YourComponent({ data, reloadData, isUpdate ,nameherd}) {
         product.retreat_date = product.retreat_date.props
           ? product.retreat_date.props.originalDate
           : product.retreat_date;
-        await handleUpdate(data._id,product, token);
+        await handleUpdate(data._id, product, token);
         toast.current.show({
           severity: "success",
           summary: "Cập nhật hoàn thành",
@@ -94,8 +96,10 @@ function YourComponent({ data, reloadData, isUpdate ,nameherd}) {
           summary: "Thêm hoàn thành",
           life: 3000,
         });
+        reloadData();
         setProduct(emptyProduct);
       }
+      reloadData();
       reloadData();
     } catch (error) {
       console.log("Error update:", error);
@@ -158,7 +162,8 @@ function YourComponent({ data, reloadData, isUpdate ,nameherd}) {
     setErrors(newErrors);
     return isValid;
   };
-  const herdName = product.herd && product.herd.name ? product.herd.name :nameherd;
+  const herdName =
+    product.herd && product.herd.name ? product.herd.name : nameherd;
   let dateDate = ""; // Declare formattedDate variable
 
   if (product.date && typeof product.date === "object" && product.date.props) {

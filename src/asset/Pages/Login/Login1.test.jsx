@@ -4,8 +4,6 @@ import "@testing-library/jest-dom";
 import Login, { validateInput } from "./Login.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { AuthContext } from "../../service/user_service.js";
-import { user } from "@testing-library/user-event";
-import { exp } from "mathjs";
 
 const mockLoginApi = jest.fn();
 jest.mock("axios", () => ({
@@ -116,9 +114,9 @@ test("password input should be empty", () => {
 //     );
 
 //     const submitButton = screen.queryByRole('button');
-// // expect(submitButton).toHaveTextContent(//);
-//     // const errorMessage = screen.getByText("Chưa nhập email hoặc mật khẩu");
-//     // expect(errorMessage).toBeInTheDocument();
+// expect(submitButton).toHaveTextContent(//);
+//     const errorMessage = screen.getByText("Chưa nhập email hoặc mật khẩu");
+//     expect(errorMessage).toBeInTheDocument();
 //   });
 
 test("loading should not be rendered", () => {
@@ -177,46 +175,48 @@ test("button should not be disabled when inputs exist", () => {
   expect(buttonEl).not.toBeDisabled();
 });
 
-// test("button should not be disabled when inputs exist 123", () => {
-//   render(
-//     <BrowserRouter>
-//       <Login />
-//     </BrowserRouter>
-//   );
-//   const buttonEl = screen.getByRole("button");
-//   const usernameInputEl = screen.getByPlaceholderText(/Email/i);
-//   const passwordInputEl = screen.getByPlaceholderText(/Password/i);
+// Kiểm tra nút bị vô hiệu hóa khi các trường nhập liệu trống
+test("button should be disabled when inputs are empty", () => {
+  render(
+    <BrowserRouter>
+      <Login />
+    </BrowserRouter>
+  );
 
-//   const testValue = "test";
+  const buttonEl = screen.getByRole("button");
+  const usernameInputEl = screen.getByPlaceholderText(/Email/i);
+  const passwordInputEl = screen.getByPlaceholderText(/Password/i);
 
-//   fireEvent.change(usernameInputEl, { target: { value: testValue } });
-//   fireEvent.change(passwordInputEl, { target: { value: testValue } });
+  fireEvent.change(usernameInputEl, { target: { value: "" } });
+  fireEvent.change(passwordInputEl, { target: { value: "" } });
 
-//   expect(buttonEl).not.toBeDisabled();
-// });
+  expect(buttonEl).toBeDisabled();
+});
 
-// test("Email or password fail",  () => {
-//   render(
-//     <BrowserRouter>
-//       <Login />
-//     </BrowserRouter>
-//   );
-// const buttonEl = screen.getByRole("button");
-// const emailInputEl = screen.getByPlaceholderText(/Email/i);
-// const passwordInputEl = screen.getByPlaceholderText(/Password/i);
+test("Email or password fail", async () => {
+  render(
+    <BrowserRouter>
+      <Login />
+    </BrowserRouter>
+  );
+   const buttonEl = screen.getByRole("button");
 
-// const testValueEmail = "admin@gmail.com";
-// const testValuePassword = "123456";
+  const emailInputEl = screen.getByPlaceholderText(/Email/i);
+  const passwordInputEl = screen.getByPlaceholderText(/Password/i);
 
-// fireEvent.change(emailInputEl, { target: { value: testValueEmail } });
-// fireEvent.change(passwordInputEl, { target: { value: testValuePassword } });
-// fireEvent.click(buttonEl);
+  const testValueEmail = "admin@gmail.com";
+  const testValuePassword = "123456";
 
-// const errorEl = screen.getAllByTestId('error');
-// expect(errorEl).toBeInTheDocument();
-// expect(errorEl).toHaveTextContent(/Email hoặc mật khẩu sai/i);
+  fireEvent.change(emailInputEl, { target: { value: testValueEmail } });
+  fireEvent.change(passwordInputEl, { target: { value: testValuePassword } });
+  // fireEvent.click(buttonEl);
+  // const errorEl = screen.getByTestId("error");
+  //  expect(errorEl).toBeInTheDocument();
+  // expect(errorEl).toHaveTextContent("Email hoặc mật khẩu sai");
 
-// });
+  const dialogElement = await screen.findByText("Email hoặc mật khẩu sai");
+  expect(dialogElement).toBeInTheDocument();
+});
 
 test("it calls onUserAdd when the form is submitted", () => {
   render(
@@ -230,4 +230,3 @@ test("it calls onUserAdd when the form is submitted", () => {
   expect(inputs).toHaveLength(1);
   expect(button).toBeInTheDocument();
 });
-

@@ -1,8 +1,8 @@
-import React, { useState, useRef,useContext } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { handleUpdate} from "../../service/disease_data.js";
+import { handleUpdate } from "../../service/disease_data.js";
 import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   name: "",
@@ -32,13 +32,13 @@ function YourComponent({ data, reloadData }) {
     }
 
     try {
-      const dataUpdate= {
+      const dataUpdate = {
         name: product.name,
         description: product.description,
         symptoms: product.symptoms,
         preventive_measures: product.preventive_measures,
       };
-     const response= handleUpdate(data._id,dataUpdate,token)
+      const response = handleUpdate(data._id, dataUpdate, token);
       toast.current.show({
         severity: "success",
         summary: "Sửa hoàn thành",
@@ -46,11 +46,12 @@ function YourComponent({ data, reloadData }) {
       });
       setProduct({
         ...product,
-        name: response.data.name,
-        description: response.data.description,
-        symptoms: response.data.symptoms,
-        preventive_measures: response.data.preventive_measures,
+        // name: response.name,
+        // description: response.description,
+        // symptoms: response.symptoms,
+        // preventive_measures: response.preventive_measures,
       });
+      reloadData();
       reloadData();
     } catch (error) {
       console.log("Error update:", error);
@@ -65,29 +66,22 @@ function YourComponent({ data, reloadData }) {
       isValid = false;
     }
     // Kiểm tra lỗi cho trường description
-    if (!product.description.trim()) {
+    if (!product.description && product.description === "") {
       newErrors.description = "Mô tả là bắt buộc.";
-      isValid = false;
-    } else if (product.description.trim().length < 20) {
-      newErrors.description =
-        "Mô tả hơn 20 kí tự.";
       isValid = false;
     }
 
     // Kiểm tra lỗi cho trường symptoms
-    if (!product.symptoms.trim()) {
+    if (!product.symptoms && product.symptoms === "") {
       newErrors.symptoms = "Triệu chứng là bắt buộc.";
-      isValid = false;
-    } else if (product.symptoms.trim().length < 20) {
-      newErrors.symptoms = "Triệu chứng hơn 20 kí tự.";
       isValid = false;
     }
 
     // Kiểm tra lỗi cho trường preventive_measures
-    if (!product.preventive_measures.trim()) {
+    if (!product.preventive_measures && product.preventive_measures === "") {
       newErrors.preventive_measures = "Biện pháp phòng ngừa.";
       isValid = false;
-    } 
+    }
 
     setErrors(newErrors);
     return isValid;

@@ -159,6 +159,10 @@ export default function RegisterPage() {
             }
             type="submit"
             className="submit-btn"
+            style={{
+              cursor:( !formValue.email || !formValue.password || !formValue.first_name || !formValue.last_name) ? "" : "pointer",
+               backgroundColor: (!formValue.email || !formValue.password || !formValue.first_name || !formValue.last_name) ? "grey" : " #0D955C", 
+             }}
           >
             {loading ? "Loading" : "Đăng kí"}
           </button>

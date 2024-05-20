@@ -205,6 +205,8 @@ export default function SizeDemo() {
     try {
       await handleDelete(product, token);
       reloadData();
+      reloadData();
+
     } catch (error) {
       console.log("Error:", error);
     }

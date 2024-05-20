@@ -15,7 +15,7 @@ import "./HerdsList.css";
 import Record_Create from "./Record_Create.jsx";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
-import {DateConverter} from "../../../components/Date/Date";
+import { DateConverter } from "../../../components/Date/Date";
 import { AuthContext } from "../../service/user_service.js";
 const emptyProduct = {
   _id: null,
@@ -59,7 +59,7 @@ export default function SizeDemo({ herdId }) {
         //   <DateConverter originalDate={element.birth_date} />
         // );
 
-        element.birth_date = DateConverter(element.birth_date); 
+        element.birth_date = DateConverter(element.birth_date);
       });
       setProducts(data.herd.records);
       setTotalPages(data.totalPages);
@@ -214,6 +214,8 @@ export default function SizeDemo({ herdId }) {
   const handleDeleteUser = async (product) => {
     try {
       await handleDeleteAnimal(product._id, token);
+      reloadData();
+      reloadData();
     } catch (error) {
       console.log("Error:", error);
     }
@@ -332,7 +334,7 @@ export default function SizeDemo({ herdId }) {
     </div>
   );
   return (
-    <div className={herdId? "": "div_main"} >
+    <div className={herdId ? "" : "div_main"}>
       <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar
@@ -373,7 +375,6 @@ export default function SizeDemo({ herdId }) {
             editor={(options) => Birth_date(options)}
             style={{ minWidth: "5rem" }}
           ></Column>
-
 
           {/* <Column
             sortable

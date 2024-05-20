@@ -86,11 +86,11 @@ const Login = () => {
               />
             </div>
 
-            {err && (
+            {/* {err && ( */}
               <p data-testid="error"  className="error-feedback">
                 {err}
               </p>
-            )}
+            {/* )} */}
 
           
             <Link to="/forgot-password" className="forgot-password">

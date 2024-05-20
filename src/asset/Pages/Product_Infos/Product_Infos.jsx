@@ -5,7 +5,6 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
-import axios from "axios";
 import { Toast } from "primereact/toast";
 import { TabView, TabPanel } from "primereact/tabview";
 import Product_Infos_Active from "./Product_Infos_Active.jsx";

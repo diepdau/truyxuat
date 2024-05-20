@@ -160,7 +160,7 @@ test('renders "Thông báo" dialog when button "Xóa" is clicked', async () => {
   expect(dialogElement).toBeInTheDocument();
 });
 
-test('Check that when clicking on "Tên nhóm", the order of tr tags changes', () => {
+test('Check that when clicking "Tên nhóm", the order of the group name column is sorted', () => {
   render(<Categories />);
 
   const rowsBeforeSort = screen.getAllByRole("row");
