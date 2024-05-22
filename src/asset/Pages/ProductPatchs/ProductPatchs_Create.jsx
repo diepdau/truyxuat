@@ -95,6 +95,8 @@ function YourComponent({ reloadData, isUpdate }) {
 
     try {
       const res = handleCreate(product, token);
+      reloadData();
+
       toast.current.show({
         severity: "success",
         summary: "Thêm hoàn thành",

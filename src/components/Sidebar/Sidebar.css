@@ -9,7 +9,7 @@
   .sidebar {
     position: fixed;
     height: 100%;
-    width: 270px; /* Chiều rộng ban đầu của thanh sidebar */
+    width: 270px; 
     z-index: -9;
     padding-top: 90px;
     background-color: white;
@@ -23,9 +23,6 @@
       display:block;
       margin: 100px 0px;
     }
-    /* .sidebar{
-      display: none;
-    } */
   }
 
   .item::before {

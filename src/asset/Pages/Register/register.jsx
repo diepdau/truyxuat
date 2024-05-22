@@ -145,11 +145,11 @@ export default function RegisterPage() {
             </div>
             {/* <div className="text-note">Nhập 6 kí tự trở lên</div> */}
           </div>
-          {err && (
+          {/* {err && ( */}
             <p data-testid="error" className="error-feedback">
               {err}
             </p>
-          )}
+          {/* )} */}
           <button
             disabled={
               !formValue.email ||

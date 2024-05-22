@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef ,useContext} from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -41,12 +41,11 @@ export default function FarmmingAreas() {
   const fetchData = async (value = "") => {
     try {
       const response = await fetch(
-        `https://agriculture-traceability.vercel.app/api/v1/farm?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+        `https://agriculture-traceability.vercel.app/api/v1/farms?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
           value
         )}`
       );
       const data = await response.json();
-      console.log(data.farms);
       setProducts(data.farms);
       setTotalPages(data.totalPages);
     } catch (error) {
@@ -168,7 +167,7 @@ export default function FarmmingAreas() {
   };
   const handleDeleteUser = async (product) => {
     try {
-      await handleDelete(product._id,token);
+      await handleDelete(product._id, token);
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -183,7 +182,7 @@ export default function FarmmingAreas() {
       <>
         <TabView>
           <TabPanel header="Thông tin">
-             {/* eslint-disable-next-line react/jsx-pascal-case */}
+            {/* eslint-disable-next-line react/jsx-pascal-case */}
             <FarmingAreas_Create
               data={data}
               isUpdate={true}

@@ -1,35 +1,27 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
-import { Dialog } from "primereact/dialog";
 import Infor_Create from "./Infor_Create.jsx";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import "./HerdsList.css";
-import { Paginator } from "primereact/paginator";
-import {DateConverter} from "../../../components/Date/Date.jsx";
 import { AuthContext } from "../../service/user_service.js";
-import { handleDelete } from "../../service/Herd_data.js";
-import { calculateAgeInMonths } from "./DateBirth.jsx";
+import { handleDelete, handleGet } from "../../service/Herd_data.js";
 import { classNames } from "primereact/utils";
+import { Dialog } from "primereact/dialog";
+
+import {
+  CustomDialog,
+  SearchBar,
+  CustomPaginator,
+} from "../../../components/Total_Interface/index.jsx";
+
 const emptyProduct = {
   _id: null,
-  name: "",
-  start_date: "",
-  category: {
-    _id: "",
-    name: "",
-  },
-  description: "",
-  location: "",
-  farm: {
-    _id: "",
-    name: "",
-  },
 };
+
 export default function SizeDemo() {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
@@ -42,34 +34,16 @@ export default function SizeDemo() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
+  const [input, setInput] = useState("");
 
   useEffect(() => {
-    fetchData();
-  }, [currentPage, currentLimit]);
-
-  const fetchData = async (value = "") => {
-    try {
-      const response = await fetch(
-        `https://agriculture-traceability.vercel.app/api/v1/herds?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
-          value
-        )}`
-      );
-      const data = await response.json();
-      data.herds.forEach((element) => {
-        element.farm.name = calculateAgeInMonths(element.start_date);
-      });
-
-      data.herds.forEach((element) => {
-        // element.date = <DateConverter originalDate={element.start_date} />;
-        element.date = DateConverter(element.date); 
-      });
-      setProducts(data.herds);
-      setTotalPages(data.totalPages);
-      console.log(data.herds);
-    } catch (error) {
-      console.log("Error", error);
-    }
-  };
+    handleGet(token, currentLimit, currentPage, input)
+      .then((data) => {
+        setProducts(data.herds);
+        setTotalPages(data.totalPages);
+      })
+      .catch((error) => console.log("Error fetching data:", error));
+  }, [token, currentLimit, currentPage, input]);
 
   const onPageChange = (event) => {
     setCurrentPage(+event.page + 1);
@@ -80,7 +54,10 @@ export default function SizeDemo() {
     setProductDialog(true);
   };
   const reloadData = () => {
-    fetchData();
+    handleGet(token, currentLimit, currentPage, input).then((data) => {
+      setProducts(data.herds);
+      setTotalPages(data.totalPages);
+    });
   };
 
   const leftToolbarTemplate = () => {
@@ -153,40 +130,7 @@ export default function SizeDemo() {
   const onClickCategories = () => {
     navigate(`/categories`);
   };
-  const deleteProductDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="Thoát"
-        severity="secondary"
-        outlined
-        onClick={hideDeleteProductsDialog}
-        className="button_Dia"
-      />
-      <Button
-        label="Đồng ý"
-        onClick={deleteSelectedProducts}
-        severity="danger"
-        className="button_Dia"
-      />
-    </React.Fragment>
-  );
-  const deleteoneProductDialogFooter = (
-    <React.Fragment>
-      <Button
-        className="button_Dia"
-        label="Thoát"
-        severity="secondary"
-        outlined
-        onClick={hideDeleteProductDialog}
-      />
-      <Button
-        className="button_Dia"
-        label="Đồng ý"
-        severity="danger"
-        onClick={deleteProduct}
-      />
-    </React.Fragment>
-  );
+
   const confirmDeleteProduct = (product) => {
     setProduct(product);
     setDeleteProductDialog(true);
@@ -205,8 +149,6 @@ export default function SizeDemo() {
     try {
       await handleDelete(product, token);
       reloadData();
-      reloadData();
-
     } catch (error) {
       console.log("Error:", error);
     }
@@ -234,24 +176,6 @@ export default function SizeDemo() {
     return <i className={iconClass}></i>;
   };
 
-  const [input, setInput] = useState("");
-  const handleChange = (value) => {
-    setInput(value);
-    fetchData(value);
-  };
-  const header = (
-    <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      <h4 className="m-0">Quản lý đàn</h4>
-      <span className="p-input-icon-left">
-        <i className="pi pi-search" />
-        <InputText
-          value={input}
-          onChange={(e) => handleChange(e.target.value)}
-          placeholder="Tìm kiếm..."
-        />
-      </span>
-    </div>
-  );
   const stockBodyTemplate = (rowData) => {
     const stockClassName = classNames(
       "border-circle w-2rem h-2rem inline-flex font-bold justify-content-center align-items-center text-sm",
@@ -262,17 +186,17 @@ export default function SizeDemo() {
 
     return <div className={stockClassName}>{rowData.farm.name}</div>;
   };
-
+  const header = (
+    <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
+      <h4 className="m-0">Quản lý nhóm</h4>
+      <SearchBar value={input} onChange={setInput} />
+    </div>
+  );
   return (
-    <div >
+    <div>
       <Toast className="toast" ref={toast} />
       <div className="card">
-        <Toolbar
-          className="mb-4"
-          left={leftToolbarTemplate}
-          // right={rightToolbarTemplate}
-        ></Toolbar>
-
+        <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
         <DataTable
           value={products}
           selectionMode={"row"}
@@ -287,14 +211,12 @@ export default function SizeDemo() {
             field="name"
             header="Tên đàn"
             sortable
-            value={product.name}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
             field="member_count"
             header="Số lượng"
             sortable
-            value={product.member_count}
             style={{ minWidth: "6rem" }}
           ></Column>
           <Column
@@ -305,8 +227,6 @@ export default function SizeDemo() {
             style={{ minWidth: "5rem" }}
             body={isProcessedBodyTemplate}
           />
-
-          {/* <Column field="date" sortable header="Ngày tạo" value={product.start_date}style={{ width: "10%" }}></Column> */}
           <Column
             field="farm.name"
             sortable
@@ -314,7 +234,6 @@ export default function SizeDemo() {
             style={{ minWidth: "6rem" }}
             body={stockBodyTemplate}
           ></Column>
-
           <Column
             header="Nhóm"
             sortable
@@ -329,52 +248,27 @@ export default function SizeDemo() {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
-        <Paginator
-          first={(currentPage - 1) * currentLimit}
+        <CustomPaginator
+          currentPage={currentPage}
           totalRecords={totalPages * currentLimit}
           rows={currentLimit}
-          rowsPerPageOptions={[5, 10, 20]}
           onPageChange={onPageChange}
         />
-        <Dialog
+        <CustomDialog
           visible={deleteProductsDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
           header="Thông báo"
-          modal
-          footer={deleteProductDialogFooter}
+          type="deleteMany"
           onHide={hideDeleteProductsDialog}
-        >
-          <div className="confirmation-content">
-            <i
-              className="pi pi-exclamation-triangle mr-3"
-              style={{ fontSize: "2rem" }}
-            />
-            {product && <span>Bạn có chắc chắn xóa những đàn này?</span>}
-          </div>
-        </Dialog>
-        <Dialog
+          deleteSelectedProducts={deleteSelectedProducts}
+        />
+        <CustomDialog
           visible={deleteProductDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
           header="Thông báo"
-          modal
-          footer={deleteoneProductDialogFooter}
+          type="deleteOne"
           onHide={hideDeleteProductDialog}
-        >
-          <div className="confirmation-content">
-            <i
-              className="pi pi-exclamation-triangle mr-3"
-              style={{ fontSize: "2rem" }}
-            />
-            {product && (
-              <span>
-                Bạn có chắc chắn muốn xóa <b>{product.name}</b>?
-              </span>
-            )}
-          </div>
-        </Dialog>
-
+          deleteProduct={deleteProduct}
+          productName={product.name}
+        />
         <Dialog
           header="Thêm mới"
           style={{ width: "50%" }}

@@ -1,27 +1,26 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
-import { Dialog } from "primereact/dialog";
 import { Toast } from "primereact/toast";
 import "../Home/HerdsList.css";
 import Categories_Create from "./Categories_Create.jsx";
 import { TabPanel, TabView } from "primereact/tabview";
-import { Paginator } from "primereact/paginator";
-import { handleDelete } from "../../service/categories_data.js";
+import {
+  CustomDialog,
+  SearchBar,
+  CustomPaginator,
+} from "../../../components/Total_Interface/index.jsx";
+import { handleGet, handleDelete } from "../../service/categories_data.js";
 import { AuthContext } from "../../service/user_service.js";
-
+import { Dialog } from "primereact/dialog";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import DecoratedCounter from "../../Design/Bright.jsx";
 const emptyProduct = {
   _id: null,
-  name: "",
-  description: "",
-  slug: "",
-  address: "",
-  coordinates: [0, 0],
 };
-export default function FarmmingAreas() {
+
+export default function Category() {
   const { token } = useContext(AuthContext);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
@@ -33,197 +32,114 @@ export default function FarmmingAreas() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentLimit, setCurrentLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
+  const [input, setInput] = useState("");
+  const [expandedRows, setExpandedRows] = useState(null);
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async (value = "") => {
-    try {
-      const response = await fetch(
-        `https://agriculture-traceability.vercel.app/api/v1/categories?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
-          value
-        )}`
-      );
-      const data = await response.json();
+    handleGet(token, currentLimit, currentPage, input).then((data) => {
       setProducts(data.categories);
       setTotalPages(data.totalPages);
-    } catch (error) {
-      console.log("There was a problem with the fetch operation:", error);
-    }
-  };
+    });
+  }, [token, currentLimit, currentPage, input]);
 
   const onPageChange = (event) => {
     setCurrentPage(+event.page + 1);
     setCurrentLimit(event.rows);
   };
+
   const openNew = () => {
     setProductDialog(true);
   };
+
   const reloadData = () => {
-    fetchData();
+    handleGet(token, currentLimit, currentPage, input).then((data) => {
+      setProducts(data.categories);
+      setTotalPages(data.totalPages);
+    });
   };
 
-  const leftToolbarTemplate = () => {
-    return (
-      <div className="flex flex-wrap gap-2">
-        <Button label="Tạo" severity="success" onClick={openNew} />
-        <Button
-          label="Xóa"
-          severity="danger"
-          onClick={confirmDeleteSelected}
-          // disabled={!selectedProducts || !selectedProducts.length}
-        />
-      </div>
-    );
-  };
+  const leftToolbarTemplate = () => (
+    <div className="flex flex-wrap gap-2">
+      <Button label="Tạo" severity="success" onClick={openNew} />
+      <Button
+        label="Xóa"
+        severity="danger"
+        onClick={confirmDeleteSelected}
+        disabled={!selectedProducts || !selectedProducts.length}
+      />
+    </div>
+  );
 
   const confirmDeleteSelected = () => {
     setDeleteProductsDialog(true);
   };
+
   const hideDeleteProductsDialog = () => {
     setDeleteProductsDialog(false);
   };
+
   const hideDeleteProductDialog = () => {
     setDeleteProductDialog(false);
     setDeleteProductsDialog(false);
   };
-  const deleteSelectedProducts = () => {
+
+  const deleteSelectedProducts = async () => {
     for (const selectedProduct of selectedProducts) {
-      handleDeleteUser(selectedProduct);
-      setDeleteProductsDialog(false);
-      toast.current.show({
-        severity: "success",
-        summary: "Đã xóa",
-        life: 3000,
-      });
+      await handleDelete(selectedProduct._id, token);
     }
-  };
-  const deleteProduct = () => {
-    let _products = products.filter((val) => val._id === product._id);
-    const firstObject = _products[0];
-    handleDeleteUser(firstObject);
-    setDeleteProductDialog(false);
-    toast.current.show({
-      severity: "success",
-      summary: "Đã xóa",
-      life: 3000,
-    });
+    setDeleteProductsDialog(false);
+    reloadData();
+    toast.current.show({ severity: "success", summary: "Đã xóa", life: 3000 });
   };
 
-  const deleteProductDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="Thoát"
-        severity="secondary"
-        outlined
-        onClick={hideDeleteProductsDialog}
-        className="button_Dia"
-      />
-      <Button
-        label="Đồng ý"
-        onClick={deleteSelectedProducts}
-        severity="danger"
-        className="button_Dia"
-      />
-    </React.Fragment>
-  );
-  const deleteoneProductDialogFooter = (
-    <React.Fragment>
-      <Button
-        className="button_Dia"
-        label="Thoát"
-        severity="secondary"
-        outlined
-        onClick={hideDeleteProductDialog}
-      />
-      <Button
-        className="button_Dia"
-        label="Đồng ý"
-        severity="danger"
-        onClick={deleteProduct}
-      />
-    </React.Fragment>
-  );
+  const deleteProduct = async () => {
+    await handleDelete(product._id, token);
+    setDeleteProductDialog(false);
+    reloadData();
+    toast.current.show({ severity: "success", summary: "Đã xóa", life: 3000 });
+  };
+
   const confirmDeleteProduct = (product) => {
-    if (!product) {
-      toast.current.show({
-        severity: "warn",
-        summary: "Bạn phải chọn 1 nhóm",
-        life: 3000,
-      });
-    }
     setProduct(product);
     setDeleteProductDialog(true);
   };
-  const actionBodyTemplate = (rowData) => {
-    return (
-      <React.Fragment>
-        <i
-          data-testid="custom-element"
-          className="pi pi-trash"
-          onClick={() => confirmDeleteProduct(rowData)}
-        ></i>
-      </React.Fragment>
-    );
-  };
-  const handleDeleteUser = async (product) => {
-    try {
-      handleDelete(product._id, token);
-      reloadData();
-      reloadData();
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  };
 
-  const [expandedRows, setExpandedRows] = useState(null);
-  const rowExpansionTemplate = (data) => {
-    product._id = data._id;
-    return (
-      <>
-        <TabView>
-          <TabPanel header="Thông tin">
-            <Categories_Create
-              data={data}
-              isUpdate={true}
-              reloadData={reloadData}
-            />
-          </TabPanel>
-        </TabView>
-      </>
-    );
-  };
-  const allowExpansion = (rowData) => {
-    return rowData;
-  };
-  const [input, setInput] = useState("");
-  const handleChange = (value) => {
-    setInput(value);
-    fetchData(value);
-  };
+  const actionBodyTemplate = (rowData) => (
+    <i
+      className="pi pi-trash"
+      onClick={() => confirmDeleteProduct(rowData)}
+    ></i>
+  );
+
+  const rowExpansionTemplate = (data) => (
+    <TabView>
+      <TabPanel header="Thông tin">
+        {/* eslint-disable-next-line react/jsx-pascal-case */}
+        <Categories_Create
+          data={data}
+          isUpdate={true}
+          reloadData={reloadData}
+        />
+      </TabPanel>
+    </TabView>
+  );
+
+  const allowExpansion = (rowData) => rowData;
+
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
       <h4 className="m-0">Quản lý nhóm</h4>
-      <span className="p-input-icon-left">
-        <i className="pi pi-search" />
-        <InputText
-          value={input}
-          onChange={(e) => handleChange(e.target.value)}
-          placeholder="Tìm kiếm..."
-        />
-      </span>
+      <SearchBar value={input} onChange={setInput} />
     </div>
   );
+
   return (
     <div className="div_main">
+      <DecoratedCounter count={5} />
+
       <Toast className="toast" ref={toast} />
       <div className="card">
-        <Toolbar
-          className="mb-4"
-          left={leftToolbarTemplate}
-          // right={rightToolbarTemplate}
-        ></Toolbar>
+        <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
         <DataTable
           value={products}
           selectionMode={"row"}
@@ -242,15 +158,6 @@ export default function FarmmingAreas() {
             sortable
             field="name"
             header="Tên nhóm"
-            value={product.name}
-            style={{ minWidth: "10rem" }}
-          ></Column>
-
-          <Column
-            sortable
-            field="slug"
-            header="slug"
-            value={product.name}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
@@ -259,58 +166,35 @@ export default function FarmmingAreas() {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
-        <Paginator
-          first={(currentPage - 1) * currentLimit}
-          totalRecords={totalPages * currentLimit} // Assuming you set the correct total number of records here
+
+        <CustomPaginator
+          currentPage={currentPage}
+          totalRecords={totalPages * currentLimit}
           rows={currentLimit}
-          rowsPerPageOptions={[5, 10, 20]}
           onPageChange={onPageChange}
         />
-        <Dialog
+        <CustomDialog
           visible={deleteProductsDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header="Thông báo"
-          modal
-          footer={deleteProductDialogFooter}
+          header="Confirm"
+          type="deleteMany"
           onHide={hideDeleteProductsDialog}
-        >
-          <div className="confirmation-content">
-            <i
-              className="pi pi-exclamation-triangle mr-3"
-              style={{ fontSize: "2rem" }}
-            />
-            {product && <span>Bạn có chắc chắn xóa những nhóm này?</span>}
-          </div>
-        </Dialog>
-        <Dialog
+          deleteSelectedProducts={deleteSelectedProducts}
+        />
+        <CustomDialog
           visible={deleteProductDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header="Thông báo"
-          modal
-          footer={deleteoneProductDialogFooter}
+          header="Confirm"
+          type="deleteOne"
           onHide={hideDeleteProductDialog}
-        >
-          <div className="confirmation-content">
-            <i
-              className="pi pi-exclamation-triangle mr-3"
-              style={{ fontSize: "2rem" }}
-            />
-            {product && (
-              <span>
-                Bạn có chắc chắn muốn xóa <b>{product.name}</b>?
-              </span>
-            )}
-          </div>
-        </Dialog>
-
+          deleteProduct={deleteProduct}
+          productName={product.name}
+        />
         <Dialog
           header="Thêm mới"
           style={{ width: "50%" }}
           visible={productDialog}
           onHide={() => setProductDialog(false)}
         >
+          {/* eslint-disable-next-line react/jsx-pascal-case */}
           <Categories_Create reloadData={reloadData} isUpdate={false} />
         </Dialog>
       </div>

@@ -44,12 +44,13 @@ export const menu = [
         icon: 'pi pi-inbox',
         url: '/lo-san-pham',
       },
+      // {
+      //   id: 5,
+      //   label: 'Phân phối',
+      //   icon: 'pi pi-truck',
+      //   url: '/phan-phoi',
+      // },
       {
-        id: 5,
-        label: 'Phân phối',
-        icon: 'pi pi-truck',
-        url: '/phan-phoi',
-      },{
         id: 6,
         label: 'Bệnh',
         icon: 'pi pi-book',

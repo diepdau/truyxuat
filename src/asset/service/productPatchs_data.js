@@ -69,7 +69,7 @@ export const getProduct = async () => {
 };
 export const getFarm = async () => {
     try {
-        const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/farm?limit=80&searchQuery=Nhà`);
+        const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/farms?limit=80&searchQuery=Nhà`);
         return (res.data.farms);
     } catch (error) {
         console.log(error);

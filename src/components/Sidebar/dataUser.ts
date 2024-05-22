@@ -17,11 +17,11 @@ export const menuUser = [
       icon: 'pi pi-inbox',
       url: '/lo-san-pham',
     },
-    {
-      id: 4,
-      label: 'Phân phối',
-      icon: 'pi pi-truck',
-      url: '/phan-phoi',
-    },
+    // {
+    //   id: 4,
+    //   label: 'Phân phối',
+    //   icon: 'pi pi-truck',
+    //   url: '/phan-phoi',
+    // },
   
 ]

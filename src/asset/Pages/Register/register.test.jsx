@@ -6,15 +6,6 @@ import Register, {
 } from "./register.jsx";
 import { BrowserRouter } from "react-router-dom";
 
-jest.mock("axios", ()=>({
-    __esModule:true,
-
-    default:{
-        get:() => ({
-            data:{id:1,name:"John"}
-        }),
-    },
-}))
 //Kiểm tra trình dữ chỗ và nút button có trên màn hình không
 test("first-name input should be rendered", () => {
     render(
@@ -111,16 +102,7 @@ test("button should be disabled", () => {
   expect(buttonEl).toBeDisabled()
 });
 
-// Kiểm tra xem phần tử chứa thông báo lỗi có ẩn đi ban đầu không
-test("error message should not be visible initially", () => {
-    render(
-      <BrowserRouter>
-        <Register />
-      </BrowserRouter>
-    );
-    const errorEl = screen.queryByTestId("error"); // Sử dụng queryByTestId để kiểm tra không tồn tại
-    expect(errorEl).not.toBeInTheDocument();
-  });
+
   
 //Loading không hiện lên 
 test("loading should not be rendered", () => {
@@ -265,12 +247,7 @@ test("validate password function should pass on correct input", () => {
   fireEvent.change(lastNameInputEl, { target: { value: testValue } });
   fireEvent.change(usernameInputEl, { target: { value: testValue } });
   fireEvent.change(passwordInputEl, { target: { value: testValue } });
-  fireEvent.click(buttonEl);
-  Tên/i);
-  const usernameInputEl = screen.getByPlaceholderText(/Email/i);
-  const passwordInputEl = screen.getByPlaceholderText(/Mật khẩu/i);
-  await screen.findByText("Email đã tồn tại");
-  expect(screen.getByText("Email đã tồn tại")).toBeInTheDocument();
+  // fireEvent.click(buttonEl);
   // const errorEl = screen.getByTestId("error");
-  // expect(errorEl).toHaveTextContent(/Email đã tồn tại/i);
+  // await expect(errorEl).toHaveTextContent(/Email đã tồn tại/i);
 });

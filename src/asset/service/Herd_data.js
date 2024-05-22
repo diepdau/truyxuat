@@ -1,18 +1,30 @@
 import axios from "axios";
+import {DateConverter} from "../../components/Date/Date.jsx";
+import { calculateAgeInMonths } from "../../components/Date/DateBirth.jsx";
 
-export const handleGet = async (name, token) => {
+export const handleGet = async (token, currentLimit, currentPage, value = "") => {
     try {
-        const response = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/herds?sort=${name}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        return response.data.herds;
-    } catch (error) {
-        console.log("Error: ", error);
-    }
-};
+      const response = await fetch(
+        `https://agriculture-traceability.vercel.app/api/v1/herds?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(value)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      data.herds.forEach((element) => {
+        element.farm.name = calculateAgeInMonths(element.start_date);
+      });
 
+      data.herds.forEach((element) => {
+        element.date = DateConverter(element.date); 
+      });
+      return data;
+    } catch (error) {
+      console.log("There was a problem with the fetch operation:", error);
+    }
+  };
 export const handleCreate = async (data, token) => {
     try {
         await axios.post("https://agriculture-traceability.vercel.app/api/v1/herds", data, {
@@ -59,7 +71,7 @@ export const handleGetCategory = async (token) => {
 
 export const handleGetFarm = async (token) => {
     try {
-        const response = await axios.get("https://agriculture-traceability.vercel.app/api/v1/farm?limit=50&searchQuery=ạ", {
+        const response = await axios.get("https://agriculture-traceability.vercel.app/api/v1/farms?limit=50&searchQuery=ạ", {
             headers: {
                 Authorization: `Bearer ${token}`
             }

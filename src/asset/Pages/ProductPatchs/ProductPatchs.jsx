@@ -48,14 +48,15 @@ export default function SizeDemo() {
         )}`
       );
       const data = await response.json();
-      data.processor.forEach((element) => {
+      data.processors.forEach((element) => {
         // element.production_date = (
         //   <DateConverter originalDate={element.production_date} />
         // );
 
         element.production_date = DateConverter(element.production_date);
       });
-      setProducts(data.processor);
+      console.log(data);
+      setProducts(data.processors);
       setTotalPages(data.totalPages);
     } catch (error) {
       console.log("There was a problem with the fetch operation:", error);
