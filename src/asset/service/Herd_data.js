@@ -82,18 +82,28 @@ export const handleGetFarm = async (token) => {
     }
 };
 
-export const fetchAllHerds = async (limit, page, token) => {
+export const handleGetRecords = async (herdId,token, currentLimit, currentPage, value = "") => {
     try {
-        const response = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/herds?limit=${limit}&page=${page}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        return response.data.herds;
+      const response = await fetch(
+        `https://agriculture-traceability.vercel.app/api/v1/herds/${herdId}?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+            value
+          )}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      data.herd.records.forEach((element) => {
+        element.birth_date = DateConverter(element.birth_date);
+      });
+      return data;
     } catch (error) {
-        console.log("Error: ", error);
+      console.log("There was a problem with the fetch operation:", error);
     }
-};
+  };
+
 export const fetchHerd = async (herdId,token)=> {
     try {
       const res = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/herds/${herdId}`, {

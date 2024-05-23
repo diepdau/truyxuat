@@ -260,6 +260,7 @@ export default function SizeDemo() {
           type="deleteMany"
           onHide={hideDeleteProductsDialog}
           deleteSelectedProducts={deleteSelectedProducts}
+          productNameMany={"đàn"}
         />
         <CustomDialog
           visible={deleteProductDialog}

@@ -36,7 +36,7 @@ const statusOptions = [
   { label: "Đang thu hoạch", value: "Đang thu hoạch" },
   { label: "Thu hoạch xong", value: "Thu hoạch xong" },
 ];
-function YourComponent({ herdId, data, isUpdate }) {
+function YourComponent({ herdId, data, isUpdate,reloadData }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
@@ -76,7 +76,7 @@ function YourComponent({ herdId, data, isUpdate }) {
     fetchDataFarm();
     fetchDataCategory();
   }, []);
-  const reloadData = () => {
+  const reloadData123 = () => {
     getHerd();
   };
   const fetchDataCategory = async () => {
@@ -113,7 +113,7 @@ function YourComponent({ herdId, data, isUpdate }) {
         setProduct(emptyProduct);
       }
       reloadData();
-      reloadData();
+      reloadData123();
 
     } catch (error) {
       console.log("Error update:", error);

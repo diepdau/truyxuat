@@ -33,7 +33,7 @@ const modeOptions = [
 ];
 const siteOptions = ["Mông", "Sườn", "Cổ", "Khác"];
 
-function YourComponent({ data, reloadData, isUpdate, nameherd }) {
+function YourComponent({ idherd,data, reloadData, isUpdate, nameherd }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const [herds, setHerds] = useState({});
@@ -47,6 +47,12 @@ function YourComponent({ data, reloadData, isUpdate, nameherd }) {
   const getAllHerd = async () => {
     const a = await getHerd();
     setHerds(a.data.herds);
+    if (idherd) {
+      setProduct((prevProduct) => ({
+        ...prevProduct,
+        herd: idherd,
+      }));
+    }
   };
 
   const handleTypeChange = (event) => {
@@ -187,23 +193,28 @@ function YourComponent({ data, reloadData, isUpdate, nameherd }) {
       <div className="container_update">
         <Toast className="toast" ref={toast} />
         <div style={{ flex: 1, paddingRight: "1rem" }}>
-          <h4>Đàn</h4>
-          <Dropdown
-            placeholder={herdName}
-            type="text"
-            value={selectedHerd}
-            options={herds}
-            optionLabel="name"
-            onChange={(e) => {
-              setSelectedHerd(e.value);
-              product.herd = e.value._id;
-            }}
-            style={{ width: "100%" }}
-          />
-          {errors.farm_product && (
-            <small className="p-error">{errors.farm_product}</small>
+          {idherd ? (
+            ""
+          ) : (
+            <>
+              <h4>Đàn</h4>
+              <Dropdown
+                placeholder={herdName}
+                type="text"
+                value={selectedHerd}
+                options={herds}
+                optionLabel="name"
+                onChange={(e) => {
+                  setSelectedHerd(e.value);
+                  product.herd = e.value._id;
+                }}
+                style={{ width: "100%" }}
+              />
+              {errors.farm_product && (
+                <small className="p-error">{errors.farm_product}</small>
+              )}
+            </>
           )}
-
           <h4>Loại</h4>
           <Dropdown
             name="type"

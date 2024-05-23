@@ -8,7 +8,6 @@ import "./Harvest.css";
 import { InputText } from "primereact/inputtext";
 import { handleCreate, getHerd } from "../../service/harvest_data.js";
 import { AuthContext } from "../../service/user_service.js";
-import { nullDependencies } from "mathjs";
 const emptyProduct = {
   herd: "",
   name: "",
@@ -16,7 +15,7 @@ const emptyProduct = {
   unit: null,
   date: new Date(),
   description: "",
-  status:"",
+  status: "",
 };
 const unitOptions = [
   { label: "Cân", value: "Cân" },
@@ -42,7 +41,7 @@ function Harvest_Create({ reloadData, idherd }) {
   }, []);
   const getHerdData = async () => {
     try {
-      const a=await getHerd();
+      const a = await getHerd();
       setHerds(a.data.herds);
       if (idherd) {
         setProduct((prevProduct) => ({
@@ -85,8 +84,17 @@ function Harvest_Create({ reloadData, idherd }) {
         summary: "Thêm hoàn thành",
         life: 3000,
       });
+      reloadData();
       setProduct(emptyProduct);
     } catch (error) {
+      const er = error.response.data.msg;
+      if (er.includes("has been harvested")) {
+        toast.current.show({
+          severity: "warn",
+          summary: "Đàn này đã thu hoạch xong",
+          life: 3000,
+        });
+      }
       console.log("Error update:", error);
     }
     reloadData();
@@ -130,17 +138,12 @@ function Harvest_Create({ reloadData, idherd }) {
         <div style={{ flex: 1 }}>
           <Toast className="toast" ref={toast} />
 
-          <h4>Đàn</h4>
           {idherd ? (
-            <InputText
-              disabled
-              type="text"
-              name="herd"
-              placeholder={idherd}
-              style={{ width: "100%" }}
-            />
+            ""
           ) : (
             <>
+              <h4>Đàn</h4>
+
               <Dropdown
                 type="text"
                 value={selectedHerd}
@@ -155,7 +158,7 @@ function Harvest_Create({ reloadData, idherd }) {
               {errors.herd && <small className="p-error">{errors.herd}</small>}
             </>
           )}
-          <h4>Tên</h4>
+          <h4>Tên sản phẩm</h4>
           <InputTextarea
             name="name"
             value={product.name}
@@ -194,15 +197,15 @@ function Harvest_Create({ reloadData, idherd }) {
 
         {/* Cột phải */}
         <div style={{ flex: 1 }}>
-        <h4>Trạng thái</h4>
-              <Dropdown
-                name="status"
-                value={product.status}
-                options={statusOptions}
-                onChange={handleStatusChange}
-                placeholder="Chọn trạng thái"
-                style={{ width: "100%" }}
-              />
+          <h4>Trạng thái</h4>
+          <Dropdown
+            name="status"
+            value={product.status}
+            options={statusOptions}
+            onChange={handleStatusChange}
+            placeholder="Chọn trạng thái"
+            style={{ width: "100%" }}
+          />
           <h4>Mô tả</h4>
           <InputTextarea
             name="description"

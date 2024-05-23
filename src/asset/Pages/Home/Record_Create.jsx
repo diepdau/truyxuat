@@ -13,7 +13,6 @@ const emptyProduct = {
   _id: null,
   name: "",
   birth_weight: "",
-  // birth_date: new Date().toISOString().slice(0, 10),
   birth_date: new Date(),
   is_harvested: "",
   quantity: 0,

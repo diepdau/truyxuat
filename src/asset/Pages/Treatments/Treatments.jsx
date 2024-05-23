@@ -48,11 +48,6 @@ export default function SizeDemo({ idherd, herdname }) {
         );
         const data = await res.json();
         data.treatments.forEach((element) => {
-          // element.date = <DateConverter originalDate={element.date} />;
-          // element.retreat_date = (
-          //   <DateConverter originalDate={element.retreat_date} />
-          // );
-
           element.date = DateConverter(element.date);
           element.retreat_date = DateConverter(element.retreat_date);
         });
@@ -70,7 +65,6 @@ export default function SizeDemo({ idherd, herdname }) {
         );
         const data = await res.json();
         data.treatments.forEach((element) => {
-          // element.date = <DateConverter originalDate={element.date} />;
           element.date = DateConverter(element.date);
         });
         console.log(data.treatments);
@@ -259,12 +253,14 @@ export default function SizeDemo({ idherd, herdname }) {
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
-          <Column
-            sortable
-            field="herd.name"
-            header="Đàn"
-            style={{ minWidth: "10rem" }}
-          ></Column>
+          
+              <Column
+                sortable
+                field="herd.name"
+                header="Đàn"
+                style={{ minWidth: "10rem" }}
+              ></Column>
+            
           <Column
             sortable
             field="type"
@@ -357,7 +353,11 @@ export default function SizeDemo({ idherd, herdname }) {
           onHide={() => setProductDialog(false)}
         >
           {/* eslint-disable-next-line react/jsx-pascal-case */}
-          <Treatments_Create reloadData={reloadData} isUpdate={false} />
+          <Treatments_Create
+            idherd={idherd}
+            reloadData={reloadData}
+            isUpdate={false}
+          />
         </Dialog>
       </div>
     </div>

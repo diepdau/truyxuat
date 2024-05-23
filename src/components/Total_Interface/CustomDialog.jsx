@@ -4,7 +4,7 @@ import React from 'react';
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 
-const CustomDialog = ({ visible, header, onHide, type, deleteSelectedProducts, deleteProduct,productName }) => {
+const CustomDialog = ({ visible, header, onHide, type, deleteSelectedProducts, deleteProduct,productNameMany,productName }) => {
   const getFooter = () => {
     switch (type) {
       case 'deleteMany':
@@ -60,7 +60,7 @@ const CustomDialog = ({ visible, header, onHide, type, deleteSelectedProducts, d
     >
       <div className="confirmation-content">
         <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: "2rem" }} />
-        {type === 'deleteMany' && <span>Bạn có chắc chắn xóa những đàn này?</span>}
+        {type === 'deleteMany' && <span>Bạn có chắc chắn xóa những {productNameMany} này?</span>}
         {type === 'deleteOne' && <span>Bạn có chắc chắn muốn xóa <b>{productName}</b>?</span>}
       </div>
     </Dialog>

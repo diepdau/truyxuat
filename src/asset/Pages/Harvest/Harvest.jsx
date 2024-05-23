@@ -55,7 +55,6 @@ function Harvest({ isherdharvest }) {
         // );
         const response = await handleGetHerdHarvest(isherdharvest,token);
         response.data.harvests.forEach((element) => {
-          // element.date = <DateConverter originalDate={element.date} />;
           element.date = DateConverter(element.date); 
         });
         
@@ -74,7 +73,6 @@ function Harvest({ isherdharvest }) {
         );
         const data = await response.json();
         data.harvests.forEach((element) => {
-          // element.date = <DateConverter originalDate={element.date} />;
         element.date = DateConverter(element.date); 
 
         });
