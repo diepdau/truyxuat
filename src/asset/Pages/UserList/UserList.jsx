@@ -34,23 +34,25 @@ export default function SizeDemo() {
   const [active, setActive] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const userList = await getuserList(token);
-      const activeList = await getActive(token);
-      setActive(activeList.data.users);
-      userList.data.users.forEach((element) => {
-        let isActive = false;
-        for (const activeUser of activeList.data.users) {
-          if (activeUser === element.email) {
-            isActive = true;
-            break;
-          }
+    fetchData();
+  }, []);
+  const fetchData = async () => {
+    const userList = await getuserList(token);
+    const activeList = await getActive(token);
+    setActive(activeList.data.users);
+    userList.data.users.forEach((element) => {
+      let isActive = false;
+      for (const activeUser of activeList.data.users) {
+        if (activeUser === element.email) {
+          isActive = true;
+          break;
         }
-        element.address = isActive ? "hoạt động" : "";
-      });
-      setProducts(userList.data.users);
-    };
-  },[]);
+      }
+      element.address = isActive ? "hoạt động" : "";
+    });
+    console.log(userList);
+    setProducts(userList.data.users);
+  };
 
   const roles = [{ name: "user" }, { name: "manager" }];
 
@@ -150,7 +152,7 @@ export default function SizeDemo() {
         onClick={hideDeleteProductsDialog}
       />
       <Button
-      className="button_Dia"
+        className="button_Dia"
         label="Đồng ý"
         icon="pi pi-check"
         onClick={deleteSelectedProducts}
@@ -160,8 +162,19 @@ export default function SizeDemo() {
   );
   const deleteoneProductDialogFooter = (
     <React.Fragment>
-      <Button  className="button_Dia"  severity="secondary" label="Không" outlined onClick={hideDeleteProductDialog} />
-      <Button className="button_Dia" label="Đồng ý" severity="danger" onClick={deleteProduct} />
+      <Button
+        className="button_Dia"
+        severity="secondary"
+        label="Không"
+        outlined
+        onClick={hideDeleteProductDialog}
+      />
+      <Button
+        className="button_Dia"
+        label="Đồng ý"
+        severity="danger"
+        onClick={deleteProduct}
+      />
     </React.Fragment>
   );
   const confirmDeleteProduct = (product) => {
@@ -246,7 +259,7 @@ export default function SizeDemo() {
             editor={(options) => roleEditor(options)}
             style={{ width: "20%" }}
           ></Column>
-                    <Column
+          <Column
             field="address"
             header="Hoạt động"
             style={{ width: "20%" }}
