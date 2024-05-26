@@ -177,7 +177,7 @@ export default function FarmmingAreas() {
   const [expandedRows, setExpandedRows] = useState(null);
   const rowExpansionTemplate = (data) => {
     product._id = data._id;
-    var url = `https://agriculture-traceability.vercel.app/api/v1/farm/upload/${product._id}`;
+    var url = `https://agriculture-traceability.vercel.app/api/v1/farms/upload/${product._id}`;
     return (
       <>
         <TabView>

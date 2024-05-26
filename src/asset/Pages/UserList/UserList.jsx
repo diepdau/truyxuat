@@ -7,6 +7,7 @@ import {
   createUserList,
   handleDelete,
   handleRole,
+  getActive,
 } from "../../service/user_data.js";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
@@ -30,14 +31,26 @@ export default function SizeDemo() {
   const [selectedRole, setSelectedRole] = useState(emptyProduct);
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
+  const [active, setActive] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       const userList = await getuserList(token);
+      const activeList = await getActive(token);
+      setActive(activeList.data.users);
+      userList.data.users.forEach((element) => {
+        let isActive = false;
+        for (const activeUser of activeList.data.users) {
+          if (activeUser === element.email) {
+            isActive = true;
+            break;
+          }
+        }
+        element.address = isActive ? "hoạt động" : "";
+      });
       setProducts(userList.data.users);
     };
-
-    fetchData();
-  });
+  },[]);
 
   const roles = [{ name: "user" }, { name: "manager" }];
 
@@ -210,7 +223,6 @@ export default function SizeDemo() {
             field="first_name"
             header="Họ"
             value={product.first_name}
-            // editor={(options) => textEditor(options)}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
@@ -218,7 +230,6 @@ export default function SizeDemo() {
             field="last_name"
             header="Tên"
             value={product.last_name}
-            // editor={(options) => textEditor(options)}
             style={{ minWidth: "10rem" }}
           ></Column>
           <Column
@@ -226,7 +237,6 @@ export default function SizeDemo() {
             field="email"
             header="Email"
             value={product.email}
-            // editor={(options) => emailEditor(options)}
             style={{ width: "20%" }}
           ></Column>
           <Column
@@ -234,6 +244,11 @@ export default function SizeDemo() {
             header="Vai trò"
             value={product.role}
             editor={(options) => roleEditor(options)}
+            style={{ width: "20%" }}
+          ></Column>
+                    <Column
+            field="address"
+            header="Hoạt động"
             style={{ width: "20%" }}
           ></Column>
           <Column

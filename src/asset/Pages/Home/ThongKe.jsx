@@ -2,7 +2,7 @@ import React from "react";
 import { calculateAgeInMonths } from "../../../components/Date/DateBirth.jsx";
 import { DateChecker } from "../../../components/Date/DateChecker.jsx";
 
-const YourComponent = ({ data, reloadData,dataHarvest, dataTreatment }) => {
+const YourComponent = ({ data, reloadData, dataHarvest, dataTreatment }) => {
   function countSubarrays(array) {
     return array.length;
   }
@@ -19,7 +19,7 @@ const YourComponent = ({ data, reloadData,dataHarvest, dataTreatment }) => {
               className="flex align-items-center justify-content-center bg-blue-100 border-round"
               style={{ width: "2.5rem", height: "2.5rem" }}
             >
-              <i className="pi pi-shopping-cart text-blue-500 text-xl"></i>
+              <i className="pi pi-info-circle text-blue-500 text-xl"></i>
             </div>
           </div>
           <span className="text-green-500 font-medium">
@@ -41,13 +41,19 @@ const YourComponent = ({ data, reloadData,dataHarvest, dataTreatment }) => {
               className="flex align-items-center justify-content-center bg-orange-100 border-round"
               style={{ width: "2.5rem", height: "2.5rem" }}
             >
-              <i className="pi pi-map-marker text-orange-500 text-xl"></i>
+              <i className="pi pi-cloud text-orange-500 text-xl"></i>
             </div>
           </div>
           <span className="text-green-500 font-medium">
-            {countSubarrays(dataHarvest)}
+            {countSubarrays(dataHarvest) === 0
+              ? ""
+              : countSubarrays(dataHarvest)}
           </span>
-          <span className="text-500"> {dataHarvest?"chưa thu hoạch" : "lần thu hoạch"}</span>
+          <span className="text-500">
+            {countSubarrays(dataHarvest) !== 0
+              ? " lần thu hoạch "
+              : "Chưa thu hoạch"}
+          </span>
         </div>
       </div>
       <div className="col-12 md:col-6 lg:col-3">
@@ -87,9 +93,15 @@ const YourComponent = ({ data, reloadData,dataHarvest, dataTreatment }) => {
             </div>
           </div>
           <span className="text-green-500 font-medium">
-            {countSubarrays(dataTreatment)}
+            {countSubarrays(dataTreatment) === 0
+              ? " "
+              : countSubarrays(dataTreatment)}
           </span>
-          <span className="text-500">{dataTreatment?"chưa điều trị" : "lần điều trị"}</span>
+          <span className="text-500">
+            {DateChecker(data.start_date) !== 0
+              ? " lần điều trị"
+              : "Chưa điều trị"}
+          </span>
         </div>
       </div>
     </div>

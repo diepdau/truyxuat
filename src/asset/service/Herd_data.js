@@ -168,3 +168,15 @@ export const handleUpdateAnimal = async (_id,data, token) => {
         console.log("Error:", error);
     }
 };
+export const fetchNotifications = async (token) => {
+    try {
+        const response = await axios.get("https://agriculture-traceability.vercel.app/api/v1/notifications", {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data.notifications
+    } catch (error) {
+        console.error("Error fetching notifications:", error);
+    }
+};

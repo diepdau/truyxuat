@@ -110,3 +110,20 @@ export const handleRole = async (userId,nameRole,token) => {
       console.log("Error update role:", error);
     }
   };
+
+  export const getActive = async (token) => {
+    try {
+        const response = await axios.get(
+            `https://agriculture-traceability.vercel.app/api/v1/auth/active-users`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+        return (response)
+
+    } catch (error) {
+        console.log("Error active:", error);
+        return (error);
+    }
+};

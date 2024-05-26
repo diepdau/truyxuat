@@ -11,7 +11,7 @@ import { AuthContext } from "../../service/user_service.js";
 import { handleDelete, handleGet } from "../../service/Herd_data.js";
 import { classNames } from "primereact/utils";
 import { Dialog } from "primereact/dialog";
-
+import NotificationBox from "./Notification.jsx";
 import {
   CustomDialog,
   SearchBar,
@@ -195,6 +195,7 @@ export default function SizeDemo() {
   return (
     <div>
       <Toast className="toast" ref={toast} />
+      <NotificationBox/>
       <div className="card">
         <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
         <DataTable

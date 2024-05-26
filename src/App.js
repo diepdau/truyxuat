@@ -22,7 +22,6 @@ import Harvest from "./asset/Pages/Harvest/Harvest.jsx"
 import Harvest_Update from "./asset/Pages/Harvest/Harvest_Update.jsx"
 import { AuthContext } from "./asset/service/user_service.js";
 import Herds_Details_List from "./asset/Pages/Home/Herds_Details_List.jsx";
-import Processors from "./asset/Pages/Processors/Processors.jsx";
 import ProductPatch from "./asset/Pages/ProductPatchs/ProductPatchs.jsx";
 import Distributor  from "./asset/Pages/Distributor/Distributor.jsx";
 import ProcessorsProducts  from "./asset/Pages/ProductPatchs/Processors_Product.jsx";
@@ -30,6 +29,7 @@ import Treatments  from "./asset/Pages/Treatments/Treatments.jsx";
 import Main from "./components/Sidebar/Main.jsx";
 import ForgotPasswordPage from "./asset/Pages/Login/ForgotPassword.jsx";
 import ProductInfos from "./asset/Pages/Product_Infos/Product_Infos.jsx";
+import NotificationBox from "./asset/Pages/Home/Notification.jsx";
 function App() {
 const Layout = () => {
   const { currentUser } = useContext(AuthContext);
