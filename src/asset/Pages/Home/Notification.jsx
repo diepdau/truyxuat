@@ -25,7 +25,7 @@ const NotificationBox = () => {
             toast.current.show({
               severity: "success",
               summary: `Đàn ${herdName} đã đến tuổi thu hoạch`,
-              life: 3000,
+              life: 10000,
             });
           }
         });
