@@ -1,8 +1,7 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState,  useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
-import axios from "axios";
-import { Toast } from "primereact/toast";
+import { NotifiCreate, NotifiUpdate } from "../../Design/Observable/index.js";
 import "./FarmingAreas.css";
 import { InputText } from "primereact/inputtext";
 import Map123 from "../../../components/Map/Map";
@@ -19,7 +18,6 @@ const emptyData = {
 function YourNewComponent({ reloadData, data, isUpdate }) {
   const [formData, setFormData] = useState(data || emptyData);
   const [errors, setErrors] = useState({});
-  const toast = useRef(null);
   const coo = isUpdate ? data.coordinates : [];
   const { token } = useContext(AuthContext);
 
@@ -45,20 +43,11 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
     try {
       if (data) {
         const res = handleUpdate(data._id, formData, token);
-        toast.current.show({
-          severity: "success",
-          summary: "Sửa hoàn thành",
-          life: 3000,
-        });
-
+        NotifiUpdate();
         setFormData(res);
       } else {
         await handleCreate(formData, token);
-        toast.current.show({
-          severity: "success",
-          summary: "Thêm hoàn thành",
-          life: 3000,
-        });
+        NotifiCreate();
         setFormData(emptyData);
       }
       reloadData();
@@ -94,16 +83,14 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
       newErrors.address = "Địa chỉ là bắt buộc.";
       isValid = false;
     }
-    if (!formData.coordinates &&formData.coordinates === "") {
+    if (!formData.coordinates && formData.coordinates === "") {
       newErrors.coordinates = "Tọa độ là bắt buộc.";
       isValid = false;
     } else {
       if (formData.coordinates[0] === 0 && formData.coordinates[1] === 0) {
-      
         newErrors.coordinates = "Tọa độ là bắt buộc.";
         isValid = false;
       } else {
-        
         if (!isUpdate) {
           const coordinatesArray = formData.coordinates.split(",").map(Number);
           if (
@@ -124,7 +111,6 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
 
   return (
     <div>
-      <Toast className="toast" ref={toast} />
       <div className="container_update_areas">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           {/* Cột trái */}

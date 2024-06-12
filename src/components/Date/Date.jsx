@@ -37,7 +37,7 @@ export const DateConverter = (originalDate) => {
   let day = dateParts[2];
 
   // Chuyển đổi ngày thành số và thêm một ngày
-  day = parseInt(day, 10) + 1;
+  day = parseInt(day, 10);
 
   // Tạo một đối tượng Date mới với ngày đã được thay đổi
   const nextDayDate = new Date(`${year}-${month}-${day}`);

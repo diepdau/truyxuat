@@ -1,26 +1,26 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
-import { Toast } from "primereact/toast";
+import { InputText } from 'primereact/inputtext';
 import "../Home/HerdsList.css";
 import Categories_Create from "./Categories_Create.jsx";
 import { TabPanel, TabView } from "primereact/tabview";
 import {
   CustomDialog,
-  SearchBar,
-  CustomPaginator,
 } from "../../../components/Total_Interface/index.jsx";
-import { handleGet, handleDelete } from "../../service/categories_data.js";
+import { urlGet, handleDelete } from "../../service/categories_data.js";
 import { AuthContext } from "../../service/user_service.js";
 import { Dialog } from "primereact/dialog";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import DecoratedCounter from "../../Design/Bright.jsx";
+import withLoader from "../../Design/HOC/withLoader.js";
+import ImageList from "../../Design/Compound_Category/ImageList.js";
+import { NotifiDelete } from "../../Design/Observable/index.js";
 const emptyProduct = {
   _id: null,
 };
 
-export default function Category() {
+const Category = (props) => {
   const { token } = useContext(AuthContext);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
@@ -28,34 +28,20 @@ export default function Category() {
   const [product, setProduct] = useState(emptyProduct);
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
-  const toast = useRef(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentLimit, setCurrentLimit] = useState(10);
-  const [totalPages, setTotalPages] = useState(0);
-  const [input, setInput] = useState("");
+  const [globalFilter, setGlobalFilter] = useState(null);
+
   const [expandedRows, setExpandedRows] = useState(null);
 
   useEffect(() => {
-    handleGet(token, currentLimit, currentPage, input).then((data) => {
-      setProducts(data.categories);
-      setTotalPages(data.totalPages);
-    });
-  }, [token, currentLimit, currentPage, input]);
-
-  const onPageChange = (event) => {
-    setCurrentPage(+event.page + 1);
-    setCurrentLimit(event.rows);
-  };
+    setProducts(props.data.categories);
+  }, [props.data.categories]);
 
   const openNew = () => {
     setProductDialog(true);
   };
 
   const reloadData = () => {
-    handleGet(token, currentLimit, currentPage, input).then((data) => {
-      setProducts(data.categories);
-      setTotalPages(data.totalPages);
-    });
+    props.reloadData(); // Gọi hàm reloadData từ props để lấy lại dữ liệu
   };
 
   const leftToolbarTemplate = () => (
@@ -88,15 +74,15 @@ export default function Category() {
       await handleDelete(selectedProduct._id, token);
     }
     setDeleteProductsDialog(false);
+    NotifiDelete();
     reloadData();
-    toast.current.show({ severity: "success", summary: "Đã xóa", life: 3000 });
   };
 
   const deleteProduct = async () => {
     await handleDelete(product._id, token);
     setDeleteProductDialog(false);
+    NotifiDelete();
     reloadData();
-    toast.current.show({ severity: "success", summary: "Đã xóa", life: 3000 });
   };
 
   const confirmDeleteProduct = (product) => {
@@ -121,6 +107,9 @@ export default function Category() {
           reloadData={reloadData}
         />
       </TabPanel>
+      <TabPanel className="on-small-screen" header="Hình ảnh">
+        <ImageList source={data.images} />
+      </TabPanel>
     </TabView>
   );
 
@@ -129,15 +118,11 @@ export default function Category() {
   const header = (
     <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
       <h4 className="m-0">Quản lý nhóm</h4>
-      <SearchBar value={input} onChange={setInput} />
+      <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Tìm kiếm..." />
     </div>
   );
-
   return (
     <div className="div_main">
-      <DecoratedCounter count={5} />
-
-      <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
         <DataTable
@@ -150,7 +135,8 @@ export default function Category() {
           onRowToggle={(e) => setExpandedRows(e.data)}
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="_id"
-          header={header}
+          header={header}  globalFilter={globalFilter}
+          paginator rows={5} rowsPerPageOptions={[5, 10, 15]}
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
@@ -167,22 +153,17 @@ export default function Category() {
           ></Column>
         </DataTable>
 
-        <CustomPaginator
-          currentPage={currentPage}
-          totalRecords={totalPages * currentLimit}
-          rows={currentLimit}
-          onPageChange={onPageChange}
-        />
         <CustomDialog
           visible={deleteProductsDialog}
-          header="Confirm"
+          header="Thông báo"
           type="deleteMany"
           onHide={hideDeleteProductsDialog}
           deleteSelectedProducts={deleteSelectedProducts}
+          productNameMany={"nhóm"}
         />
         <CustomDialog
           visible={deleteProductDialog}
-          header="Confirm"
+          header="Thông báo"
           type="deleteOne"
           onHide={hideDeleteProductDialog}
           deleteProduct={deleteProduct}
@@ -200,4 +181,8 @@ export default function Category() {
       </div>
     </div>
   );
-}
+};
+
+export default withLoader(Category, urlGet);
+
+

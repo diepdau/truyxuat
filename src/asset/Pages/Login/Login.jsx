@@ -2,19 +2,21 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 import { AuthContext } from "../../service/user_service.js";
-import { InputText } from "primereact/inputtext";
+import Observer from "../../Design/Observable/Observer.jsx";
+import { toast } from "react-toastify";
 export const validateInput = (str = "") => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(str);
 };
 
 const Login = () => {
-  const [email, setEmail] = useState(undefined);
-  const [password, setPassword] = useState(undefined);
-  const { loginApi } = useContext(AuthContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { loginApi,currentUser } = useContext(AuthContext);
   const [err, setError] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     setError(null);
@@ -32,14 +34,18 @@ const Login = () => {
     setLoading(true);
     try {
       await loginApi({ email, password });
+      Observer.notify("Đăng nhập thành công!");
       navigate("/danh-sach-dan");
     } catch (err) {
+      toast.error("Lỗi đăng nhập");
+      console.log(err);
       const er = err.response.data.msg;
       if (er.includes("credentials")) {
         setError("Email không tồn tại");
       } else {
         setError("Email hoặc mật khẩu sai");
       }
+      setLoading(false);
     }
   };
 
@@ -56,9 +62,6 @@ const Login = () => {
         <h2 className="titlelogin">Đăng nhập</h2>
         <form>
           <div className="mb-2">
-            {/* <label htmlFor="email" className="form-label">
-              Email
-            </label> */}
             <input
               placeholder="Email"
               id="email"
@@ -66,15 +69,13 @@ const Login = () => {
               type="email"
               name="email"
               onChange={handleEmailChange}
+              value={email}
             />
             {email && !validateInput(email) ? (
               <p className="error-feedback">Email không đúng định dạng</p>
             ) : null}
           </div>
           <div className="mb-2">
-            {/* <label htmlFor="password" className="form-label">
-              Password
-            </label> */}
             <div className="password-input-container">
               <input
                 id="password"
@@ -83,16 +84,12 @@ const Login = () => {
                 name="password"
                 placeholder="Password"
                 onChange={handlePasswordChange}
+                value={password}
               />
             </div>
-
-            {/* {err && ( */}
-              <p data-testid="error"  className="error-feedback">
-                {err}
-              </p>
-            {/* )} */}
-
-          
+            <p data-testid="error" className="error-feedback">
+              {err}
+            </p>
             <Link to="/forgot-password" className="forgot-password">
               Quên mật khẩu?
             </Link>
@@ -102,8 +99,8 @@ const Login = () => {
             onClick={handleClick}
             className="submit-btn"
             style={{
-             cursor:(!email || !password) ? "" : "pointer",
-              backgroundColor: (!email || !password) ? "grey" : " #0D955C", 
+              cursor: !email || !password ? "" : "pointer",
+              backgroundColor: !email || !password ? "grey" : "#0D955C",
             }}
           >
             {loading ? "Loading" : "Đăng nhập"}
@@ -117,4 +114,5 @@ const Login = () => {
     </div>
   );
 };
+
 export default Login;

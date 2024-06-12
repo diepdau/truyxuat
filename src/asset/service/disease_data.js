@@ -1,17 +1,7 @@
 import axios from "axios";
 
-export const handleGet = async (name, token) => {
-    try {
-        const response = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/diseases?sort=${name}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        return response.data.herds;
-    } catch (error) {
-        console.log("Error: ", error);
-    }
-};
+export const urlGet ="https://agriculture-traceability.vercel.app/api/v1/diseases?limit=60";
+
 
 export const handleCreate = async (data, token) => {
     try {

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../Login/Login.css";
 import "primeicons/primeicons.css";
 import { useNavigate } from "react-router-dom";
 import { InputText } from "primereact/inputtext";
 import axios from "axios";
+import Observer from "../../Design/Observable/Observer";
 
 export const validateInput = (str = "") => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -52,6 +53,7 @@ export default function RegisterPage() {
           password: formValue.password,
         }
       );
+      Observer.notify("Tạo tào khoản thành công");
       navigate("/");
     } catch (err) {
       const er = err.response.data.msg;

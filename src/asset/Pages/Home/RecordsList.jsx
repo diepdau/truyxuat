@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
@@ -11,13 +11,17 @@ import {
   createNewAutoHerd,
   handleDeleteAnimal,
 } from "../../service/Herd_data.js";
-import { Toast } from "primereact/toast";
 import "./HerdsList.css";
 import Record_Create from "./Record_Create.jsx";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
 import { AuthContext } from "../../service/user_service.js";
 import { CustomDialog } from "../../../components/Total_Interface/index.jsx";
+import {
+  NotifiUpdate,
+  NotifiDelete,
+} from "../../Design/Observable/index.js";
+import Observer from "../../Design/Observable/Observer.jsx";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -27,7 +31,7 @@ const emptyProduct = {
   quantity: 0,
   herd: "",
 };
-export default function SizeDemo({ herdId }) {
+export default function SizeDemo({ herdId,status }) {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
@@ -35,7 +39,6 @@ export default function SizeDemo({ herdId }) {
   const [productDialog, setProductDialog] = useState(false);
   const [productDialogNewAuto, setProductDialogNewAuto] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
-  const toast = useRef(null);
   const { token } = useContext(AuthContext);
 
   useEffect(() => {
@@ -72,11 +75,7 @@ export default function SizeDemo({ herdId }) {
       await createNewAutoHerd(herdId, product.quantity, token);
       setProductDialogNewAuto(false);
       reloadData();
-      toast.current.show({
-        severity: "success",
-        summary: "Tạo con trong đàn thành công",
-        life: 3000,
-      });
+      Observer.notify("Tạo con trong đàn thành công");
     } catch (error) {
       console.log("Error:", error);
     }
@@ -85,8 +84,8 @@ export default function SizeDemo({ herdId }) {
   const leftToolbarTemplate = () => {
     return (
       <div className="flex flex-wrap gap-2">
-        <Button label="Tạo" severity="success" onClick={openNew} />
-        <Button label="Tạo tự động" severity="success" onClick={openNewAuto} />
+        <Button label="Tạo" severity="success" onClick={openNew} disabled={status === "Thu hoạch xong"}/>
+        <Button label="Tạo tự động" severity="success" onClick={openNewAuto} disabled={status === "Thu hoạch xong"}/>
         <Button
           label="Xóa"
           severity="danger"
@@ -112,11 +111,7 @@ export default function SizeDemo({ herdId }) {
     for (const selectedProduct of selectedProducts) {
       handleDeleteUser(selectedProduct);
     }
-    toast.current.show({
-      severity: "success",
-      summary: "Đã xóa 1 số đàn",
-      life: 3000,
-    });
+    NotifiDelete();
     setDeleteProductsDialog(false);
   };
   const deleteProduct = () => {
@@ -124,11 +119,7 @@ export default function SizeDemo({ herdId }) {
     const firstObject = _products[0];
     handleDeleteUser(firstObject);
     setDeleteProductDialog(false);
-    toast.current.show({
-      severity: "success",
-      summary: "Đã xóa",
-      life: 3000,
-    });
+    NotifiDelete();
   };
 
   const confirmDeleteProduct = (product) => {
@@ -221,11 +212,7 @@ export default function SizeDemo({ herdId }) {
         token
       );
       reloadData();
-      toast.current.show({
-        severity: "success",
-        summary: "Đã chỉnh sửa",
-        life: 3000,
-      });
+      NotifiUpdate();
     } catch (error) {
       console.log("Error update:", error);
     }
@@ -250,7 +237,6 @@ export default function SizeDemo({ herdId }) {
   };
   return (
     <div className={herdId ? "" : "div_main"}>
-      <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
         <DataTable

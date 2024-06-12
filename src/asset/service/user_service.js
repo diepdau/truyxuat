@@ -18,12 +18,15 @@ export const AuthContexProvider = ({ children }) => {
       return res;
     
   };
-  const logout = async (inputs) => {
-    // await axios.get("https://agriculture-traceability.vercel.app/api/v1/auth/logout", inputs,{
-    //   headers: {
-    //     Authorization: `Bearer ${token}`
-    // }
-    // });
+  const logout = async (token) => {
+    
+  //   await axios.get("https://agriculture-traceability.vercel.app/api/v1/auth/logout",{
+  //     headers: {
+  //       Authorization: `Bearer ${token}`
+  //   }
+  //   }
+  // );
+    
     setCurrentUser(null);
     setToken(null);
     localStorage.removeItem("userToken");

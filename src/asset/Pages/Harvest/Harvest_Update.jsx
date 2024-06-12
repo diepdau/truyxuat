@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect,useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
+import { NotifiUpdate } from "../../Design/Observable/index.js";
 import "./Harvest.css";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
@@ -90,15 +90,15 @@ function YourComponent({ data, reloadData, isProcessors }) {
       : product.date;
     try {
       handleUpdate(data._id,product, token);
-      toast.current.show({
-        severity: "success",
-        summary: "Sửa hoàn thành",
-        life: 3000,
-      });
+      NotifiUpdate();
       reloadData();
       setProduct({
         ...product,
       });
+      reloadData();
+
+      reloadData();
+
     } catch (error) {
       console.log("Error update:", error);
     }
@@ -143,7 +143,6 @@ function YourComponent({ data, reloadData, isProcessors }) {
     <div>
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
-          <Toast className="toast" ref={toast} />
           {isProcessors ? null : (
             <>
               <h4>Đàn</h4>

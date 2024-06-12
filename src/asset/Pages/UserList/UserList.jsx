@@ -14,6 +14,12 @@ import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { useNavigate } from "react-router-dom";
+import { CustomDialog } from "../../../components/Total_Interface/index.jsx";
+import {
+  NotifiUpdate,
+  NotifiDelete,
+  NotifiCreate,
+} from "../../Design/Observable/index.js";
 const emptyProduct = {
   _id: null,
   first_name: "",
@@ -27,15 +33,14 @@ export default function SizeDemo() {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
+  const [active, setActive] = useState([]);
   const [product, setProduct] = useState(emptyProduct);
   const [selectedRole, setSelectedRole] = useState(emptyProduct);
   const [productDialog, setProductDialog] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState(null);
-  const [active, setActive] = useState([]);
-
   useEffect(() => {
     fetchData();
-  }, []);
+  },[]);
   const fetchData = async () => {
     const userList = await getuserList(token);
     const activeList = await getActive(token);
@@ -53,7 +58,6 @@ export default function SizeDemo() {
     console.log(userList);
     setProducts(userList.data.users);
   };
-
   const roles = [{ name: "user" }, { name: "manager" }];
 
   const roleEditor = () => {
@@ -89,7 +93,7 @@ export default function SizeDemo() {
         password: product.password,
       };
       await createUserList(a, token);
-      alert("tạo tài khoản thành công");
+      NotifiCreate();
     } catch (error) {
       console.log("Error:", error);
     }
@@ -140,63 +144,22 @@ export default function SizeDemo() {
       navigate(`/user/${selectedProduct._id}`);
     }
   };
-
-  const deleteProductDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="Không"
-        icon="pi pi-times"
-        outlined
-        severity="secondary"
-        className="button_Dia"
-        onClick={hideDeleteProductsDialog}
-      />
-      <Button
-        className="button_Dia"
-        label="Đồng ý"
-        icon="pi pi-check"
-        onClick={deleteSelectedProducts}
-        severity="danger"
-      />
-    </React.Fragment>
-  );
-  const deleteoneProductDialogFooter = (
-    <React.Fragment>
-      <Button
-        className="button_Dia"
-        severity="secondary"
-        label="Không"
-        outlined
-        onClick={hideDeleteProductDialog}
-      />
-      <Button
-        className="button_Dia"
-        label="Đồng ý"
-        severity="danger"
-        onClick={deleteProduct}
-      />
-    </React.Fragment>
-  );
   const confirmDeleteProduct = (product) => {
     setProduct(product);
     setDeleteProductDialog(true);
   };
   const actionBodyTemplate = (rowData) => {
     return (
-      <React.Fragment>
-        <div className="iconpage">
-          <i
-            className="pi pi-trash"
-            onClick={() => confirmDeleteProduct(rowData)}
-          ></i>
-        </div>
-      </React.Fragment>
+      <i
+        className="pi pi-trash"
+        onClick={() => confirmDeleteProduct(rowData)}
+      ></i>
     );
   };
   const handleDeleteUser = async (product) => {
     try {
       await handleDelete(product._id, token);
-      alert("xóa tài khoản thành công");
+      NotifiDelete();
     } catch (error) {
       console.log("Error:", error);
     }
@@ -207,7 +170,7 @@ export default function SizeDemo() {
     }
     try {
       const response = await handleRole(userId, selectedRole.name, token);
-      alert("sửa vai trò thành công");
+      NotifiUpdate();
       console.log(response);
     } catch (error) {
       console.log("Error update role:", error);
@@ -216,11 +179,7 @@ export default function SizeDemo() {
   return (
     <div className="div_main">
       <div className="card">
-        <Toolbar
-          className="mb-4"
-          left={leftToolbarTemplate}
-          //   right={rightToolbarTemplate}
-        ></Toolbar>
+        <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
         <DataTable
           value={products}
           selectionMode={"row"}
@@ -275,45 +234,22 @@ export default function SizeDemo() {
             bodyStyle={{ left: "0" }}
           ></Column>
         </DataTable>
-        <Dialog
+        <CustomDialog
           visible={deleteProductsDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
           header="Thông báo"
-          modal
-          footer={deleteProductDialogFooter}
+          type="deleteMany"
           onHide={hideDeleteProductsDialog}
-        >
-          <div className="confirmation-content">
-            <i
-              className="pi pi-exclamation-triangle mr-3"
-              style={{ fontSize: "2rem" }}
-            />
-            {product && <span>Bạn có chắc chắn xóa những tài khoản này?</span>}
-          </div>
-        </Dialog>
-        <Dialog
+          deleteSelectedProducts={deleteSelectedProducts}
+          productNameMany={"tài khoản"}
+        />
+        <CustomDialog
           visible={deleteProductDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
           header="Thông báo"
-          modal
-          footer={deleteoneProductDialogFooter}
+          type="deleteOne"
           onHide={hideDeleteProductDialog}
-        >
-          <div className="confirmation-content">
-            <i
-              className="pi pi-exclamation-triangle mr-3"
-              style={{ fontSize: "2rem" }}
-            />
-            {product && (
-              <span>
-                Bạn có chắc chắn muốn xóa <b>{product.first_name}</b>?
-              </span>
-            )}
-          </div>
-        </Dialog>
-
+          deleteProduct={deleteProduct}
+          productName={product.first_name + " " + product.last_name}
+        />
         <Dialog visible={productDialog} onHide={() => setProductDialog(false)}>
           <h3>Thêm mới</h3>
           <div>

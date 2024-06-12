@@ -1,10 +1,11 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
 import ImageUploader from "../../../components/Images/Image";
 import { handleCreate, handleUpdate } from "../../service/categories_data.js";
 import { AuthContext } from "../../service/user_service.js";
+import { NotifiCreate, NotifiUpdate } from "../../Design/Observable/index.js";
+
 const emptyData = {
   name: "",
   description: "",
@@ -14,11 +15,11 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
   const { token } = useContext(AuthContext);
   const [formData, setFormData] = useState(data || emptyData);
   const [errors, setErrors] = useState({});
-  const toast = useRef(null);
   const images = isUpdate ? data.images : [];
-  var url = isUpdate
+  const url = isUpdate
     ? `https://agriculture-traceability.vercel.app/api/v1/categories/upload/${data._id}`
     : "";
+
   const handleChange = (event) => {
     const { value, name } = event.target;
     setFormData({
@@ -26,31 +27,23 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
       [name]: value,
     });
   };
+
   const handle = async () => {
     if (!validate()) {
       return;
     }
     try {
-      if (data) {
-        const res = handleUpdate(data._id, formData, token);
-        reloadData();
-        toast.current.show({
-          severity: "success",
-          summary: "Sửa hoàn thành",
-          life: 3000,
-        });
+      if (isUpdate) {
+        const res = await handleUpdate(data._id, formData, token);
+        NotifiUpdate();
         setFormData(res);
-      } else {
-        handleCreate(formData, token);
         reloadData();
-        toast.current.show({
-          severity: "success",
-          summary: "Thêm hoàn thành",
-          life: 3000,
-        });
+      } else {
+        await handleCreate(formData, token);
+        NotifiCreate();
         setFormData(emptyData);
+        reloadData();
       }
-      reloadData();
       reloadData();
     } catch (error) {
       console.log("Error:", error);
@@ -61,27 +54,24 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
     let isValid = true;
     const newErrors = {};
 
-    if (!formData.name && formData.name === "") {
+    if (!formData.name) {
       newErrors.name = "Tên nhóm là bắt buộc.";
       isValid = false;
     }
 
-    if (!formData.description && formData.description === "") {
+    if (!formData.description) {
       newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
     }
-
     setErrors(newErrors);
     return isValid;
   };
 
   return (
     <div>
-      <Toast className="toast" ref={toast} />
       <div className="container_update_areas">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           {/* Cột trái */}
-
           <h4>Tên nhóm</h4>
           <InputTextarea
             name="name"
@@ -101,6 +91,7 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
           {errors.description && (
             <small className="p-error">{errors.description}</small>
           )}
+
           <Button
             className="button_Dia"
             id="Save"
@@ -110,19 +101,15 @@ function YourNewComponent({ reloadData, data, isUpdate }) {
           />
         </div>
 
-        {isUpdate ? (
-          <>
-            <div style={{ flex: 1 }}>
-              <h4 style={{ fontWeight: "bold" }}>Hình ảnh</h4>
-              <ImageUploader
-                uploadUrl={url}
-                images={images}
-                reloadData={reloadData}
-              />
-            </div>
-          </>
-        ) : (
-          ""
+        {isUpdate && (
+          <div className="hide-on-small-screen" style={{ flex: 1 }}>
+            <h4 style={{ fontWeight: "bold" }}>Hình ảnh</h4>
+            <ImageUploader
+              uploadUrl={url}
+              images={images}
+              reloadData={reloadData}
+            />
+          </div>
         )}
       </div>
     </div>

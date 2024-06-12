@@ -1,7 +1,6 @@
 import axios from "axios";
 
-
-
+export const urlGet = "https://agriculture-traceability.vercel.app/api/v1/farms?"
 export const handleCreate = async (data, token) => {
     try {
         const res = await axios.post("https://agriculture-traceability.vercel.app/api/v1/farms", data, {

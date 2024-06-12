@@ -11,13 +11,12 @@ import { AuthContext } from "../../service/user_service.js";
 import { handleDelete, handleGet } from "../../service/Herd_data.js";
 import { classNames } from "primereact/utils";
 import { Dialog } from "primereact/dialog";
-import NotificationBox from "./Notification.jsx";
 import {
   CustomDialog,
   SearchBar,
   CustomPaginator,
 } from "../../../components/Total_Interface/index.jsx";
-
+import Observer from "../../Design/Observable/Observer.jsx";
 const emptyProduct = {
   _id: null,
 };
@@ -94,11 +93,7 @@ export default function SizeDemo() {
       handleDeleteUser(selectedProduct);
       reloadData();
       setDeleteProductsDialog(false);
-      toast.current.show({
-        severity: "success",
-        summary: "Đã xóa",
-        life: 3000,
-      });
+     Observer.notify(`Đàn mã ${selectedProduct.name} đã xóa`)
     }
   };
   const deleteProduct = () => {
@@ -107,11 +102,8 @@ export default function SizeDemo() {
     handleDeleteUser(firstObject);
     reloadData();
     setDeleteProductDialog(false);
-    toast.current.show({
-      severity: "success",
-      summary: "Đã xóa",
-      life: 3000,
-    });
+    Observer.notify(`Đàn mã ${firstObject.name} đã xóa`)
+
   };
   const navigate = useNavigate();
   const onRowDoubleClick = () => {
@@ -195,66 +187,21 @@ export default function SizeDemo() {
   return (
     <div>
       <Toast className="toast" ref={toast} />
-      <NotificationBox/>
       <div className="card">
         <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
-        <DataTable
-          value={products}
-          selectionMode={"row"}
-          selection={selectedProducts}
-          onSelectionChange={(e) => setSelectedProducts(e.value)}
-          editMode="row"
-          dataKey="_id"
-          header={header}
-        >
+        
+        <DataTable value={products} selectionMode={"row"}selection={selectedProducts}onSelectionChange={(e) => setSelectedProducts(e.value)} 
+          editMode="row" dataKey="_id" header={header} >
           <Column selectionMode="multiple" exportable={true}></Column>
-          <Column
-            field="name"
-            header="Tên đàn"
-            sortable
-            style={{ minWidth: "10rem" }}
-          ></Column>
-          <Column
-            field="member_count"
-            header="Số lượng"
-            sortable
-            style={{ minWidth: "6rem" }}
-          ></Column>
-          <Column
-            field="status"
-            header="Trạng thái"
-            dataType="boolean"
-            bodyClassName="text-center"
-            style={{ minWidth: "5rem" }}
-            body={isProcessedBodyTemplate}
-          />
-          <Column
-            field="farm.name"
-            sortable
-            header="Tháng tuổi"
-            style={{ minWidth: "6rem" }}
-            body={stockBodyTemplate}
-          ></Column>
-          <Column
-            header="Nhóm"
-            sortable
-            sortField="category.name"
-            filterField="category"
-            style={{ minWidth: "14rem" }}
-            body={representativeBodyTemplate}
-          />
-          <Column
-            body={actionBodyTemplate}
-            headerStyle={{ width: "10%", minWidth: "4rem" }}
-            bodyStyle={{ left: "0" }}
-          ></Column>
+          <Column field="name"  header="Tên đàn" sortable style={{ minWidth: "10rem" }}></Column>
+          <Column field="member_count"  header="Số lượng" sortable  style={{ minWidth: "6rem" }} ></Column>
+          <Column field="status" header="Trạng thái" dataType="boolean" bodyClassName="text-center"style={{ minWidth: "5rem" }} body={isProcessedBodyTemplate} />
+          <Column field="farm.name" sortable header="Tháng tuổi" style={{ minWidth: "6rem" }}body={stockBodyTemplate} ></Column>
+          <Column header="Nhóm" sortable sortField="category.name" filterField="category" style={{ minWidth: "14rem" }} body={representativeBodyTemplate} />
+          <Column body={actionBodyTemplate} headerStyle={{ width: "10%", minWidth: "4rem" }}bodyStyle={{ left: "0" }} ></Column>
         </DataTable>
-        <CustomPaginator
-          currentPage={currentPage}
-          totalRecords={totalPages * currentLimit}
-          rows={currentLimit}
-          onPageChange={onPageChange}
-        />
+        <CustomPaginator currentPage={currentPage}  totalRecords={totalPages * currentLimit}rows={currentLimit} onPageChange={onPageChange} />
+
         <CustomDialog
           visible={deleteProductsDialog}
           header="Thông báo"

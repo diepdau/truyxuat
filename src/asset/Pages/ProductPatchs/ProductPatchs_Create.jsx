@@ -1,13 +1,12 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
 import "./ProductPatchs.css";
 import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import { classNames } from "primereact/utils";
-
+import { NotifiCreate } from "../../Design/Observable/index.js";
 import {
   handleCreate,
   getProductInfos,
@@ -96,17 +95,12 @@ function YourComponent({ reloadData, isUpdate }) {
     try {
       const res = handleCreate(product, token);
       reloadData();
-
-      toast.current.show({
-        severity: "success",
-        summary: "Thêm hoàn thành",
-        life: 3000,
-      });
+      NotifiCreate();
+      reloadData();
       console.log(res);
       reloadData();
-      reloadData();
-
       setProduct(emptyProduct);
+      reloadData();
     } catch (error) {
       console.log("Error update:", error);
     }
@@ -151,18 +145,6 @@ function YourComponent({ reloadData, isUpdate }) {
     setErrors(newErrors);
     return isValid;
   };
-
-  // let productionDate = ""; // Declare formattedDate variable
-
-  // if (
-  //   product.production_date &&
-  //   typeof product.production_date === "object" &&
-  //   product.production_date.props
-  // ) {
-  //   productionDate = product.production_date.props.originalDate;
-  // } else {
-  //   productionDate = new Date(product.production_date);
-  // }
   const ProductName =
     product.product && product.product.name ? product.product.name : "";
   const ProductInfosName =
@@ -175,16 +157,6 @@ function YourComponent({ reloadData, isUpdate }) {
     <div>
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
-          <Toast className="toast" ref={toast} />
-          {/* <h4>Name</h4>
-          <InputText
-            name="name"
-            value={product.name}
-            autoResize
-            style={{ width: "100%" }}
-            onChange={handleChange}
-          />
-          {errors.name && <small className="p-error">{errors.name}</small>} */}
           <div className="input-container">
             <div style={{ width: "100%", marginRight: "2vh", flex: "3" }}>
               <h4>Sản phẩm</h4>

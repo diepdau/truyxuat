@@ -11,6 +11,7 @@ import {
 } from "../../service/user_data.js";
 import { AuthContext } from "../../service/user_service.js";
 import { Dialog } from "primereact/dialog";
+import { NotifiUpdate } from "../../Design/Observable/index.js";
 const initFormValue = {
   first_name: "",
   last_name: "",
@@ -31,7 +32,10 @@ export default function User() {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        if (userId && userId === "my-profile") {
+        if (userId && userId === "my-profile" && currentUser.role === "admin") {
+          const res = await getUser(currentUser.userId, token);
+          setuser(res.data.user);
+        } else if (userId && userId === "my-profile") {
           const res = await getUserAdmin(token);
           setuser(res.data.user);
         } else {
@@ -65,7 +69,7 @@ export default function User() {
         },
         token
       );
-      alert("Chỉnh sửa thành công");
+      NotifiUpdate();
       navigator("/user");
     } catch (error) {
       console.log("Lỗi chỉnh sửa:", error.mgs);
@@ -109,7 +113,9 @@ export default function User() {
                 <img src={imgAdmin} alt="" className="userShowImg" />
                 <div className="userShowTopTitle">
                   <span className="userShowUsername">
-                   {currentUser.name}
+                    {userId !== "my-profile"
+                      ? user.last_name
+                      : currentUser && currentUser.name}
                   </span>
                   <span className="userShowUserTitle">{user.role}</span>
                 </div>
@@ -122,7 +128,11 @@ export default function User() {
                   <input
                     type="text"
                     className="userUpdateInput"
-                    value={currentUser.name }
+                    value={
+                      userId !== "my-profile"
+                        ? user.last_name
+                        : currentUser && currentUser.name
+                    }
                   />
                 </div>
                 <div className="userUpdateItem">
@@ -130,7 +140,11 @@ export default function User() {
                   <input
                     type="text"
                     className="userUpdateInput"
-                    value={user.email}
+                    value={
+                      userId !== "my-profile"
+                        ? user.email
+                        : currentUser && currentUser.email
+                    }
                   />
                 </div>
                 {/* <div className="userUpdateItem">
@@ -269,16 +283,6 @@ export default function User() {
                         className="userUpdateInput"
                       />
                     </div>
-                    {/* <div className="userUpdateItem">
-                      <label>Nhập lại mật khẩu mới</label>
-                      <input
-                        type="password"
-                        name="password"
-                        value={formValue.newPassword}
-                        onChange={handleChange}
-                        className="userUpdateInput"
-                      />
-                    </div> */}
                   </div>
                 </div>
               </form>

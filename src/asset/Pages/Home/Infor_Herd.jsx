@@ -6,7 +6,8 @@ import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
-import "./HerdsList.css"
+import Observer from "../../Design/Observable/Observer.jsx";
+import "./HerdsList.css";
 import {
   fetchHerd,
   handleUpdate,
@@ -36,7 +37,7 @@ const statusOptions = [
   { label: "Đang thu hoạch", value: "Đang thu hoạch" },
   { label: "Thu hoạch xong", value: "Thu hoạch xong" },
 ];
-function YourComponent({ herdId, data, isUpdate,reloadData }) {
+function YourComponent({ herdId, data, isUpdate, reloadData }) {
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const toast = useRef(null);
@@ -94,27 +95,17 @@ function YourComponent({ herdId, data, isUpdate,reloadData }) {
     try {
       if (isUpdate) {
         const a = await handleUpdate(herdId, product, token);
-        toast.current.show({
-          severity: "success",
-          summary: "Sửa hoàn thành",
-          life: 3000,
-        });
+        Observer.notify(`${product.name} đã được chỉnh sửa`)
         setProduct({
           ...product,
         });
-        console.log(a);
       } else {
         await handleCreate(product, token);
-        toast.current.show({
-          severity: "success",
-          summary: "Thêm hoàn thành",
-          life: 3000,
-        });
+        
         setProduct(emptyProduct);
       }
       reloadData();
       reloadData123();
-
     } catch (error) {
       console.log("Error update:", error);
     }
@@ -157,7 +148,6 @@ function YourComponent({ herdId, data, isUpdate,reloadData }) {
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <Toast className="toast" ref={toast} />
-
           <h4>Tên</h4>
           <InputText
             name="name"
@@ -237,8 +227,6 @@ function YourComponent({ herdId, data, isUpdate,reloadData }) {
             style={{ width: "100%" }}
             optionLabel="label"
             optionValue="value"
-           
-            
           />
 
           <h4>Mô tả</h4>

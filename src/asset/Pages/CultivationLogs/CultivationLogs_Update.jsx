@@ -1,8 +1,8 @@
-import React, { useState, useRef,useContext } from "react";
+import React, { useState, useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
+import { NotifiUpdate } from "../../Design/Observable/index.js";
 import "./CultivationLogs.css";
 import { Calendar } from "primereact/calendar";
 import ImageUploader from "../../../components/Images/Image";
@@ -18,7 +18,6 @@ function YourComponent({ reloadData, data }) {
   const { token } = useContext(AuthContext);
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
-  const toast = useRef(null);
   var url = data ? `https://agriculture-traceability.vercel.app/api/v1/cultivation-logs/upload/${data._id}` : "";
   const handleChange = (event) => {
     const { value, name } = event.target;
@@ -50,11 +49,8 @@ function YourComponent({ reloadData, data }) {
         description: product.description,
         date: formattedDate,
       },token);
-      toast.current.show({
-        severity: "success",
-        summary: "Sửa hoàn thành",
-        life: 3000,
-      });
+      NotifiUpdate();
+      reloadData();
       reloadData();
       setProduct({
         ...product,
@@ -94,7 +90,6 @@ function YourComponent({ reloadData, data }) {
   }
   return (
     <div>
-      <Toast className="toast" ref={toast} />
       <div className="container_update ">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <h4>Tên</h4>
@@ -141,7 +136,7 @@ function YourComponent({ reloadData, data }) {
         </div>
 
         {/* Cột phải */}
-        <div style={{ flex: 1 }}>
+        <div className="hide-on-small-screen" style={{ flex: 1 }}>
           <h4 style={{ fontWeight: "bold" }}>Hình ảnh</h4>
           <ImageUploader
             uploadUrl={url}

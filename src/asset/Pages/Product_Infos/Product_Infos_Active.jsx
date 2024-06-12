@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect ,useContext} from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
 import "./Product_Infos.css";
 import { InputTextarea } from "primereact/inputtextarea";
 import { handleCreate,handleGetProductInfor,handleUpdate} from "../../service/productInfor_data.js";
 import { AuthContext } from "../../service/user_service.js";
+import { NotifiUpdate,NotifiCreate } from "../../Design/Observable/index.js";
 const emptyProduct = {
   _id: "",
   name: "",
@@ -54,21 +54,13 @@ function YourComponent({
     try {
       if (data) {
         await handleUpdate(data._id,product,token);
-        toast.current.show({
-          severity: "success",
-          summary: "Sửa hoàn thành",
-          life: 3000,
-        });
+        NotifiUpdate();
         setProduct({
           ...product,
         });
       } else {
         await handleCreate(product,token);
-        toast.current.show({
-          severity: "success",
-          summary: "Thêm hoàn thành",
-          life: 3000,
-        });
+        NotifiCreate();
         setProduct(emptyProduct);
       }
       reloadData();
@@ -104,8 +96,7 @@ function YourComponent({
     return isValid;
   };
   return (
-    <div>
-      <Toast className="toast" ref={toast} />
+    <div>     
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           <h4>Loại sản phẩm</h4>

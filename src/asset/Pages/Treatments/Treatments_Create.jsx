@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import "./Treatments.css";
@@ -9,6 +8,7 @@ import typeOptions from "./Type.jsx";
 import { handleCreate, handleUpdate } from "../../service/treatment_data.js";
 import { getHerd } from "../../service/harvest_data.js";
 import { AuthContext } from "../../service/user_service.js";
+import { NotifiUpdate,NotifiCreate} from "../../Design/Observable/index.js";
 const emptyProduct = {
   herd: "",
   type: "",
@@ -89,19 +89,11 @@ function YourComponent({ idherd,data, reloadData, isUpdate, nameherd }) {
           ? product.retreat_date.props.originalDate
           : product.retreat_date;
         await handleUpdate(data._id, product, token);
-        toast.current.show({
-          severity: "success",
-          summary: "Cập nhật hoàn thành",
-          life: 3000,
-        });
+        NotifiUpdate();
         setProduct(product);
       } else {
         await handleCreate(product, token);
-        toast.current.show({
-          severity: "success",
-          summary: "Thêm hoàn thành",
-          life: 3000,
-        });
+        NotifiCreate();
         reloadData();
         setProduct(emptyProduct);
       }
@@ -111,19 +103,6 @@ function YourComponent({ idherd,data, reloadData, isUpdate, nameherd }) {
       console.log("Error update:", error);
     }
   };
-
-  // const handleCreate = async () => {
-  //   if (!validate()) {return;}
-  //   try {
-  //     await axios.post(`https://agriculture-traceability.vercel.app/api/v1/treatments`, product);
-  //     toast.current.show({severity: "success", summary: "Thêm hoàn thành",life: 3000, });
-  //     reloadData();
-  //     setProduct(emptyProduct);
-  //   } catch (error) {
-  //     console.log("Error :", error);
-  //   }
-  // };
-
   const validate = () => {
     let isValid = true;
     const newErrors = {};
@@ -191,7 +170,6 @@ function YourComponent({ idherd,data, reloadData, isUpdate, nameherd }) {
   return (
     <div>
       <div className="container_update">
-        <Toast className="toast" ref={toast} />
         <div style={{ flex: 1, paddingRight: "1rem" }}>
           {idherd ? (
             ""

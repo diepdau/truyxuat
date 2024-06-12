@@ -1,7 +1,6 @@
 import React, { useState, useRef, useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import {
@@ -9,6 +8,8 @@ import {
   handleUpdateAnimal,
 } from "../../service/Herd_data.js";
 import { AuthContext } from "../../service/user_service.js";
+import { NotifiCreate } from "../../Design/Observable/index.js";
+
 const emptyProduct = {
   _id: null,
   name: "",
@@ -60,12 +61,7 @@ function YourComponent({ herdId, data, reloadData, isUpdate }) {
           },
           token
         );
-
-        toast.current.show({
-          severity: "success",
-          summary: "Thêm hoàn thành",
-          life: 3000,
-        });
+        NotifiCreate();
         setProduct(emptyProduct);
       }
       reloadData();
@@ -97,8 +93,6 @@ function YourComponent({ herdId, data, reloadData, isUpdate }) {
 
   return (
     <div>
-      <Toast className="toast" ref={toast} />
-
       <div className="container_update">
         <div
           style={{

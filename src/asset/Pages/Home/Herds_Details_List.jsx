@@ -57,16 +57,16 @@ export default function BasicDemo() {
             />
           </TabPanel>
           <TabPanel header="Danh sách con">
-            <RecordsList herdId={herdId} />
+            <RecordsList herdId={herdId} status={formData.status}  />
           </TabPanel>
           <TabPanel header="Nhật kí chăm sóc">
-            <CultivationLogs_Herd idherd={herdId} />
+            <CultivationLogs_Herd idherd={herdId} status={formData.status} />
           </TabPanel>
           <TabPanel header="Thu hoạch">
-            <Harvest isherdharvest={herdId} />
+            <Harvest isherdharvest={herdId} status={formData.status} />
           </TabPanel>
           <TabPanel header="Điều trị">
-            <Treatments idherd={herdId} herdname={formData.name} />
+            <Treatments idherd={herdId} herdname={formData.name} status={formData.status}  />
           </TabPanel>
         </TabView>
       </div>

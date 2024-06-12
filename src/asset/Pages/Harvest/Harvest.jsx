@@ -5,7 +5,7 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
-import { Toast } from "primereact/toast";
+import { NotifiDelete } from "../../Design/Observable/index.js";
 import "../Home/HerdsList.css";
 import { classNames } from "primereact/utils";
 import { TabView, TabPanel } from "primereact/tabview";
@@ -28,7 +28,7 @@ const emptyProduct = {
   unit: "",
   date: "",
 };
-function Harvest({ isherdharvest }) {
+function Harvest({ isherdharvest ,status}) {
   const { token } = useContext(AuthContext);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
@@ -96,7 +96,7 @@ function Harvest({ isherdharvest }) {
   const leftToolbarTemplate = () => {
     return (
       <div className="flex flex-wrap gap-2">
-        <Button label="Tạo" severity="success" onClick={openNew} />
+        <Button label="Tạo" severity="success" onClick={openNew} disabled={status === "Thu hoạch xong"}/>
         <Button
           label="Xóa"
           severity="danger"
@@ -121,11 +121,7 @@ function Harvest({ isherdharvest }) {
     for (const selectedProduct of selectedProducts) {
       handleDeleteUser(selectedProduct);
       setDeleteProductsDialog(false);
-      toast.current.show({
-        severity: "success",
-        summary: "Đã xóa",
-        life: 3000,
-      });
+      NotifiDelete();
     }
   };
   const deleteProduct = () => {
@@ -133,11 +129,7 @@ function Harvest({ isherdharvest }) {
     const firstObject = _products[0];
     handleDeleteUser(firstObject);
     setDeleteProductDialog(false);
-    toast.current.show({
-      severity: "success",
-      summary: "Đã xóa",
-      life: 3000,
-    });
+    NotifiDelete();
     reloadData();
   };
 
@@ -284,8 +276,6 @@ function Harvest({ isherdharvest }) {
   );
   return (
     <div className={isherdharvest? "": "div_main"} >
-      <Toast className="toast" ref={toast} />
-
       {!isherdharvest && (
         <>
           {/* <Chart_Herds /> */}
@@ -328,14 +318,12 @@ function Harvest({ isherdharvest }) {
             style={{ minWidth: "5rem" }}
           ></Column>
           <Column
-            sortable
             field="unit"
             header="ĐVT"
             value={product.unit}
             style={{ minWidth: "5rem" }}
           ></Column>
           <Column
-            sortable
             field="herd.name"
             header="Tên đàn"
             value={product.herd.name}
@@ -344,19 +332,19 @@ function Harvest({ isherdharvest }) {
           <Column
             sortable
             field="date"
-            header="Ngày thu hoạch"
+            header="Ngày"
             value={product.date}
             style={{ minWidth: "8rem" }}
           ></Column>
           <Column
             field="isProcessed"
-            header="Trạng thái"
+            header="Trạng thái đóng gói"
             dataType="boolean"
             bodyClassName="text-center"
-            style={{ minWidth: "5rem" }}
+            style={{ minWidth: "8rem" }}
             body={isProcessedBodyTemplate}
-            filter
-            filterElement={isProcessedFilterTemplate}
+            // filter
+            // filterElement={isProcessedFilterTemplate}
           />
           <Column
             body={actionBodyTemplate}

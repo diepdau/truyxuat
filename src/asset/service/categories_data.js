@@ -1,4 +1,5 @@
 import axios from "axios";
+export const urlGet ="https://agriculture-traceability.vercel.app/api/v1/categories?limit=60";
 
 export const handleGet = async (token, currentLimit, currentPage, value = "") => {
     try {

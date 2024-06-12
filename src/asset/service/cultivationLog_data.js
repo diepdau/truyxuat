@@ -1,17 +1,24 @@
 import axios from "axios";
+import {DateConverter} from "../../components/Date/Date.jsx";
 
-export const handleGet = async (name, token) => {
+export const handleGet = async (idherd,token) => {
     try {
-        const response = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/cultivation-logs?sort=${name}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        return response.data.herds;
+      const response = await axios.get(
+        `https://agriculture-traceability.vercel.app/api/v1/cultivation-logs/herd/${idherd}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      response.data.cultivationLogs.forEach((element) => {
+        element.date =  DateConverter(element.date); 
+      });
+      return response;
     } catch (error) {
-        console.log("Error: ", error);
+      console.log("There was a problem with the fetch operation:", error);
     }
-};
+  };
 
 export const handleCreate = async (data, token) => {
     try {

@@ -5,7 +5,7 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toolbar } from "primereact/toolbar";
 import { Dialog } from "primereact/dialog";
-import { Toast } from "primereact/toast";
+import { NotifiDelete } from "../../Design/Observable/index.js";
 import "../Home/HerdsList.css";
 import { TabView, TabPanel } from "primereact/tabview";
 import Treatments_Create from "./Treatments_Create.jsx";
@@ -14,6 +14,8 @@ import { Paginator } from "primereact/paginator";
 import { DateConverter } from "../../../components/Date/Date.jsx";
 import { handleDelete } from "../../service/treatment_data.js";
 import { AuthContext } from "../../service/user_service.js";
+import { CustomDialog } from "../../../components/Total_Interface/index.jsx";
+
 const emptyProduct = {
   _id: null,
   name: "",
@@ -22,7 +24,7 @@ const emptyProduct = {
   unit: "",
   date: "",
 };
-export default function SizeDemo({ idherd, herdname }) {
+export default function SizeDemo({ idherd, herdname,status }) {
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [products, setProducts] = useState([]);
@@ -88,7 +90,7 @@ export default function SizeDemo({ idherd, herdname }) {
   const leftToolbarTemplate = () => {
     return (
       <div className="flex flex-wrap gap-2">
-        <Button label="Tạo" severity="success" onClick={openNew} />
+        <Button label="Tạo" severity="success" onClick={openNew} disabled={status === "Thu hoạch xong"}/>
         <Button
           label="Xóa"
           severity="danger"
@@ -113,11 +115,7 @@ export default function SizeDemo({ idherd, herdname }) {
     for (const selectedProduct of selectedProducts) {
       handleDeleteUser(selectedProduct);
       setDeleteProductsDialog(false);
-      toast.current.show({
-        severity: "success",
-        summary: "Đã xóa",
-        life: 3000,
-      });
+      NotifiDelete();
     }
   };
   const deleteProduct = () => {
@@ -125,47 +123,9 @@ export default function SizeDemo({ idherd, herdname }) {
     const firstObject = _products[0];
     handleDeleteUser(firstObject);
     setDeleteProductDialog(false);
-    toast.current.show({
-      severity: "success",
-      summary: "Đã xóa",
-      life: 3000,
-    });
+    NotifiDelete();
   };
 
-  const deleteProductDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="Thoát"
-        severity="secondary"
-        outlined
-        onClick={hideDeleteProductsDialog}
-        className="button_Dia"
-      />
-      <Button
-        label="Đồng ý"
-        onClick={deleteSelectedProducts}
-        severity="danger"
-        className="button_Dia"
-      />
-    </React.Fragment>
-  );
-  const deleteoneProductDialogFooter = (
-    <React.Fragment>
-      <Button
-        className="button_Dia"
-        label="Thoát"
-        severity="secondary"
-        outlined
-        onClick={hideDeleteProductDialog}
-      />
-      <Button
-        className="button_Dia"
-        label="Đồng ý"
-        severity="danger"
-        onClick={deleteProduct}
-      />
-    </React.Fragment>
-  );
   const confirmDeleteProduct = (product) => {
     setProduct(product);
     setDeleteProductDialog(true);
@@ -232,7 +192,6 @@ export default function SizeDemo({ idherd, herdname }) {
   );
   return (
     <div className={idherd ? "" : "div_main"}>
-      <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar
           className="mb-4"
@@ -253,16 +212,15 @@ export default function SizeDemo({ idherd, herdname }) {
         >
           <Column expander={allowExpansion} style={{ width: "5rem" }} />
           <Column selectionMode="multiple" exportable={true}></Column>
-          
-              <Column
-                sortable
-                field="herd.name"
-                header="Đàn"
-                style={{ minWidth: "10rem" }}
-              ></Column>
-            
+
           <Column
             sortable
+            field="herd.name"
+            header="Đàn"
+            style={{ minWidth: "10rem" }}
+          ></Column>
+
+          <Column
             field="type"
             header="Loại"
             value={product.type}
@@ -283,11 +241,10 @@ export default function SizeDemo({ idherd, herdname }) {
             style={{ minWidth: "5rem" }}
           ></Column>
           <Column
-            sortable
             field="mode"
             header="Hình thức điều trị"
             value={product.mode}
-            style={{ minWidth: "5rem" }}
+            style={{ minWidth: "8rem" }}
           ></Column>
           <Column
             field="date"
@@ -308,44 +265,22 @@ export default function SizeDemo({ idherd, herdname }) {
           rowsPerPageOptions={[5, 10, 20]}
           onPageChange={onPageChange}
         />
-        <Dialog
+        <CustomDialog
           visible={deleteProductsDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
           header="Thông báo"
-          modal
-          footer={deleteProductDialogFooter}
+          type="deleteMany"
           onHide={hideDeleteProductsDialog}
-        >
-          <div className="confirmation-content">
-            <i
-              className="pi pi-exclamation-triangle mr-3"
-              style={{ fontSize: "2rem" }}
-            />
-            {product && <span>Bạn có chắc chắn xóa những đàn này?</span>}
-          </div>
-        </Dialog>
-        <Dialog
+          deleteSelectedProducts={deleteSelectedProducts}
+          productNameMany={"điều trị"}
+        />
+        <CustomDialog
           visible={deleteProductDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
           header="Thông báo"
-          modal
-          footer={deleteoneProductDialogFooter}
+          type="deleteOne"
           onHide={hideDeleteProductDialog}
-        >
-          <div className="confirmation-content">
-            <i
-              className="pi pi-exclamation-triangle mr-3"
-              style={{ fontSize: "2rem" }}
-            />
-            {product && (
-              <span>
-                Bạn có chắc chắn muốn xóa <b>{product.name}</b>?
-              </span>
-            )}
-          </div>
-        </Dialog>
+          deleteProduct={deleteProduct}
+          productName={product.name}
+        />
         <Dialog
           header="Thêm mới"
           style={{ width: "50%" }}

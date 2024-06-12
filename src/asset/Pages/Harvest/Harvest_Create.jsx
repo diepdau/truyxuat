@@ -8,6 +8,7 @@ import "./Harvest.css";
 import { InputText } from "primereact/inputtext";
 import { handleCreate, getHerd } from "../../service/harvest_data.js";
 import { AuthContext } from "../../service/user_service.js";
+import { NotifiCreate } from "../../Design/Observable/index.js";
 const emptyProduct = {
   herd: "",
   name: "",
@@ -79,13 +80,11 @@ function Harvest_Create({ reloadData, idherd }) {
     }
     try {
       await handleCreate(product, token);
-      toast.current.show({
-        severity: "success",
-        summary: "Thêm hoàn thành",
-        life: 3000,
-      });
+      NotifiCreate();
       reloadData();
       setProduct(emptyProduct);
+      reloadData();
+      reloadData();
     } catch (error) {
       const er = error.response.data.msg;
       if (er.includes("has been harvested")) {
@@ -197,7 +196,7 @@ function Harvest_Create({ reloadData, idherd }) {
 
         {/* Cột phải */}
         <div style={{ flex: 1 }}>
-          <h4>Trạng thái</h4>
+          {/* <h4>Trạng thái</h4>
           <Dropdown
             name="status"
             value={product.status}
@@ -205,7 +204,7 @@ function Harvest_Create({ reloadData, idherd }) {
             onChange={handleStatusChange}
             placeholder="Chọn trạng thái"
             style={{ width: "100%" }}
-          />
+          /> */}
           <h4>Mô tả</h4>
           <InputTextarea
             name="description"

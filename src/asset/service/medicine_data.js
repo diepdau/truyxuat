@@ -1,16 +1,21 @@
 import axios from "axios";
 
-export const handleGet = async (name, token) => {
-    try {
-        const response = await axios.get(`https://agriculture-traceability.vercel.app/api/v1/medicines?sort=${name}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        return response.data.herds;
-    } catch (error) {
-        console.log("Error: ", error);
+export const handleGet = async  (token, currentLimit, currentPage, value = "") => {
+  try {
+    const response = await fetch(
+      `https://agriculture-traceability.vercel.app/api/v1/medicines?limit=${currentLimit}&page=${currentPage}&searchQuery=${encodeURIComponent(
+        value
+      )}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
     }
+);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log("There was a problem with the fetch operation:", error);
+  }
 };
 
 export const handleCreate = async (data, token) => {

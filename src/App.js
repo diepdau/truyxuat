@@ -23,18 +23,22 @@ import Harvest_Update from "./asset/Pages/Harvest/Harvest_Update.jsx"
 import { AuthContext } from "./asset/service/user_service.js";
 import Herds_Details_List from "./asset/Pages/Home/Herds_Details_List.jsx";
 import ProductPatch from "./asset/Pages/ProductPatchs/ProductPatchs.jsx";
-import Distributor  from "./asset/Pages/Distributor/Distributor.jsx";
 import ProcessorsProducts  from "./asset/Pages/ProductPatchs/Processors_Product.jsx";
 import Treatments  from "./asset/Pages/Treatments/Treatments.jsx";
 import Main from "./components/Sidebar/Main.jsx";
 import ForgotPasswordPage from "./asset/Pages/Login/ForgotPassword.jsx";
 import ProductInfos from "./asset/Pages/Product_Infos/Product_Infos.jsx";
-import NotificationBox from "./asset/Pages/Home/Notification.jsx";
+import { ToastContainer } from "react-toastify";
+
+
+
 function App() {
 const Layout = () => {
   const { currentUser } = useContext(AuthContext);
+
   return (
-    <>
+    <div  >
+
      {currentUser && (
       <>
       <nav className="navbar">
@@ -44,7 +48,7 @@ const Layout = () => {
       </>
       
       )}
-    </>
+    </div>
   );
 };
 
@@ -116,14 +120,6 @@ const router = createBrowserRouter([
         path: "/lo-san-pham",
         element: <ProductPatch />,
       },
-      // {
-      //   path: "/dong-goi",
-      //   element: <Processors />,
-      // },
-      {
-        path: "/phan-phoi",
-        element: <Distributor  />,
-      },
       {
         path: "/processors/products",
         element: <ProcessorsProducts  />,
@@ -136,6 +132,7 @@ const router = createBrowserRouter([
         path: "/thong-tin",
         element: <ProductInfos  />,
       },
+      
      
     ],
   },
@@ -145,6 +142,7 @@ const router = createBrowserRouter([
 
   return (
     <div>
+      <ToastContainer style={{ top:"90px"}}/>
       <RouterProvider router={router} />  
     </div>
   );

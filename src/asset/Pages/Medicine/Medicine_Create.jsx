@@ -1,7 +1,10 @@
 import React, { useState, useRef, useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
+import {
+  NotifiUpdate,
+  NotifiCreate,
+} from "../../Design/Observable/index.js";
 import "./Medicine.css";
 import { InputTextarea } from "primereact/inputtextarea";
 import { handleCreate, handleUpdate } from "../../service/medicine_data.js";
@@ -40,24 +43,15 @@ function YourComponent({ data, reloadData, isUpdate }) {
       let response;
       if (data) {
         response = await handleUpdate(data._id, product, token);
-        toast.current.show({
-          severity: "success",
-          summary: "Sửa hoàn thành",
-          life: 3000,
-        });
+        NotifiUpdate();
         setProduct(response.data);
       } else {
         response = await handleCreate(product, token);
-        toast.current.show({
-          severity: "success",
-          summary: "Thêm hoàn thành",
-          life: 3000,
-        });
+        NotifiCreate();
         setProduct(emptyProduct);
       }
       reloadData();
       reloadData();
-      
     } catch (error) {
       console.log("Error:", error);
     }
@@ -67,39 +61,39 @@ function YourComponent({ data, reloadData, isUpdate }) {
     let isValid = true;
     const newErrors = {};
 
-    if (product.name.trim()==="") {
+    if (product.name.trim() === "") {
       newErrors.name = "Tên là bắt buộc.";
       isValid = false;
     }
-    if (product.description.trim()==="") {
+    if (product.description.trim() === "") {
       newErrors.description = "Mô tả là bắt buộc.";
       isValid = false;
     }
-    if (product.ingredients.trim()==="") {
+    if (product.ingredients.trim() === "") {
       newErrors.ingredients = "Thành phần là băt buộc.";
       isValid = false;
     }
-    if (product.usage_instruction.trim()==="") {
+    if (product.usage_instruction.trim() === "") {
       newErrors.usage_instruction = "Hướng dẫn sử dụng là bắt buộc.";
       isValid = false;
     }
-    if (product.toxicity.trim()==="") {
+    if (product.toxicity.trim() === "") {
       newErrors.toxicity = "Độ độc là bắt buộc.";
       isValid = false;
     }
-    if (product.dosage.trim()==="") {
+    if (product.dosage.trim() === "") {
       newErrors.dosage = "Liều lượng là bắt buộc.";
       isValid = false;
     }
-    if (product.isolation.trim()==="") {
+    if (product.isolation.trim() === "") {
       newErrors.isolation = "Cách ly là bắt buộc.";
       isValid = false;
     }
-    if (product.recommendation.trim()==="") {
+    if (product.recommendation.trim() === "") {
       newErrors.recommendation = "Khuyến nghị là bắt buộc.";
       isValid = false;
     }
-    if (product.certificate.trim()==="") {
+    if (product.certificate.trim() === "") {
       newErrors.certificate = "Giấy phép là bắt buộc.";
       isValid = false;
     }
@@ -113,8 +107,6 @@ function YourComponent({ data, reloadData, isUpdate }) {
         {/* Cột trái */}
         <div style={{ flex: 1 }}>
           <div>
-            <Toast className="toast" ref={toast} />
-
             <h4>Tên</h4>
             <InputText
               name="name"

@@ -16,9 +16,9 @@
   }
 
   .herdList {
-    display: grid;
+    /* display: grid; */
     grid-template-rows: auto auto; 
-    grid-gap: 20px; /* Khoảng cách giữa hai hàng */
+    grid-gap: 20px; 
   }
   .card_herd{
     grid-gap: 20px; 
@@ -37,3 +37,6 @@
 }
 
 
+.p-toast-message .p-toast-message-success .p-toast-message-enter-done{
+  margin-top: 123px;
+}

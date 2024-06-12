@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
 import "./ProductPatchs.css";
 import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import Product_Infos_Actives from "../Product_Infos/Product_Infos_Active.jsx";
+import { NotifiUpdate } from "../../Design/Observable/index.js";
 import {
   handleUpdate,
   getProductInfos,
@@ -36,6 +36,7 @@ const currentunitOptions = [
   { label: "VND", value: "VND" },
 ];
 function YourComponent({ data, reloadData, isUpdate, isProProduct }) {
+  console.log(data);
   const [product, setProduct] = useState(data || emptyProduct);
   const [errors, setErrors] = useState({});
   const [ProductInfos, setProductInfos] = useState({});
@@ -44,7 +45,6 @@ function YourComponent({ data, reloadData, isUpdate, isProProduct }) {
   const { token } = useContext(AuthContext);
   const [Farms, setFarms] = useState({});
   const [selectedFarm, setSelectedFarm] = useState(null);
-  const toast = useRef(null);
 
   useEffect(() => {
     getAllData();
@@ -89,16 +89,14 @@ function YourComponent({ data, reloadData, isUpdate, isProProduct }) {
       : product.production_date;
     try {
       const res = handleUpdate(data._id, product, token);
-      toast.current.show({
-        severity: "success",
-        summary: "Sửa hoàn thành",
-        life: 3000,
-      });
+      reloadData();
+      NotifiUpdate();
       console.log(res);
       reloadData();
       reloadData();
 
       setProduct(product);
+      reloadData();
     } catch (error) {
       console.log("Error update:", error);
     }
@@ -117,6 +115,10 @@ function YourComponent({ data, reloadData, isUpdate, isProProduct }) {
     }
     if (!product.net_weight || product.net_weight <= 0) {
       newErrors.quantity = "Số lượng phải lớn hơn 0 và không được để trống";
+      isValid = false;
+    }
+    if (product.net_weight * product.quantity >= data.harvest.quantity) {
+      newErrors.quantity = "Tổng SL sản phẩm ít hơn sản phẩm thô";
       isValid = false;
     }
     if (!isUpdate) {
@@ -162,7 +164,6 @@ function YourComponent({ data, reloadData, isUpdate, isProProduct }) {
     <div>
       <div className="container_update">
         <div style={{ flex: 1, paddingRight: "1rem" }}>
-          <Toast className="toast" ref={toast} />
           <h4>Tên sản phẩm</h4>
           {isProProduct ? (
             <>
@@ -178,7 +179,6 @@ function YourComponent({ data, reloadData, isUpdate, isProProduct }) {
               />
               <h4>Phương pháp bảo quản</h4>
               <InputText
-                
                 value={product.product_info.storage_method}
                 style={{ width: "100%" }}
               />
@@ -273,7 +273,8 @@ function YourComponent({ data, reloadData, isUpdate, isProProduct }) {
 
               <h4>Nơi đóng gói</h4>
               <Dropdown
-                placeholder={FarmName}
+                // placeholder={FarmName}
+                placeholder="Nhà máy ABC"
                 type="text"
                 value={selectedFarm}
                 options={Farms}
@@ -349,13 +350,14 @@ function YourComponent({ data, reloadData, isUpdate, isProProduct }) {
         </div>
       </div>
       {!isProProduct && (
-      <Button
-        className="button_Dia"
-        id="Save"
-        label={isUpdate ? "Lưu" : "Tạo mới"}
-        severity="success"
-        onClick={handle}
-      />)}
+        <Button
+          className="button_Dia"
+          id="Save"
+          label={isUpdate ? "Lưu" : "Tạo mới"}
+          severity="success"
+          onClick={handle}
+        />
+      )}
     </div>
   );
 }
