@@ -58,10 +58,7 @@ h4 {
     margin-bottom: 2vh;
 
 }
-.chart-container {
-    display: flex;
-    justify-content: center;
-  }
+
   .text-green {
     color: green;
   }
@@ -69,4 +66,38 @@ h4 {
   .text-red {
     color: red;
   }
+  .dropdown-container {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    width: 300px;
+  }
+  
+  .button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0px;
+
+  }
+  
+  .product-button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #e0e0e0;
+    color: #333;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .product-button:hover {
+    background-color: #b3b3b3;
+  }
+  
+  .product-button.active {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+
   

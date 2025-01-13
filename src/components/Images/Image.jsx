@@ -7,9 +7,7 @@ import { AuthContext } from "../../asset/service/user_service.js";
 import "./Image.css";
 import Observer from "../../asset/Design/Observable/Observer.jsx";
 const ImageUploader = ({  uploadUrl, images, reloadData }) => {
-  
   const { token } = useContext(AuthContext);
-
   const { register, handleSubmit } = useForm();
   const upLoadImage = async (data) => {
     const formData = new FormData();

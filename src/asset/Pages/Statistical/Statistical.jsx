@@ -354,17 +354,17 @@ function Statistical() {
                         </div>
                     </div>
                 </TabPanel>
-                <TabPanel header="So sánh số lượng theo tháng">
+                <TabPanel header="SS số lượng">
                     <div className="card">
                         <Chart type="line" data={getLineChartData()} />
                     </div>
                 </TabPanel>
-                <TabPanel header="So sánh sản phẩm giữa các trang trại">
+                <TabPanel header="SS sản phẩm">
                     <div className="card">
                         <Chart type="bar" data={getProductComparisonChartData()} />
                     </div>
                 </TabPanel>
-                <TabPanel header="So sánh điều trị theo tháng">
+                <TabPanel header="SS loại điều trị">
                     <div className="card">
                         <Chart type="line" data={getTreatmentLineChartData()} />
                     </div>

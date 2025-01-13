@@ -30,8 +30,8 @@ export default function MonitoringHistory() {
   useEffect(() => {
     handleGet(token, currentLimit, currentPage, input)
       .then((data) => {
-        setProducts(data.herds);
-        setTotalPages(data.totalPages);
+        // setProducts(data.herds);
+        // setTotalPages(data.totalPages);
       })
       .catch((error) => console.log("Error fetching data:", error));
   }, [token, currentLimit, currentPage, input]);
@@ -60,7 +60,16 @@ export default function MonitoringHistory() {
       </React.Fragment>
     );
   };
-
+  const actionBodyTemplate123123 = (rowData) => {
+    return (
+      <React.Fragment>
+        <i
+          className="pi pi-arrow-up-right"
+          onClick={() => confirmDeleteProduct(rowData)}
+        ></i>
+      </React.Fragment>
+    );
+  };
   const representativeBodyTemplate = (rowData) => {
     const representative = rowData.category;
 
@@ -102,18 +111,29 @@ export default function MonitoringHistory() {
   return (
     <div>
       <Toast className="toast" ref={toast} />
-      <div className="">
+      <div >
+        {/* <DataTable value={products} selectionMode={"row"}selection={selectedProducts}onSelectionChange={(e) => setSelectedProducts(e.value)} 
+          editMode="row" dataKey="_id" header={header} >
+          <Column selectionMode="multiple" exportable={true}></Column>
+          <Column field="name"  header="Cá thể" sortable style={{ minWidth: "5rem" }}></Column>
+          <Column field="member_count"  header="Ngày cách ly" sortable  style={{ minWidth: "5rem" }} ></Column>
+          <Column field="status" header= "Trạng thái" dataType="boolean" bodyClassName="text-center"style={{ minWidth: "5rem" }} body={isProcessedBodyTemplate} />
+          <Column field="farm.name" sortable header="Khu vực cách ly" style={{ minWidth: "5rem" }}body={stockBodyTemplate} ></Column>
+          <Column header="Chuồng cách ly" sortable sortField="category.name" filterField="category" style={{ minWidth: "5rem" }} body={representativeBodyTemplate} />
+          <Column body={actionBodyTemplate} headerStyle={{ width: "10%", minWidth: "4rem" }}bodyStyle={{ left: "0" }} ></Column>
+        </DataTable> */}
         <DataTable value={products} selectionMode={"row"}selection={selectedProducts}onSelectionChange={(e) => setSelectedProducts(e.value)} 
           editMode="row" dataKey="_id" header={header} >
           <Column selectionMode="multiple" exportable={true}></Column>
-          <Column field="name"  header="Cá thể" sortable style={{ minWidth: "10rem" }}></Column>
-          <Column field="member_count"  header="Ngày cách ly" sortable  style={{ minWidth: "6rem" }} ></Column>
-          <Column field="status" header= "Trạng thái" dataType="boolean" bodyClassName="text-center"style={{ minWidth: "5rem" }} body={isProcessedBodyTemplate} />
-          <Column field="farm.name" sortable header="Khu vực cách ly" style={{ minWidth: "6rem" }}body={stockBodyTemplate} ></Column>
-          <Column header="Chuồng cách ly" sortable sortField="category.name" filterField="category" style={{ minWidth: "14rem" }} body={representativeBodyTemplate} />
-          <Column body={actionBodyTemplate} headerStyle={{ width: "10%", minWidth: "4rem" }}bodyStyle={{ left: "0" }} ></Column>
+          <Column field="name"  header="Hình ảnh" sortable style={{ minWidth: "5rem" }}></Column>
+          <Column field="member_count"  header="Loại sự kiện" sortable  style={{ minWidth: "5rem" }} ></Column>
+          <Column field="status" header= "Thời gian" dataType="boolean" bodyClassName="text-center"style={{ minWidth: "5rem" }} body={isProcessedBodyTemplate} />
+          <Column field="farm.name" sortable header="Khu vực" style={{ minWidth: "5rem" }}body={stockBodyTemplate} ></Column>
+          <Column header="Chi tiết"  body={actionBodyTemplate123123} headerStyle={{ width: "10%", minWidth: "4rem" }}bodyStyle={{ left: "0" }} ></Column>
         </DataTable>
         <CustomPaginator currentPage={currentPage}  totalRecords={totalPages * currentLimit}rows={currentLimit} onPageChange={onPageChange} />
+
+        
       </div>
     </div>
   );

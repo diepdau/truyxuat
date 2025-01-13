@@ -5,8 +5,9 @@ import HerdsList from "./HerdsList.jsx";
 const Dashboard   = () => {
   return (
         <div className="div_main">
-          <Chart />
           <HerdsList />
+          <Chart />
+
         </div>
   );
 };
