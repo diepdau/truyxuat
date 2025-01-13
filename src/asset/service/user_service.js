@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import { useCallback } from "react";
 // import { useNavigate } from "react-router-dom";
 export const AuthContext = createContext("");
 
@@ -14,25 +15,16 @@ export const AuthContexProvider = ({ children }) => {
       const accountToken = res.data.token;
       setCurrentUser({ ...user, expirationTime: Date.now() + 24 * 60 * 60 * 1000 });
       setToken(accountToken);
-      localStorage.getItem("userToken",accountToken)
+      localStorage.getItem("userToken",accountToken);
       return res;
     
   };
-  const logout = async (token) => {
-    
-  //   await axios.get("https://agriculture-traceability.vercel.app/api/v1/auth/logout",{
-  //     headers: {
-  //       Authorization: `Bearer ${token}`
-  //   }
-  //   }
-  // );
-    
+  const logout = useCallback(() => {
     setCurrentUser(null);
     setToken(null);
     localStorage.removeItem("userToken");
     localStorage.removeItem("user");
-
-  };
+  }, []);
 
 
   useEffect(() => {
@@ -44,13 +36,18 @@ export const AuthContexProvider = ({ children }) => {
   useEffect(() => {
     const tokenExpirationTime = currentUser?.expirationTime;
     const currentTime = Date.now();
-
-    if (tokenExpirationTime && currentTime > tokenExpirationTime) {
-      alert("Đã hết thời gian đăng nhập");
-      logout();
-      // Đăng xuất nếu token đã hết hạn
+  
+    if (tokenExpirationTime && currentTime < tokenExpirationTime) {
+      const timeLeft = tokenExpirationTime - currentTime;
+      const timeout = setTimeout(() => {
+        alert("Đã hết thời gian đăng nhập");
+        logout();
+      }, timeLeft);
+  
+      return () => clearTimeout(timeout);
     }
   }, [currentUser, logout]);
+  
 
   return (
     <AuthContext.Provider value={{ currentUser, token, loginApi, logout }}>

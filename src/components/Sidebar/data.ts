@@ -69,5 +69,17 @@ export const menu = [
         icon: 'pi pi-shield',
         url: '/dieu-tri',
       },
+      {
+        id: 9,
+        label: 'Lịch sử giám sát',
+        icon: 'pi pi-video',
+        url: '/nhan-dang',
+      },
+      {
+        id: 10,
+        label: 'Thống kê',
+        icon: 'pi pi-chart-bar',
+        url: '/thong-ke',
+      },
     
 ]

@@ -32,7 +32,7 @@ export default function BasicDemo() {
 
   useEffect(() => {
     getAllData();
-  }, [herdId, token]); // Chỉ gọi API khi herdId hoặc token thay đổi
+  }, [herdId, token]); 
 
   const reloadData123 = () => {
     getAllData();
@@ -49,6 +49,7 @@ export default function BasicDemo() {
       <div className="card card_herd">
         <TabView>
           <TabPanel header="Thông tin">
+            {/* eslint-disable-next-line react/jsx-pascal-case */}
             <Infor_Herd
               herdId={herdId}
               data={formData}

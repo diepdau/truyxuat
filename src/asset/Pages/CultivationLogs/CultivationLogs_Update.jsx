@@ -140,7 +140,7 @@ function YourComponent({ reloadData, data }) {
           <h4 style={{ fontWeight: "bold" }}>Hình ảnh</h4>
           <ImageUploader
             uploadUrl={url}
-            images={data.images}
+            images={data.mediaUri}
             reloadData={reloadData}
           />
         </div>

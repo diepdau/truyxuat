@@ -35,10 +35,9 @@ export default function CulivationLogs_Herd({ idherd,status }) {
   useEffect(() => {
     handleGet(idherd,token)
       .then((data) => {
-        console.log(data.data.cultivationLogs);
         setProducts(data.data.cultivationLogs);
-
       })
+      
       .catch((error) => console.log("Error fetching data:", error));
   }, [token]);
   const openNew = () => {
@@ -119,7 +118,7 @@ export default function CulivationLogs_Herd({ idherd,status }) {
             <CultivationLogs_Update reloadData={reloadData} data={data} />
           </TabPanel>
           <TabPanel className="on-small-screen" header="Hình ảnh">
-        <ImageList source={data.images} />
+        <ImageList source={data.mediaUri} />
       </TabPanel>
         </TabView>
       </>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect,useRef, useContext } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
@@ -16,7 +16,8 @@ import {
 } from "../../../components/Total_Interface/index.jsx";
 import withLoader from "../../Design/HOC/withLoader.js";
 import { InputText } from 'primereact/inputtext';
-
+import { useNavigate } from "react-router-dom";
+import { Toast } from "primereact/toast";
 const emptyProduct = {
   _id: null,
   name: "",
@@ -35,7 +36,7 @@ const FarmmingAreas = (props) => {
   const [selectedProducts, setSelectedProducts] = useState(null);
   const { token } = useContext(AuthContext);
   const [globalFilter, setGlobalFilter] = useState(null);
-
+const toast = useRef(null);
   useEffect(() => {
     setProducts(props.data.farms);
   }, [props.data.farms]);
@@ -45,7 +46,7 @@ const FarmmingAreas = (props) => {
   };
 
   const reloadData = () => {
-    props.reloadData(); // Gọi hàm reloadData từ props để lấy lại dữ liệu
+    props.reloadData(); 
   };
 
   const leftToolbarTemplate = () => {
@@ -58,6 +59,11 @@ const FarmmingAreas = (props) => {
           onClick={confirmDeleteSelected}
           disabled={!selectedProducts || !selectedProducts.length}
         />
+        <Button
+                  label="Xem chi tiết"
+                  severity="success"
+                  onClick={onRowDoubleClick}
+                />
       </div>
     );
   };
@@ -117,7 +123,20 @@ const FarmmingAreas = (props) => {
       console.log("Error:", error);
     }
   };
-
+ const navigate = useNavigate();
+  const onRowDoubleClick = () => {
+    if (!selectedProducts) {
+      toast.current.show({
+        severity: "warn",
+        detail: "Bạn phải chọn 1 đàn",
+        life: 3000,
+      });
+    } else {
+      for (const selectedProduct of selectedProducts) {
+        navigate(`/farms/${selectedProduct._id}`);
+      }
+    }
+  };
   const [expandedRows, setExpandedRows] = useState(null);
 
   const rowExpansionTemplate = (data) => {
@@ -127,6 +146,7 @@ const FarmmingAreas = (props) => {
       <>
         <TabView>
           <TabPanel header="Thông tin">
+            {/* eslint-disable-next-line react/jsx-pascal-case */}
             <FarmingAreas_Create
               data={data}
               isUpdate={true}
@@ -158,6 +178,7 @@ const FarmmingAreas = (props) => {
 
   return (
     <div className="div_main">
+      <Toast className="toast" ref={toast} />
       <div className="card">
         <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
         <DataTable

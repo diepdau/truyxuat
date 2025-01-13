@@ -29,6 +29,8 @@ import Main from "./components/Sidebar/Main.jsx";
 import ForgotPasswordPage from "./asset/Pages/Login/ForgotPassword.jsx";
 import ProductInfos from "./asset/Pages/Product_Infos/Product_Infos.jsx";
 import { ToastContainer } from "react-toastify";
+import Statistical from "./asset/Pages/Statistical/Statistical.jsx";
+import Identify from "./asset/Pages/Identify/Identify.jsx";
 
 
 
@@ -131,6 +133,14 @@ const router = createBrowserRouter([
       {
         path: "/thong-tin",
         element: <ProductInfos  />,
+      },
+      {
+        path: "/nhan-dang",
+        element: <Identify  />,
+      },
+      {
+        path: "/thong-ke",
+        element: <Statistical  />,
       },
       
      
